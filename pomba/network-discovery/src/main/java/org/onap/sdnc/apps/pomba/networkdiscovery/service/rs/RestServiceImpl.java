@@ -1,0 +1,115 @@
+/*
+ * ============LICENSE_START===================================================
+ * Copyright (c) 2018 Amdocs
+ * ============================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=====================================================
+ */
+package org.onap.sdnc.apps.pomba.networkdiscovery.service.rs;
+
+import static org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException.Error.GENERAL_FAILURE;
+import static org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException.Error.MISSING_PARAM;
+
+import java.util.List;
+import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import org.onap.logging.ref.slf4j.ONAPLogAdapter;
+import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.onap.logging.ref.slf4j.ONAPLogConstants.ResponseStatus;
+import org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException;
+import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryResponse;
+import org.onap.sdnc.apps.pomba.networkdiscovery.service.SpringService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class RestServiceImpl implements RestService {
+
+    private static Logger log = LoggerFactory.getLogger(RestService.class);
+
+    @Autowired
+    private SpringService service;
+
+    public RestServiceImpl() {
+    }
+
+    @Override
+    public Response findbyResourceIdAndType(HttpServletRequest request,
+                                            String version,
+                                            String fromAppId,
+                                            String transactionId,
+                                            String requestId,
+                                            String resourceType,
+                                            List<String> resourceIds,
+                                            String notificationURL) throws ApplicationException {
+
+        ONAPLogAdapter adapter = new ONAPLogAdapter(log);
+        adapter.getServiceDescriptor().setServiceName(SERVICE_NAME);
+        adapter.entering(request);
+        try {
+
+            if (version == null) {
+                // only unit tests can pass null here
+                // url matching will guarantee non-null in real server
+                version = "v1";
+            }
+
+            if ((fromAppId == null) || fromAppId.trim().isEmpty()) {
+                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, ONAPLogConstants.Headers.PARTNER_NAME);
+            }
+            if (requestId == null || requestId.isEmpty()) {
+                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "requestId");
+            }
+            if (notificationURL == null) {
+                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "notificationURL");
+            }
+            if (resourceType == null || resourceType.isEmpty()) {
+                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "resourceType");
+            }
+            if (resourceIds == null || resourceIds.isEmpty()) {
+                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "resourceIds");
+            }
+
+            if (transactionId == null || transactionId.isEmpty()) {
+                transactionId = UUID.randomUUID().toString();
+                log.debug("transactionId is missing; using newly generated value: " + transactionId);
+            }
+
+            NetworkDiscoveryResponse response = this.service.findbyResourceIdAndType(transactionId, requestId, resourceType, resourceIds, notificationURL, adapter);
+            adapter.getResponseDescriptor().setResponseStatus(ResponseStatus.COMPLETED);
+            return Response.ok(response).build();
+
+        } catch (ApplicationException x) {
+            adapter.getResponseDescriptor()
+                    .setResponseCode(x.getResponseCode())
+                    .setResponseStatus(ResponseStatus.ERROR);
+            log.error(x.getMessage(), x);
+            return Response.status(x.getHttpStatus()).entity(x.getMessage()).build();
+
+        } catch (Exception x) {
+            adapter.getResponseDescriptor()
+                    .setResponseCode(GENERAL_FAILURE.getResponseCode())
+                    .setResponseStatus(ResponseStatus.ERROR);
+            log.error(GENERAL_FAILURE.getMessage(x), x);
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(x.getMessage()).build();
+        } finally {
+            adapter.exiting();
+        }
+
+    }
+
+}
