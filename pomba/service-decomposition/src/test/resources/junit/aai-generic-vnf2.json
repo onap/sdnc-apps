@@ -1,0 +1,96 @@
+{
+    "vnf-id": "8a9ddb25-2e79-449c-a40d-5011bac0da39",
+    "vnf-name": "Firewall-1",
+    "vnf-type": "vFW-vSINK-service/vFWvSINK 0",
+    "service-id": "8ea56b0d-459d-4668-b363-c9567432d8b7",
+    "prov-status": "PREPROV",
+    "orchestration-status": "Created",
+    "in-maint": false,
+    "is-closed-loop-disabled": false,
+    "resource-version": "1527637940029",
+    "model-invariant-id": "59dd4d63-8f21-406c-98c0-3b057bb86820",
+    "model-version-id": "e2d52f32-a952-46f5-800c-c250903625d6",
+    "model-customization-id": "3b822416-475d-4e1c-aac3-2544b0a0fdfc",
+    "nf-type": "",
+    "nf-function": "",
+    "nf-role": "",
+    "nf-naming-code": "",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "service-instance",
+                "related-link": "/aai/v11/business/customers/customer/Demonstration/service-subscriptions/service-subscription/vFWCL/service-instances/service-instance/c6456519-6acf-4adb-997c-3c363dd4caaf",
+                "relationship-data": [
+                    {
+                        "relationship-key": "customer.global-customer-id",
+                        "relationship-value": "Demonstration"
+                    },
+                    {
+                        "relationship-key": "service-subscription.service-type",
+                        "relationship-value": "vFWCL"
+                    },
+                    {
+                        "relationship-key": "service-instance.service-instance-id",
+                        "relationship-value": "c6456519-6acf-4adb-997c-3c363dd4caaf"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "service-instance.service-instance-name",
+                        "property-value": "Firewall1"
+                    }
+                ]
+            },
+            {
+                "related-to": "l3-network",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951870",
+                "relationship-data": [
+                    {
+                        "relationship-key": "l3-network.network-id",
+                        "relationship-value": "HNP1d77c-1094-41ec-b7f3-94bb30951870"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "l3-network.network-name",
+                        "property-value": "HNPORTALOAM.OAM"
+                    }
+                ]
+            },
+            {
+                "related-to": "l3-network",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951872",
+                "relationship-data": [
+                    {
+                        "relationship-key": "l3-network.network-id",
+                        "relationship-value": "HNP1d77c-1094-41ec-b7f3-94bb30951872"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "l3-network.network-name",
+                        "property-value": "HNPORTAL_SRIOV_2"
+                    }
+                ]
+            }
+        ]
+    },
+    "vf-modules": {
+        "vf-module": [
+            {
+                "vf-module-id": "1563b649-9e05-4288-b7d9-e3639a54ace6",
+                "vf-module-name": "vFW_SINC_Module-2",
+                "heat-stack-id": "vFW_SINC_Module-2/41c4533a-748d-4cf4-a8d3-eccdd0aeb0d4",
+                "orchestration-status": "active",
+                "is-base-vf-module": true,
+                "resource-version": "1527638439198",
+                "model-invariant-id": "74bc1518-282d-4148-860f-8892b6369456",
+                "model-version-id": "4e3d28cf-d654-41af-a47b-04b4bd0ac58e",
+                "model-customization-id": "cc51ab7d-9b03-4bd6-9104-09df0c7c7907",
+                "module-index": 0
+            }
+        ]
+    }
+}

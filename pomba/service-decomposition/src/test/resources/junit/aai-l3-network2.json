@@ -1,0 +1,634 @@
+{
+    "network-id": "HNP1d77c-1094-41ec-b7f3-94bb30951872",
+    "network-name": "oam-net",
+    "network-type": "Tenant_Layer_3",
+    "network-role": "role-2",
+    "network-technology": "Contrail",
+    "is-bound-to-vpn": false,
+    "service-id": "",
+    "resource-version": "1489409337521",
+    "orchestration-status": "active",
+    "model-invariant-id": "aaa",
+    "model-customization-id": "f8d1d77c-5875-41ec-b7f3-94bb30936807",
+    "physical-network-name": "",
+    "is-provider-network": false,
+    "is-shared-network": false,
+    "is-external-network": false,
+    "selflink": "restconf/config/GENERIC-RESOURCE-API:services/service/lmr-dev-service-instance-1/service-data/networks/network/7fda3d47-bf58-4d72-a8a9-6e67ed5e28cb",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "vf-module",
+                "relationship-label": "org.onap.relationships.inventory.DependsOn",
+                "related-link": "/aai/v13/network/generic-vnfs/generic-vnf/vnf-id-1/vf-modules/vf-module/vf-module-1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "generic-vnf.vnf-id",
+                        "relationship-value": "vnf-id-1"
+                    },
+                    {
+                        "relationship-key": "vf-module.vf-module-id",
+                        "relationship-value": "vf-module-1"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/clb1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "clb1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/anmca",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "anmca"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mor1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mor1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/LNN1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "LNN1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/RLG1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "RLG1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/STL1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "STL1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/milit",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "milit"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/NWO1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "NWO1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/Docs_Ottawa4",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "Docs_Ottawa4"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/bng1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "bng1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/SNFC",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "SNFC"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/FRO1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "FRO1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "generic-vnf",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/network/generic-vnfs/generic-vnf/vnf-id-1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "generic-vnf.vnf-id",
+                        "relationship-value": "vnf-id-1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "generic-vnf.vnf-name",
+                        "property-value": "zclb1nf-code-166"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/Docs_Ottawa5",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "Docs_Ottawa5"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/TOJ1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "TOJ1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/TOR1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "TOR1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/LIV1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "LIV1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/AMS1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "AMS1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/CLB1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "CLB1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/KNV1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "KNV1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/SNT1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "SNT1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/REN1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "REN1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/JCS1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "JCS1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/BTR1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "BTR1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/IPL1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "IPL1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/brl1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "brl1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/SDG2",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "SDG2"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/SDG3",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "SDG3"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/SDG1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "SDG1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            },
+            {
+                "related-to": "cloud-region",
+                "relationship-label": "org.onap.relationships.inventory.Uses",
+                "related-link": "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/att-aic/alt1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "alt1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "cloud-region.owner-defined-type"
+                    }
+                ]
+            }
+        ]
+    }
+}
