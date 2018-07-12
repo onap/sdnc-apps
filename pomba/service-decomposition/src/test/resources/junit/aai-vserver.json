@@ -1,0 +1,78 @@
+{
+    "vserver-id": "b494cd6e-b9f3-45e0-afe7-e1d1a5f5d74a",
+    "vserver-name": "Firewall-0",
+    "vserver-name2": "Firewall-0",
+    "prov-status": "ACTIVE",
+    "vserver-selflink": "http://10.12.25.2:8774/v2.1/b49b830686654191bb1e952a74b014ad/servers/b494cd6e-b9f3-45e0-afe7-e1d1a5f5d74a",
+    "in-maint": false,
+    "is-closed-loop-disabled": false,
+    "resource-version": "1528481820321",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "generic-vnf",
+                "related-link": "/aai/v11/network/generic-vnfs/generic-vnf/8a9ddb25-2e79-449c-a40d-5011bac0da39",
+                "relationship-data": [
+                    {
+                        "relationship-key": "generic-vnf.vnf-id",
+                        "relationship-value": "8a9ddb25-2e79-449c-a40d-5011bac0da39"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "generic-vnf.vnf-name",
+                        "property-value": "Firewall-1"
+                    }
+                ]
+            },
+            {
+                "related-to": "flavor",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/CloudOwner/RegionOne/flavors/flavor/764efb04-5a46-4806-a766-2bdd24559f39",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "CloudOwner"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "RegionOne"
+                    },
+                    {
+                        "relationship-key": "flavor.flavor-id",
+                        "relationship-value": "764efb04-5a46-4806-a766-2bdd24559f39"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "flavor.flavor-name",
+                        "property-value": "m1.medium"
+                    }
+                ]
+            },
+            {
+                "related-to": "image",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/CloudOwner/RegionOne/images/image/42fd42f8-cf81-4f4c-a552-d4b124f83b0b",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "CloudOwner"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "RegionOne"
+                    },
+                    {
+                        "relationship-key": "image.image-id",
+                        "relationship-value": "42fd42f8-cf81-4f4c-a552-d4b124f83b0b"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "image.image-name",
+                        "property-value": "unknown"
+                    }
+                ]
+            }
+        ]
+    }
+}

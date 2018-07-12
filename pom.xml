@@ -16,6 +16,6 @@
     
     <modules>
         <module>client</module>
+        <module>pomba</module>
     </modules>
-
 </project>
