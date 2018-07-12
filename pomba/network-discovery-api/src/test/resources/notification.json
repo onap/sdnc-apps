@@ -1,0 +1,87 @@
+{
+    "requestId": "1",
+    "code": 200,
+    "message": "OK",
+    "ackFinalIndicator": true,
+    "resources": [
+        {
+            "id": "25fb07ab-0478-465e-a021-6384ac299671",
+            "type": "vserver",
+            "dataQuality": {
+                "status": "ok"
+            },
+            "attributeList": [
+                {
+                    "name": "vserver-id",
+                    "value": "25fb07ab-0478-465e-a021-6384ac299671",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                },
+                {
+                    "name": "power-state",
+                    "value": "1",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                },
+                {
+                    "name": "vm-state",
+                    "value": "active",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                },
+                {
+                    "name": "status",
+                    "value": "ACTIVE",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                },
+                {
+                    "name": "host-status",
+                    "value": "UNKNOWN",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                },
+                {
+                    "name": "updated",
+                    "value": "2017-11-20T04:26:13Z",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                },
+                {
+                    "name": "disk-allocation-gb",
+                    "value": ".010",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                },
+                {
+                    "name": "memory-usage-mb",
+                    "value": "null",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                },
+                {
+                    "name": "cpu-util-percent",
+                    "value": ".043",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                },
+                {
+                    "name": "retrieval-timestamp",
+                    "value": "2018-06-25 18:02:55 +0000",
+                    "dataQuality": {
+                        "status": "ok"
+                    }
+                }
+            ]
+        }
+    ]
+}
