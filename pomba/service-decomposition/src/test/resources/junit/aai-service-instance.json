@@ -1,0 +1,43 @@
+{
+    "service-instance-id": "c6456519-6acf-4adb-997c-3c363dd4caaf",
+    "service-instance-name": "Firewall1",
+    "model-invariant-id": "0c5a20de-87ad-442c-9190-f38ab0a6bb7f",
+    "model-version-id": "d3d6cf83-d03a-43cc-99ff-206d40bb9a72",
+    "resource-version": "1527637758480",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "generic-vnf",
+                "related-link": "/aai/v13/network/generic-vnfs/generic-vnf/6700c313-fbb7-4cf9-ac70-0293ec56df68",
+                "relationship-data": [
+                    {
+                        "relationship-key": "generic-vnf.vnf-id",
+                        "relationship-value": "6700c313-fbb7-4cf9-ac70-0293ec56df68"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "generic-vnf.vnf-name",
+                        "property-value": "PacketGenerator-1"
+                    }
+                ]
+            },
+            {
+                "related-to": "generic-vnf",
+                "related-link": "/aai/v13/network/generic-vnfs/generic-vnf/8a9ddb25-2e79-449c-a40d-5011bac0da39",
+                "relationship-data": [
+                    {
+                        "relationship-key": "generic-vnf.vnf-id",
+                        "relationship-value": "8a9ddb25-2e79-449c-a40d-5011bac0da39"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "generic-vnf.vnf-name",
+                        "property-value": "Firewall-1"
+                    }
+                ]
+            }
+        ]
+    }
+}
