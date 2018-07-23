@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da7095c5_98d82c55",
+        "filename": "pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-07-23T20:47:39Z",
+      "side": 1,
+      "message": "Do we need licence info here?",
+      "revId": "92c73de0f57aee2ada5f5c85b960c4c8ce7adf85",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da7095c5_78d3d838",
+        "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-07-23T20:47:39Z",
+      "side": 1,
+      "message": "I receive test failure for this method: \n\nExpected :Basic YWRtaW46YWRtaW4\u003d\nActual   :/enricher/v11/cloud-infrastructure/vservers/vserver/{0}?sot\u003d!aai",
+      "revId": "92c73de0f57aee2ada5f5c85b960c4c8ce7adf85",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
