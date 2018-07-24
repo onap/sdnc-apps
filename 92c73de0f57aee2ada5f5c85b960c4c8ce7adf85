@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da7095c5_d6767506",
+        "filename": "pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-07-24T13:50:15Z",
+      "side": 1,
+      "message": "License is required in java files and scripts - it\u0027s optional here and in property files",
+      "parentUuid": "da7095c5_98d82c55",
+      "revId": "92c73de0f57aee2ada5f5c85b960c4c8ce7adf85",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da7095c5_78d3d838",
         "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2018-07-23T20:47:39Z",
       "side": 1,
       "message": "I receive test failure for this method: \n\nExpected :Basic YWRtaW46YWRtaW4\u003d\nActual   :/enricher/v11/cloud-infrastructure/vservers/vserver/{0}?sot\u003d!aai",
+      "revId": "92c73de0f57aee2ada5f5c85b960c4c8ce7adf85",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da7095c5_1654ed52",
+        "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-07-24T13:50:15Z",
+      "side": 1,
+      "message": "Test passes for me and for the Jenkins sanity job\n\nhttps://jenkins.onap.org/view/sdnc/job/sdnc-apps-master-verify-java/12/consoleFull\n\n\n21:04:22 Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.23 sec - in org.onap.sdnc.apps.pomba.networkdiscovery.unittest.service.NetworkDiscoveryTest\n\nI can look at your environment to see if I can find an issue.",
+      "parentUuid": "da7095c5_78d3d838",
       "revId": "92c73de0f57aee2ada5f5c85b960c4c8ce7adf85",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
