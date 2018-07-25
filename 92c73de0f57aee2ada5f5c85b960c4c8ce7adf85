@@ -37,6 +37,23 @@
     },
     {
       "key": {
+        "uuid": "da7095c5_3ba0f18f",
+        "filename": "pomba/network-discovery/config/logback.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1077
+      },
+      "writtenOn": "2018-07-25T19:09:53Z",
+      "side": 1,
+      "message": "Yes, sorry the casablanca version of the logging specs including MDC\u0027s is still being reviewed - see https://gerrit.onap.org/r/#/c/57171/4/reference/logging-kubernetes/logdemonode/charts/logdemonode/resources/config/logback.xml\n\nThere are 2 options\n1) use the MDC\u0027s below as the log pattern - but the ELK stack will not index them properly until we merge the config changes for the log pod\n\n2) use the updated logback.xml which is mostly a copy of portal/policy - for the 4 files audit, metrics, error, debug - where debug has a mix of old and new-mdc patterns\n\nhttps://wiki.onap.org/pages/viewpage.action?pageId\u003d28378955#ONAPApplicationLoggingSpecificationv1.2(Casablanca)-Logback.xml",
+      "revId": "92c73de0f57aee2ada5f5c85b960c4c8ce7adf85",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da7095c5_78d3d838",
         "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
         "patchSetId": 6
