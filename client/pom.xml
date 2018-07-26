@@ -21,7 +21,7 @@
     </parent>
 
     <properties>
-        <northbound.version>1.2.0-SNAPSHOT</northbound.version>
+        <northbound.version>1.4.0-SNAPSHOT</northbound.version>
     </properties>
 
     <dependencies>
