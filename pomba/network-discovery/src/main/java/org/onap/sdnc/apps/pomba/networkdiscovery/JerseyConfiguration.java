@@ -17,17 +17,14 @@
  */
 package org.onap.sdnc.apps.pomba.networkdiscovery;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.logging.Logger;
+
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletProperties;
 import org.onap.sdnc.apps.pomba.networkdiscovery.service.rs.RestServiceImpl;
@@ -35,6 +32,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Component
 @ApplicationPath("/")
@@ -56,7 +59,7 @@ public class JerseyConfiguration extends ResourceConfig {
     public JerseyConfiguration() {
         register(RestServiceImpl.class);
         property(ServletProperties.FILTER_FORWARD_ON_404, true);
-        register(new LoggingFilter(log, true));
+        register(new LoggingFeature(log));
     }
 
     @Bean

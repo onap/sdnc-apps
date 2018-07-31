@@ -23,24 +23,26 @@ import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryE
 import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException.Error.SERVICE_INSTANCE_NOT_FOUND;
 import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException.Error.SERVICE_RELATIONSHIP_PARSE_ERROR;
 
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.client.RestClient;
-import org.onap.logging.ref.slf4j.ONAPLogAdapter;
 import org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 
 public class RestUtil {
@@ -110,13 +112,13 @@ public class RestUtil {
      * @throws DiscoveryException
      */
     public static JSONObject retrieveAAIModelData(RestClient aaiClient, String baseURL, String aaiServiceInstancePath,
-            String transactionId, String serviceInstanceId, ONAPLogAdapter adapter) throws DiscoveryException {
+            String transactionId, String serviceInstanceId) throws DiscoveryException {
 
         // Follow two variables for transform purpose
         String url = baseURL + generateServiceInstanceURL(aaiServiceInstancePath, serviceInstanceId);
         // Response from service instance API call
         JSONObject serviceInstancePayload = new JSONObject(
-                getResource(aaiClient, url, transactionId, MediaType.valueOf(MediaType.APPLICATION_XML)));
+                getResource(aaiClient, url, transactionId));
         // Handle the case if the service instance is not found in AAI
         if (serviceInstancePayload == null || serviceInstancePayload.length() == 0) {
             logger.info("Service Instance " + serviceInstanceId + " is not found from AAI");
@@ -153,7 +155,7 @@ public class RestUtil {
             // Logic to Create the Generic VNF JSON and extract further relationships
             for (JSONObject vnfPayload : vnfList) {
                 List<String> vnfcLinkLst = extractRelatedLink(vnfPayload, Catalog.VNFC.resourceName);
-                if (vnfcLinkLst != null && vnfcLinkLst.size() != 0) {
+                if (vnfcLinkLst != null && !vnfcLinkLst.isEmpty()) {
                     logger.info("The number of the API call for vnfc is:" + vnfcLinkLst.size());
                     List<JSONObject> vnfcList = processResourceList(aaiClient, baseURL, transactionId,
                             Catalog.VNFC.resourceName, vnfcLinkLst);
@@ -165,7 +167,7 @@ public class RestUtil {
                 }
 
                 List<String> networkLinkLst = extractRelatedLink(vnfPayload, Catalog.L3NETWORK.resourceName);
-                if (networkLinkLst != null && networkLinkLst.size() != 0) {
+                if (networkLinkLst != null && !networkLinkLst.isEmpty()) {
                     logger.info("The number of the API call for l3-network is:" + networkLinkLst.size());
                     List<JSONObject> networkList = processResourceList(aaiClient, baseURL, transactionId,
                             Catalog.L3NETWORK.resourceName, networkLinkLst);
@@ -176,7 +178,7 @@ public class RestUtil {
                     logger.info("No l3-network found for vnf-id:" + vnfPayload.getString("vnf-id"));
                 }
                 List<String> vserverLinkLst = extractRelatedLink(vnfPayload, Catalog.VSERVER.resourceName);
-                if (vserverLinkLst != null && vserverLinkLst.size() != 0) {
+                if (vserverLinkLst != null && !vserverLinkLst.isEmpty()) {
                     logger.info("The number of the API call for vserver is:" + vserverLinkLst.size());
                     List<JSONObject> vserverList = processResourceList(aaiClient, baseURL, transactionId,
                             Catalog.VSERVER.resourceName, vserverLinkLst);
@@ -195,7 +197,7 @@ public class RestUtil {
         }
 
         // Add generic vnf with related resource payload to response
-        if (vnfLst != null && vnfLst.size() != 0) {
+        if (vnfLst != null && !vnfLst.isEmpty()) {
             response.put(Catalog.VNF.collectionName, vnfLst);
         }
 
@@ -226,7 +228,7 @@ public class RestUtil {
 
             // Response from generic VNF API call
             JSONObject resourcePayload = new JSONObject(
-                    getResource(aaiClient, resourceURL, transactionId, MediaType.valueOf(MediaType.APPLICATION_XML)));
+                    getResource(aaiClient, resourceURL, transactionId));
             if (resourcePayload == null || resourcePayload.length() == 0) {
                 logger.info("Resource with url " + resourceLink + " is not found from AAI");
             } else {
@@ -270,12 +272,12 @@ public class RestUtil {
                     logger.info("Related-To Object found null");
                     continue;
                 }
-                List<String> relatedLinkList = relationMap.get(relatedToObj.toString());
+                List<String> relatedLinkList = relationMap.get(relatedToObj);
                 if (relatedLinkList == null) {
                     relatedLinkList = new ArrayList<>();
-                    relationMap.put(relatedToObj.toString(), relatedLinkList);
+                    relationMap.put(relatedToObj, relatedLinkList);
                 }
-                relatedLinkList.add(relatedLinkObj.toString());
+                relatedLinkList.add(relatedLinkObj);
             }
         }
         return relationMap;
@@ -289,7 +291,7 @@ public class RestUtil {
      * @return
      * @throws DiscoveryException
      */
-    private static String getResource(RestClient client, String url, String transId, MediaType mediaType)
+    private static String getResource(RestClient client, String url, String transId)
             throws DiscoveryException {
         OperationResult result = client.get(url, buildHeaders(transId), MediaType.valueOf(MediaType.APPLICATION_JSON));
 

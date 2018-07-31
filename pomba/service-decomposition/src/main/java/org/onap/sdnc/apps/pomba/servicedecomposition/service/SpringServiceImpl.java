@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @org.springframework.stereotype.Service
 public class SpringServiceImpl implements SpringService {
     private static EELFLogger log = EELFManager.getInstance().getLogger(SpringServiceImpl.class);
-    public static String APP_NAME = "ServiceDiscovery";
+    public static final String APP_NAME = "ServiceDiscovery";
 
     @Autowired
     private RestClient aaiClient;
@@ -50,7 +50,7 @@ public class SpringServiceImpl implements SpringService {
 
         log.info("Querying A&AI for service instance " + serviceInstanceId);
         JSONObject serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiServiceInstancePath,
-                transactionId, serviceInstanceId, adapter);
+                transactionId, serviceInstanceId);
         return serviceInstance.toString();
     }
 

@@ -20,7 +20,7 @@ package org.onap.sdnc.apps.pomba.networkdiscovery;
 import javax.ws.rs.core.Response.Status;
 
 public class ApplicationException extends Exception {
-    public static enum Error {
+    public enum Error {
         GENERAL_FAILURE("NET.0001", "An error occurred: %s"),
         MISSING_PARAM("NET.0002", "Missing required parameter %s"),
         UNAUTHORIZED("NET.0003", "Unauthorized");

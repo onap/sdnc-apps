@@ -61,7 +61,7 @@ public class RestServiceImpl implements RestService {
         adapter.getServiceDescriptor().setServiceName(SERVICE_NAME);
         adapter.entering(request);
         try {
-            if (!this.basicAuthHeader.equals(authorization)) {
+            if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
                 throw new DiscoveryException(UNAUTHORIZED, Status.UNAUTHORIZED);
             }
 

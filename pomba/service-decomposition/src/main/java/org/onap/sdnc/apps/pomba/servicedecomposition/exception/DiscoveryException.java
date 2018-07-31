@@ -20,7 +20,7 @@ package org.onap.sdnc.apps.pomba.servicedecomposition.exception;
 import javax.ws.rs.core.Response.Status;
 
 public class DiscoveryException extends Exception {
-    public static enum Error {
+    public enum Error {
         FETCH_RESOURCE_FAILED("SD.0001", "A&AI query failed: %s"),
         RELATIONSHIP_LINK_PARSE_ERROR("SD.0002", "Error in parsing relationship link"),
         SERVICE_INSTANCE_NOT_FOUND("SD.0003", "Service Instance not Found"),

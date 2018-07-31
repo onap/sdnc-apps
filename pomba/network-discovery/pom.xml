@@ -47,12 +47,6 @@ limitations under the License.
         </dependencies>
     </dependencyManagement>
 
-    <developers>
-        <developer>
-            <id>${userId}</id>
-        </developer>
-    </developers>
-
     <dependencies>
         <!-- Springframework dependencies -->
         <dependency>

@@ -29,9 +29,9 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 public class EnricherConfiguration {
-    @Autowired 
+    @Autowired
     private Environment env;
-    
+
 	@Value("${enricher.url}")
 	private String url;
 
@@ -62,7 +62,7 @@ public class EnricherConfiguration {
 	public String getURL() {
 		return this.url;
 	}
-	
+
 	@Bean(name="enricherTypeURLs")
 	public Map<String, String> enricherTypeURLs() {
 
@@ -71,14 +71,14 @@ public class EnricherConfiguration {
 	    if (types == null) {
 	        return result;
 	    }
-	    
+
 	    StringTokenizer tokenizer = new StringTokenizer(types, ", ");
 	    while (tokenizer.hasMoreTokens()) {
 	        String type = tokenizer.nextToken();
-	        String url = this.env.getProperty("enricher.type." + type + ".url");
-	        result.put(type, url);
+	        String enricherUrl = this.env.getProperty("enricher.type." + type + ".url");
+	        result.put(type, enricherUrl);
 	    }
-	    
+
         return result;
 	}
 
