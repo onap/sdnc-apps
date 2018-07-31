@@ -17,7 +17,6 @@
  */
 package org.onap.sdnc.apps.pomba.networkdiscovery.datamodel;
 
-import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement

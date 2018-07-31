@@ -19,6 +19,7 @@
 package org.onap.sdnc.apps.pomba.servicedecomposition.componenttest.mockito;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.onap.sdnc.apps.pomba.servicedecomposition.WebConfiguration;
@@ -30,7 +31,7 @@ public class WebConfigurationTest {
     public void runTest() {
         WebConfiguration webConfiguration = new WebConfiguration();
         WebMvcConfigurerAdapter webMvcConfigurerAdapter = webConfiguration.forwardToIndex();
-        ViewResolverRegistry registry = new ViewResolverRegistry();
+        ViewResolverRegistry registry = mock(ViewResolverRegistry.class);
         webMvcConfigurerAdapter.configureViewResolvers(registry);
         assertEquals(registry.hasRegistrations(), false);
     }

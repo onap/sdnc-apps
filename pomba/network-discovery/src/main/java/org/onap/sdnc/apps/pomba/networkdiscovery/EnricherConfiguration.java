@@ -29,58 +29,58 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 public class EnricherConfiguration {
-    @Autowired 
+    @Autowired
     private Environment env;
-    
-	@Value("${enricher.url}")
-	private String url;
 
-	@Value("${enricher.keyStorePath}")
-	private String keyStorePath;
+    @Value("${enricher.url}")
+    private String url;
 
-	@Value("${enricher.keyStorePassword}")
-	private String keyStorePassword;
+    @Value("${enricher.keyStorePath}")
+    private String keyStorePath;
 
-	@Value("${enricher.connectionTimeout:5000}")
-	private int connectionTimeout;
+    @Value("${enricher.keyStorePassword}")
+    private String keyStorePassword;
 
-	@Value("${enricher.readTimeout:60000}")
-	private int readTimeout;
+    @Value("${enricher.connectionTimeout:5000}")
+    private int connectionTimeout;
 
-	@Bean(name="enricherClient")
-	public RestClient restClient() {
-		return new RestClient()
-		        .validateServerHostname(false)
-		        .validateServerCertChain(false)
-		        .connectTimeoutMs(this.connectionTimeout)
-		        .readTimeoutMs(this.readTimeout)
+    @Value("${enricher.readTimeout:60000}")
+    private int readTimeout;
+
+    @Bean(name="enricherClient")
+    public RestClient restClient() {
+        return new RestClient()
+                .validateServerHostname(false)
+                .validateServerCertChain(false)
+                .connectTimeoutMs(this.connectionTimeout)
+                .readTimeoutMs(this.readTimeout)
                 .clientCertFile(this.keyStorePath)
                 .clientCertPassword(this.keyStorePassword);
-	}
+    }
 
-	@Bean(name="enricherBaseUrl")
-	public String getURL() {
-		return this.url;
-	}
-	
-	@Bean(name="enricherTypeURLs")
-	public Map<String, String> enricherTypeURLs() {
+    @Bean(name="enricherBaseUrl")
+    public String getURL() {
+        return this.url;
+    }
 
-	    Map<String, String> result = new HashMap<>();
-	    String types = this.env.getProperty("enricher.types");
-	    if (types == null) {
-	        return result;
-	    }
-	    
-	    StringTokenizer tokenizer = new StringTokenizer(types, ", ");
-	    while (tokenizer.hasMoreTokens()) {
-	        String type = tokenizer.nextToken();
-	        String url = this.env.getProperty("enricher.type." + type + ".url");
-	        result.put(type, url);
-	    }
-	    
+    @Bean(name="enricherTypeURLs")
+    public Map<String, String> enricherTypeURLs() {
+
+        Map<String, String> result = new HashMap<>();
+        String types = this.env.getProperty("enricher.types");
+        if (types == null) {
+            return result;
+        }
+
+        StringTokenizer tokenizer = new StringTokenizer(types, ", ");
+        while (tokenizer.hasMoreTokens()) {
+            String type = tokenizer.nextToken();
+            String enricherUrl = this.env.getProperty("enricher.type." + type + ".url");
+            result.put(type, enricherUrl);
+        }
+
         return result;
-	}
+    }
 
 
 }

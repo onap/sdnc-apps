@@ -53,7 +53,7 @@ public class CallbackConfiguration {
     private String basicAuthPassword;
 
     @Bean(name="callbackClient")
-    public Client getClient() throws Exception {
+    public Client getClient() {
         ClientConfig configuration = new ClientConfig()
                 .property(ClientProperties.CONNECT_TIMEOUT, this.connectionTimeout)
                 .property(ClientProperties.READ_TIMEOUT, this.readTimeout)

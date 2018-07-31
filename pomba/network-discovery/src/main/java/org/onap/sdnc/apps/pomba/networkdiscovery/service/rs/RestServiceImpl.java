@@ -51,9 +51,6 @@ public class RestServiceImpl implements RestService {
     @Resource(name="basicAuthHeader")
     private String basicAuthHeader;
 
-    public RestServiceImpl() {
-    }
-
     @Override
     public Response findbyResourceIdAndType(HttpServletRequest request,
                                             String version,
@@ -76,7 +73,7 @@ public class RestServiceImpl implements RestService {
                 version = "v1";
             }
 
-            if (!this.basicAuthHeader.equals(authorization)) {
+            if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
                 throw new ApplicationException(UNAUTHORIZED, Status.UNAUTHORIZED);
             }
             if ((fromAppId == null) || fromAppId.trim().isEmpty()) {

@@ -18,14 +18,14 @@
 package org.onap.sdnc.apps.pomba.networkdiscovery.datamodel;
 
 public class DataQuality {
-    public static enum Status {
+    public enum Status {
         ok, error
     }
 
     private Status status;
     private String errorText;
 
-    
+
     public Status getStatus() {
         return this.status;
     }

@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @org.springframework.stereotype.Service
 public class SpringServiceImpl implements SpringService {
     private static EELFLogger log = EELFManager.getInstance().getLogger(SpringServiceImpl.class);
-    public static String APP_NAME = "ServiceDiscovery";
+    public static final String APP_NAME = "ServiceDiscovery";
 
     @Autowired
     private RestClient aaiClient;
