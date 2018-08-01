@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_e7f8aac6",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/EnricherConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 3131
+      },
+      "writtenOn": "2018-08-01T17:53:44Z",
+      "side": 1,
+      "message": "There are whitespace issues in a few files, I\u0027ll take care of them all.",
+      "parentUuid": "1a76adc5_9cda6916",
+      "revId": "c2d8da6ea0c8a2c4aaa1645ead4e9c56e107b9af",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_bcd725ed",
         "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/service/SpringServiceImpl.java",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_a702b2b2",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 3131
+      },
+      "writtenOn": "2018-08-01T17:53:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_bcd725ed",
+      "revId": "c2d8da6ea0c8a2c4aaa1645ead4e9c56e107b9af",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_1cfe596c",
         "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/util/RestUtil.java",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2018-08-01T14:54:07Z",
       "side": 1,
       "message": "imports should be in alphabetical order, as per the ONAP coding conventions",
+      "revId": "c2d8da6ea0c8a2c4aaa1645ead4e9c56e107b9af",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_e71f4a08",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/util/RestUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 3131
+      },
+      "writtenOn": "2018-08-01T17:53:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_1cfe596c",
       "revId": "c2d8da6ea0c8a2c4aaa1645ead4e9c56e107b9af",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
