@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_87945638",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/util/RestUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-01T18:33:53Z",
+      "side": 1,
+      "message": "This really should be \n import javax.ws.rs.core.MultivaluedHashMap;\n\nthen on line 368\n MultivaluedMap\u003cString, String\u003e headers \u003d new MultivaluedHashMap\u003c\u003e();",
+      "revId": "74f9d832beba72c1121bef875b8e36ddb3cd5740",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
