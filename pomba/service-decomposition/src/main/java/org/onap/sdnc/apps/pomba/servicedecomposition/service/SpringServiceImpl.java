@@ -17,19 +17,19 @@
  */
 package org.onap.sdnc.apps.pomba.servicedecomposition.service;
 
-import com.att.eelf.configuration.EELFLogger;
-import com.att.eelf.configuration.EELFManager;
 import org.json.JSONObject;
 import org.onap.aai.restclient.client.RestClient;
 import org.onap.logging.ref.slf4j.ONAPLogAdapter;
 import org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException;
 import org.onap.sdnc.apps.pomba.servicedecomposition.util.RestUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 @org.springframework.stereotype.Service
 public class SpringServiceImpl implements SpringService {
-    private static EELFLogger log = EELFManager.getInstance().getLogger(SpringServiceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(SpringService.class);
     public static final String APP_NAME = "ServiceDiscovery";
 
     @Autowired
