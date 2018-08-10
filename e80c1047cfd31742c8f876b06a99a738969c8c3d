@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Brad Benesch <brad.benesch@amdocs.com>
+Code-Review+2: Dan Timoney <dt5972@att.com>
+Submitted-by: Dan Timoney <dt5972@att.com>
+Submitted-at: Fri, 10 Aug 2018 11:47:40 +0000
+Reviewed-on: https://gerrit.onap.org/r/59883
+Project: sdnc/apps
+Branch: refs/heads/master
