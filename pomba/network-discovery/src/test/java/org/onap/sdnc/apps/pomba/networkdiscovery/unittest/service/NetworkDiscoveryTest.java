@@ -46,6 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.jetty.util.security.Password;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -75,7 +76,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @TestPropertySource(properties = {
         "enricher.url=http://localhost:9505",
         "basicAuth.username=admin",
-        "basicAuth.password=admin"
+        "basicAuth.password=OBF:1u2a1toa1w8v1tok1u30"
 })
 public class NetworkDiscoveryTest {
     private static final String V1 = "v1";
@@ -84,7 +85,8 @@ public class NetworkDiscoveryTest {
     private static final String RESOURCE_TYPE_VSERVER = "vserver";
     private static final String CALLBACK_PATH = "/callback";
 
-    private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString("admin:admin".getBytes());
+    private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString((
+            "admin:" + Password.deobfuscate("OBF:1u2a1toa1w8v1tok1u30")).getBytes());
     @Autowired
     private Environment environment;
 

@@ -45,8 +45,8 @@ public class RestServiceImpl implements RestService {
     @Autowired
     private SpringService service;
 
-    @Resource(name="basicAuthHeader")
-    private String basicAuthHeader;
+    @Resource(name="serviceDecompositionBasicAuthHeader")
+    private String serviceDecompositionBasicAuthHeader;
 
     public RestServiceImpl() {}
 
@@ -61,7 +61,7 @@ public class RestServiceImpl implements RestService {
         adapter.getServiceDescriptor().setServiceName(SERVICE_NAME);
         adapter.entering(request);
         try {
-            if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
+            if (authorization == null || !this.serviceDecompositionBasicAuthHeader.equals(authorization)) {
                 throw new DiscoveryException(UNAUTHORIZED, Status.UNAUTHORIZED);
             }
 

@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.jetty.util.security.Password;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Rule;
@@ -61,11 +62,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
         "aai.host=localhost",
         "aai.port=8081",
         "basicAuth.username=admin",
-        "basicAuth.password=admin"
+        "basicAuth.password=OBF:1u2a1toa1w8v1tok1u30"
     })
 public class ServiceDecompositionTest {
 
-    private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString("admin:admin".getBytes());
+    private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString((
+            "admin:" + Password.deobfuscate("OBF:1u2a1toa1w8v1tok1u30")).getBytes());
 
     // TODO missing code coverage for VNFC resources
 
