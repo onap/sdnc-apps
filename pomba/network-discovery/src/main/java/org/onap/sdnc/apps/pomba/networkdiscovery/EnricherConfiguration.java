@@ -38,7 +38,7 @@ public class EnricherConfiguration {
     @Value("${enricher.keyStorePath}")
     private String keyStorePath;
 
-    @Value("${enricher.keyStorePassword}")
+    @Value("${enricher.keyStorePassword:OBF:1i9a1u2a1unz1lr61wn51wn11lss1unz1u301i6o}")
     private String keyStorePassword;
 
     @Value("${enricher.connectionTimeout:5000}")
@@ -55,7 +55,8 @@ public class EnricherConfiguration {
                 .connectTimeoutMs(this.connectionTimeout)
                 .readTimeoutMs(this.readTimeout)
                 .clientCertFile(this.keyStorePath)
-                .clientCertPassword(this.keyStorePassword);
+                .clientCertPassword(
+                        org.eclipse.jetty.util.security.Password.deobfuscate(this.keyStorePassword));
     }
 
     @Bean(name="enricherBaseUrl")

@@ -48,8 +48,8 @@ public class RestServiceImpl implements RestService {
     @Autowired
     private SpringService service;
 
-    @Resource(name="basicAuthHeader")
-    private String basicAuthHeader;
+    @Resource(name="networkDiscoveryBasicAuthHeader")
+    private String networkDiscoveryBasicAuthHeader;
 
     @Override
     public Response findbyResourceIdAndType(HttpServletRequest request,
@@ -73,7 +73,7 @@ public class RestServiceImpl implements RestService {
                 version = "v1";
             }
 
-            if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
+            if (authorization == null || !this.networkDiscoveryBasicAuthHeader.equals(authorization)) {
                 throw new ApplicationException(UNAUTHORIZED, Status.UNAUTHORIZED);
             }
             if ((fromAppId == null) || fromAppId.trim().isEmpty()) {
