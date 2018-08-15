@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_c63779e2",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/AuthorizationConfiguration.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-15T15:03:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_98aa436f",
+      "revId": "41a3f1b3b0e14fb1df40273adb4b4b1937c5a977",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_580a6b8b",
         "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/AuthorizationConfiguration.java",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_663465de",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/AuthorizationConfiguration.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-15T15:03:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_580a6b8b",
+      "revId": "41a3f1b3b0e14fb1df40273adb4b4b1937c5a977",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_d8f51b84",
         "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/service/rs/RestServiceImpl.java",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2018-08-14T14:09:52Z",
       "side": 1,
       "message": "What are you distinguishing this bean from than you need to qualify it with the microservice name?\n\nSee Smurf Naming Convention (21)\nhttps://blog.codinghorror.com/new-programming-jargon/",
+      "revId": "41a3f1b3b0e14fb1df40273adb4b4b1937c5a977",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_863181ee",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/service/rs/RestServiceImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-15T15:03:53Z",
+      "side": 1,
+      "message": "reverted the change. The object is unique in each MS.",
+      "parentUuid": "1a76adc5_d8f51b84",
       "revId": "41a3f1b3b0e14fb1df40273adb4b4b1937c5a977",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
