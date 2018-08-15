@@ -15,6 +15,7 @@
  * limitations under the License.
  * ============LICENSE_END=====================================================
  */
+
 package org.onap.sdnc.apps.pomba.networkdiscovery.service.rs;
 
 import static org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException.Error.GENERAL_FAILURE;
@@ -48,8 +49,8 @@ public class RestServiceImpl implements RestService {
     @Autowired
     private SpringService service;
 
-    @Resource(name="networkDiscoveryBasicAuthHeader")
-    private String networkDiscoveryBasicAuthHeader;
+    @Resource(name="basicAuthHeader")
+    private String basicAuthHeader;
 
     @Override
     public Response findbyResourceIdAndType(HttpServletRequest request,
@@ -73,7 +74,7 @@ public class RestServiceImpl implements RestService {
                 version = "v1";
             }
 
-            if (authorization == null || !this.networkDiscoveryBasicAuthHeader.equals(authorization)) {
+            if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
                 throw new ApplicationException(UNAUTHORIZED, Status.UNAUTHORIZED);
             }
             if ((fromAppId == null) || fromAppId.trim().isEmpty()) {
@@ -123,7 +124,5 @@ public class RestServiceImpl implements RestService {
         } finally {
             adapter.exiting();
         }
-
     }
-
 }

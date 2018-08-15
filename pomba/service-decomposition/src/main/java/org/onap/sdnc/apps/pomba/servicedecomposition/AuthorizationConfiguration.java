@@ -19,7 +19,6 @@
 package org.onap.sdnc.apps.pomba.servicedecomposition;
 
 import java.util.Base64;
-import org.eclipse.jetty.util.security.Password;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -30,12 +29,11 @@ public class AuthorizationConfiguration {
     @Value("${basicAuth.username:admin}")
     private String username;
 
-    @Value("${basicAuth.password:OBF:1u2a1toa1w8v1tok1u30}")
+    @Value("${basicAuth.password:admin}")
     private String password;
 
-    @Bean(name="serviceDecompositionBasicAuthHeader")
+    @Bean(name="basicAuthHeader")
     public String getSdBasicAuthHeader() {
-        String auth = new String(this.username + ":" + Password.deobfuscate(this.password));
-        return "Basic " + Base64.getEncoder().encodeToString(auth.getBytes());
+        return "Basic " + Base64.getEncoder().encodeToString((this.username + ":" + this.password).getBytes());
     }
 }

@@ -15,6 +15,7 @@
  * limitations under the License.
  * ============LICENSE_END=====================================================
  */
+
 package org.onap.sdnc.apps.pomba.networkdiscovery;
 
 import org.springframework.boot.SpringApplication;
@@ -38,7 +39,7 @@ public class Application extends SpringBootServletInitializer {
     }
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(Application.class, args);
+        SpringApplication app = new SpringApplication(Application.class);
+        app.addInitializers(new PropertyPasswordConfiguration());
     }
-
 }

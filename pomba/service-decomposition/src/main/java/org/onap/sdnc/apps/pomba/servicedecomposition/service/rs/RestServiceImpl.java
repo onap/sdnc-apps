@@ -15,6 +15,7 @@
  * limitations under the License.
  * ============LICENSE_END=====================================================
  */
+
 package org.onap.sdnc.apps.pomba.servicedecomposition.service.rs;
 
 import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException.Error.*;
@@ -45,8 +46,8 @@ public class RestServiceImpl implements RestService {
     @Autowired
     private SpringService service;
 
-    @Resource(name="serviceDecompositionBasicAuthHeader")
-    private String serviceDecompositionBasicAuthHeader;
+    @Resource(name="basicAuthHeader")
+    private String basicAuthHeader;
 
     public RestServiceImpl() {}
 
@@ -61,7 +62,7 @@ public class RestServiceImpl implements RestService {
         adapter.getServiceDescriptor().setServiceName(SERVICE_NAME);
         adapter.entering(request);
         try {
-            if (authorization == null || !this.serviceDecompositionBasicAuthHeader.equals(authorization)) {
+            if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
                 throw new DiscoveryException(UNAUTHORIZED, Status.UNAUTHORIZED);
             }
 
@@ -102,7 +103,5 @@ public class RestServiceImpl implements RestService {
         } finally {
             adapter.exiting();
         }
-
     }
-
 }
