@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_c1999e20",
+        "filename": "pomba/network-discovery/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-16T17:48:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_41d7cebf",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_21e892e1",
         "filename": "pomba/network-discovery/pom.xml",
         "patchSetId": 2
@@ -48,6 +66,47 @@
       "writtenOn": "2018-08-16T16:37:17Z",
       "side": 1,
       "message": "These sections need to be moved to the docker profile section to be included in the docker image.  See https://gerrit.onap.org/r/#/c/60111/2/pom.xml",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_21273214",
+        "filename": "pomba/network-discovery/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-16T17:48:14Z",
+      "side": 1,
+      "message": "agreed.",
+      "parentUuid": "1a76adc5_21e892e1",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_011c76c0",
+        "filename": "pomba/network-discovery/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-16T17:48:14Z",
+      "side": 1,
+      "message": "removed",
+      "range": {
+        "startLine": 160,
+        "startChar": 36,
+        "endLine": 161,
+        "endChar": 73
+      },
       "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -71,6 +130,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_e1937af8",
+        "filename": "pomba/service-decomposition/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-16T17:48:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_81b886e6",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_21a412a5",
         "filename": "pomba/service-decomposition/pom.xml",
         "patchSetId": 2
@@ -82,6 +159,24 @@
       "writtenOn": "2018-08-16T16:37:17Z",
       "side": 1,
       "message": "Same comment as the Network Discovery MS pom file",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_018f96cd",
+        "filename": "pomba/service-decomposition/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-16T17:48:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_21a412a5",
       "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -105,6 +200,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_e1205af9",
+        "filename": "pomba/service-decomposition/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-16T17:48:14Z",
+      "side": 1,
+      "message": "removed",
+      "parentUuid": "1a76adc5_61ac4aa1",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_619a0a65",
         "filename": "pomba/service-decomposition/pom.xml",
         "patchSetId": 2
@@ -116,6 +229,24 @@
       "writtenOn": "2018-08-16T16:37:17Z",
       "side": 1,
       "message": "This comment doesn\u0027t seem to line up with the next line.",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_818726d7",
+        "filename": "pomba/service-decomposition/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 2399
+      },
+      "writtenOn": "2018-08-16T17:48:14Z",
+      "side": 1,
+      "message": "agreed.",
+      "parentUuid": "1a76adc5_619a0a65",
       "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
