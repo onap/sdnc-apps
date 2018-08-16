@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_c130bea0",
+        "filename": "pomba/network-discovery/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 3479
+      },
+      "writtenOn": "2018-08-16T16:37:17Z",
+      "side": 1,
+      "message": "This was not in the previous version, what does this do to the overall Network Discovery MS?",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_21e892e1",
+        "filename": "pomba/network-discovery/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 3479
+      },
+      "writtenOn": "2018-08-16T16:37:17Z",
+      "side": 1,
+      "message": "These sections need to be moved to the docker profile section to be included in the docker image.  See https://gerrit.onap.org/r/#/c/60111/2/pom.xml",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_81b886e6",
+        "filename": "pomba/service-decomposition/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 3479
+      },
+      "writtenOn": "2018-08-16T16:37:17Z",
+      "side": 1,
+      "message": "same comment as for Network Discovery MS pom file.",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_21a412a5",
+        "filename": "pomba/service-decomposition/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 3479
+      },
+      "writtenOn": "2018-08-16T16:37:17Z",
+      "side": 1,
+      "message": "Same comment as the Network Discovery MS pom file",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_61ac4aa1",
+        "filename": "pomba/service-decomposition/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 3479
+      },
+      "writtenOn": "2018-08-16T16:37:17Z",
+      "side": 1,
+      "message": "Don\u0027t think we need to include Sharon\u0027s name here",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_619a0a65",
+        "filename": "pomba/service-decomposition/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 3479
+      },
+      "writtenOn": "2018-08-16T16:37:17Z",
+      "side": 1,
+      "message": "This comment doesn\u0027t seem to line up with the next line.",
+      "revId": "2f6a4707984759df278bcb602d0aa702ddc4d7ab",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
