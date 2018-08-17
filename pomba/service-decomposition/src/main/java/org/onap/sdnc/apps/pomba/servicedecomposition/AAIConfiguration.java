@@ -25,53 +25,44 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AAIConfiguration {
-    @Autowired
     @Value("${aai.host}")
     private String host;
 
-    @Autowired
     @Value("${aai.port}")
     private String port;
 
-    @Autowired
     @Value("${aai.httpProtocol}")
     private String httpProtocol;
 
-    @Autowired
     @Value("${aai.trustStorePath}")
     private String trustStorePath;
 
-    @Autowired
     @Value("${aai.keyStorePath}")
     private String keyStorePath;
 
-    @Autowired
     @Value("${aai.keyStorePassword}")
     private String keyStorePassword;
 
-    @Autowired
     @Value("${aai.keyManagerFactoryAlgorithm}")
     private String keyManagerFactoryAlgorithm;
 
-    @Autowired
     @Value("${aai.keyStoreType}")
     private String keyStoreType;
 
-    @Autowired
     @Value("${aai.securityProtocol}")
     private String securityProtocol;
 
-    @Autowired
     @Value("${aai.connectionTimeout}")
     private Integer connectionTimeout;
 
-    @Autowired
     @Value("${aai.readTimeout}")
     private Integer readTimeout;
 
-    @Autowired
     @Value("${aai.serviceInstancePath}")
     private String serviceInstancePath;
+
+    @Value("${aai.resourceList}")
+    private String resourceList;
 
     @Bean(name="aaiClient")
     public RestClient restClient() {
@@ -92,4 +83,8 @@ public class AAIConfiguration {
         return this.serviceInstancePath;
     }
 
+    @Bean(name="aaiResourceList")
+    public String getResourceList() {
+        return this.resourceList;
+    }
 }
