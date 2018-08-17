@@ -143,29 +143,6 @@ limitations under the License.
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <!-- here the phase you need -->
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${swagger.directory}</directory>
-                                    <targetPath>META-INF/resources/swagger</targetPath>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <executions>
@@ -177,7 +154,6 @@ limitations under the License.
                 </executions>
             </plugin>
         </plugins>
-        <!-- mention the logback.xml location through system property or environment variable to edit logback.xml at run time -->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

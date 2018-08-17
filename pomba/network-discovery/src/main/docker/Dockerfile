@@ -9,7 +9,7 @@ RUN mkdir -p $MICROSERVICE_HOME/config/auth/
 RUN mkdir -p $MICROSERVICE_HOME/lib/
 RUN mkdir -p $MICROSERVICE_HOME/bin/
 
-ADD pomba-network-discovery.jar $MICROSERVICE_HOME/lib/
+ADD network-discovery.jar $MICROSERVICE_HOME/lib/
 ADD startService.sh $MICROSERVICE_HOME/bin/
 COPY config/ $MICROSERVICE_HOME/config/
 COPY config/auth/ $MICROSERVICE_HOME/config/auth/
