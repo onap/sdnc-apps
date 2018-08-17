@@ -32,6 +32,9 @@ limitations under the License.
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <swagger.directory>${project.build.directory}/generated-resources/swagger</swagger.directory>
+        <!--docker -->
+        <docker.tag>${project.version}-${timestamp}</docker.tag>
+        <docker.latest.tag>${project.version}-latest</docker.latest.tag>
     </properties>
 
     <dependencyManagement>
@@ -134,47 +137,8 @@ limitations under the License.
     </dependencies>
 
     <build>
-        <finalName>network-discovery</finalName>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
-            <plugin>
-                <groupId>com.github.kongchen</groupId>
-                <artifactId>swagger-maven-plugin</artifactId>
-                <version>3.1.7</version>
-                <configuration>
-                    <apiSources>
-                        <apiSource>
-                            <locations>
-                                <location>org.onap.sdnc.apps.pomba.networkdiscovery.service.rs</location>
-                            </locations>
-                            <basePath>/network-discovery</basePath>
-                            <info>
-                                <title>Network Discovery API</title>
-                                <version>${project.version}</version>
-                                <termsOfService>http://onap.org</termsOfService>
-                                <contact>
-                                    <name>Sharon Chisholm</name>
-                                    <email>sharon.chisholm@amdocs.com</email>
-                                </contact>
-                            </info>
-                            <securityDefinitions>
-                                <securityDefinition>
-                                    <name>basicAuth</name>
-                                    <type>basic</type>
-                                </securityDefinition>
-                            </securityDefinitions>
-                            <swaggerDirectory>${swagger.directory}</swaggerDirectory>
-                        </apiSource>
-                    </apiSources>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.1.0</version>
@@ -210,8 +174,7 @@ limitations under the License.
                 </executions>
             </plugin>
         </plugins>
-        <!-- mention the logback.xml location through system property or environment variable to edit logback.xml at run
-            time -->
+        <!-- mention the logback.xml location through system property or environment variable to edit logback.xml at run time -->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -222,4 +185,192 @@ limitations under the License.
             </resource>
         </resources>
     </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.19.1</version>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <apiVersion>1.23</apiVersion>
+                            <images>
+                                <image>
+                                    <name>onap/${project.artifactId}</name>
+                                    <alias>${project.artifactId}</alias>
+                                    <build>
+                                        <cleanup>try</cleanup>
+                                        <dockerFileDir>${project.basedir}/target/docker-stage</dockerFileDir>
+                                        <tags>
+                                            <tag>${docker.snapshot.tag}</tag>
+                                            <tag>${docker.latest.tag}</tag>
+                                        </tags>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>generate-images</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>push-images</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.kongchen</groupId>
+                        <artifactId>swagger-maven-plugin</artifactId>
+                        <version>3.1.7</version>
+                        <configuration>
+                            <apiSources>
+                                <apiSource>
+                                    <locations>
+                                        <location>org.onap.sdnc.apps.pomba.networkdiscovery.service.rs</location>
+                                    </locations>
+                                    <basePath>/network-discovery</basePath>
+                                    <info>
+                                        <title>Network Discovery API</title>
+                                        <version>${project.version}</version>
+                                        <termsOfService>http://onap.org</termsOfService>
+                                    </info>
+                                    <securityDefinitions>
+                                        <securityDefinition>
+                                            <name>basicAuth</name>
+                                            <type>basic</type>
+                                        </securityDefinition>
+                                    </securityDefinitions>
+                                    <swaggerDirectory>${swagger.directory}</swaggerDirectory>
+                                </apiSource>
+                            </apiSources>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>2.6</version>
+                        <executions>
+                            <execution>
+                                <id>copy-dockerfile</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals><!-- here the phase you need -->
+                                <phase>package</phase>
+                                <configuration>
+                                    <outputDirectory>${project.basedir}/target/docker-stage</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/main/docker</directory>
+                                            <includes>
+                                                <include>Dockerfile</include>
+                                            </includes>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-properties</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <outputDirectory>${project.basedir}/target/docker-stage/config</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>config</directory>
+                                            <includes>
+                                                <include>*.properties</include>
+                                                <include>*.xml</include>
+                                            </includes>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-certificate</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <outputDirectory>${project.basedir}/target/docker-stage/config/auth</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>auth</directory>
+                                            <includes>
+                                                <include>*.p12</include>
+                                            </includes>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-script</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <outputDirectory>${project.basedir}/target/docker-stage/</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/main/docker</directory>
+                                            <includes>
+                                                <include>*.sh</include>
+                                            </includes>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-jar</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <outputDirectory>${project.basedir}/target/docker-stage/</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>target</directory>
+                                            <includes>
+                                                <include>*.jar</include>
+                                            </includes>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
