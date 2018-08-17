@@ -73,6 +73,10 @@ public class AAIConfiguration {
     @Value("${aai.serviceInstancePath}")
     private String serviceInstancePath;
 
+    @Autowired
+    @Value("${aai.resourceList}")
+    private String resourceList;
+
     @Bean(name="aaiClient")
     public RestClient restClient() {
         return new RestClient()
@@ -92,4 +96,8 @@ public class AAIConfiguration {
         return this.serviceInstancePath;
     }
 
+    @Bean(name="aaiResourceList")
+    public String getResourceList() {
+        return this.resourceList;
+    }
 }

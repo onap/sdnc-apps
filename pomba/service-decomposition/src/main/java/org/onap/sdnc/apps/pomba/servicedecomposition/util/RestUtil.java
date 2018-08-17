@@ -24,18 +24,18 @@ import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryE
 import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException.Error.SERVICE_RELATIONSHIP_PARSE_ERROR;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
-
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.onap.aai.restclient.client.OperationResult;
@@ -44,6 +44,9 @@ import org.onap.logging.ref.slf4j.ONAPLogAdapter;
 import org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 
@@ -55,24 +58,25 @@ public class RestUtil {
     private static final String FROM_APP_ID = "X-FromAppId";
     private static final String APP_NAME = "aaiCtxBuilder";
 
-    // Service Catalog
-    public enum Catalog {
+    private static final Resource GENERIC_VNF = new Resource("generic-vnf");
 
-        VNF("generic-vnf"), VNFC("vnfc"), VSERVER("vserver"), L3NETWORK("l3-network");
+    public static class Resource {
+        private String resourceName;
+        private String collectionName;
 
-        private final String resourceName;
-        private final String collectionName;
-
-        private Catalog(String objName) {
-            this.resourceName = objName;
-            this.collectionName = objName + "s"; // make plural
+        private Resource(String resource) {
+            this.resourceName = resource;
+            this.collectionName = resource + "s";
         }
 
-        public String objName() {
-            return resourceName;
+        private String getResourceName() {
+            return this.resourceName;
         }
-    };
 
+        private String getCollectionName() {
+            return this.collectionName;
+        }
+    }
 
     private static final String JSON_ATT_RELATED_TO = "related-to";
     private static final String JSON_ATT_RELATED_LINK = "related-link";
@@ -114,7 +118,7 @@ public class RestUtil {
      * @return
      * @throws DiscoveryException
      */
-    public static JSONObject retrieveAAIModelData(RestClient aaiClient, String baseURL, String aaiServiceInstancePath,
+    public static JSONObject retrieveAAIModelData(RestClient aaiClient, String baseURL, String aaiServiceInstancePath, String aaiResourceList,
             String transactionId, String serviceInstanceId, ONAPLogAdapter adapter) throws DiscoveryException {
 
         // Follow two variables for transform purpose
@@ -133,7 +137,7 @@ public class RestUtil {
         logger.info("The number of the relationships for service instance id {} is: {}", serviceInstanceId,
                 relationMap.size());
 
-        JSONObject response = processVNFRelationMap(aaiClient, baseURL, transactionId, relationMap, serviceInstancePayload);
+        JSONObject response = processVNFRelationMap(aaiClient, aaiResourceList, baseURL, transactionId, relationMap, serviceInstancePayload);
         return response;
     }
 
@@ -145,65 +149,43 @@ public class RestUtil {
      * @param relationMap
      * @throws DiscoveryException
      */
-    private static JSONObject processVNFRelationMap(RestClient aaiClient, String baseURL, String transactionId,
+    private static JSONObject processVNFRelationMap(RestClient aaiClient, String aaiResourceList, String baseURL, String transactionId,
             HashMap<String, List<String>> relationMap, JSONObject serviceInstancePayload) throws DiscoveryException {
         List<JSONObject> vnfLst = new ArrayList<JSONObject>(); // List of the VNF JSON along with related resources
 
         JSONObject response = serviceInstancePayload;
 
+        List<Resource> resourceTypes = getResourceTypes(aaiResourceList);
 
-        if (relationMap.get(Catalog.VNF.resourceName) != null) {
-            List<JSONObject> vnfList = processResourceList(aaiClient, baseURL, transactionId, Catalog.VNF.resourceName,
-                    relationMap.get(Catalog.VNF.resourceName));
+        if (relationMap.get(GENERIC_VNF.getResourceName()) != null) {
+            List<JSONObject> vnfList = processResourceList(aaiClient, baseURL, transactionId, GENERIC_VNF.getResourceName(),
+                    relationMap.get(GENERIC_VNF.getResourceName()));
             // Logic to Create the Generic VNF JSON and extract further relationships
             for (JSONObject vnfPayload : vnfList) {
-                List<String> vnfcLinkLst = extractRelatedLink(vnfPayload, Catalog.VNFC.resourceName);
-                if (vnfcLinkLst != null && !vnfcLinkLst.isEmpty()) {
-                    logger.info("The number of the API call for vnfc is:" + vnfcLinkLst.size());
-                    List<JSONObject> vnfcList = processResourceList(aaiClient, baseURL, transactionId,
-                            Catalog.VNFC.resourceName, vnfcLinkLst);
-                    if (vnfcList != null) {
-                        vnfPayload.put(Catalog.VNFC.collectionName, vnfcList);
+                for (Resource resourceType : resourceTypes) {
+                    List<String> vnfcLinkLst = extractRelatedLink(vnfPayload, resourceType.getResourceName());
+                    if (vnfcLinkLst != null && !vnfcLinkLst.isEmpty()) {
+                        logger.info("The number of the API call for vnfc is:" + vnfcLinkLst.size());
+                        List<JSONObject> vnfcList = processResourceList(aaiClient, baseURL, transactionId,
+                                resourceType.getResourceName(), vnfcLinkLst);
+                        if (vnfcList != null) {
+                            vnfPayload.put(resourceType.getCollectionName(), vnfcList);
+                        }
+                    } else {
+                        logger.info("No " + resourceType.getResourceName() + " found for vnf-id:" + vnfPayload.getString("vnf-id"));
                     }
-                } else {
-                    logger.info("No vnfc found for vnf-id:" + vnfPayload.getString("vnf-id"));
                 }
-
-                List<String> networkLinkLst = extractRelatedLink(vnfPayload, Catalog.L3NETWORK.resourceName);
-                if (networkLinkLst != null && !networkLinkLst.isEmpty()) {
-                    logger.info("The number of the API call for l3-network is:" + networkLinkLst.size());
-                    List<JSONObject> networkList = processResourceList(aaiClient, baseURL, transactionId,
-                            Catalog.L3NETWORK.resourceName, networkLinkLst);
-                    if (networkList != null) {
-                        vnfPayload.put(Catalog.L3NETWORK.collectionName, networkList);
-                    }
-                } else {
-                    logger.info("No l3-network found for vnf-id:" + vnfPayload.getString("vnf-id"));
-                }
-                List<String> vserverLinkLst = extractRelatedLink(vnfPayload, Catalog.VSERVER.resourceName);
-                if (vserverLinkLst != null && !vserverLinkLst.isEmpty()) {
-                    logger.info("The number of the API call for vserver is:" + vserverLinkLst.size());
-                    List<JSONObject> vserverList = processResourceList(aaiClient, baseURL, transactionId,
-                            Catalog.VSERVER.resourceName, vserverLinkLst);
-                    if (vserverList != null) {
-                        vnfPayload.put(Catalog.VSERVER.collectionName, vserverList);
-                    }
-                } else {
-                    logger.info("No vserver found for vnf-id:" + vnfPayload.getString("vnf-id"));
-                }
-
-                // Add final vnf payload to list
-                vnfLst.add(vnfPayload);
+            // Add final vnf payload to list
+            vnfLst.add(vnfPayload);
             }
         } else {
-            logger.info("No generic vnf found for :" + serviceInstancePayload.getString("service-instance-id"));
+            logger.info("No " + GENERIC_VNF.getResourceName() +  " found for :" + serviceInstancePayload.getString("service-instance-id"));
         }
 
         // Add generic vnf with related resource payload to response
         if (vnfLst != null && !vnfLst.isEmpty()) {
-            response.put(Catalog.VNF.collectionName, vnfLst);
+            response.put(GENERIC_VNF.getCollectionName(), vnfLst);
         }
-
         return response;
 
     }
@@ -225,7 +207,7 @@ public class RestUtil {
             String resourceURL = aaiBaseURL + resourceLink;
             // With latest AAI development, in order to retrieve the both generic VNF + vf_module, we can use
             // one API call but with depth=2
-            if (resourceType.equals(Catalog.VNF.resourceName)) {
+            if (resourceType.equals(GENERIC_VNF.getResourceName())) {
                 resourceURL += DEPTH;
             }
 
@@ -369,6 +351,20 @@ public class RestUtil {
         headers.put(TRANSACTION_ID, Collections.singletonList(transactionId));
         headers.put(FROM_APP_ID, Collections.singletonList(APP_NAME));
         return headers;
+    }
+
+    private static List<Resource> getResourceTypes(String aaiResourceList) {
+        List<Resource> resources = new ArrayList<Resource>();
+        try {
+            String[] resourceList = aaiResourceList.split(",");
+            for (int i = 0; i < resourceList.length; i++) {
+                resources.add(new Resource(resourceList[i]));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resources;
     }
 
 }
