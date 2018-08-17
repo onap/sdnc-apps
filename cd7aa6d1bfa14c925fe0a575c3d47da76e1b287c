@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_c7d1a958",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/util/RestUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 3131
+      },
+      "writtenOn": "2018-08-17T18:59:18Z",
+      "side": 1,
+      "message": "clean up imports",
+      "revId": "cd7aa6d1bfa14c925fe0a575c3d47da76e1b287c",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
