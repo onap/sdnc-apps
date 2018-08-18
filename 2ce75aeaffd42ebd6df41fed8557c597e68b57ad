@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_ba836055",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/AAIConfiguration.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 3131
+      },
+      "writtenOn": "2018-08-18T18:57:53Z",
+      "side": 1,
+      "message": "Cleaned this up for the whole file.",
+      "parentUuid": "1a76adc5_e73b859a",
+      "revId": "2ce75aeaffd42ebd6df41fed8557c597e68b57ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_c738c9a2",
         "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/AAIConfiguration.java",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_da865c65",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/AAIConfiguration.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 3131
+      },
+      "writtenOn": "2018-08-18T18:57:53Z",
+      "side": 1,
+      "message": "This was a headache.  I even tried it returning String[] and List\u003cString\u003e.  DEBUG showed the Bean returning the correct value on configuration but the Autowire in the implementation was full of crap.  I agree with you if you know how to get it working it would be cleaner.",
+      "parentUuid": "1a76adc5_c738c9a2",
+      "revId": "2ce75aeaffd42ebd6df41fed8557c597e68b57ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_8742d10e",
         "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/util/RestUtil.java",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2018-08-17T19:10:49Z",
       "side": 1,
       "message": "Log exceptions correctly",
+      "revId": "2ce75aeaffd42ebd6df41fed8557c597e68b57ad",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_fab9d82e",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/util/RestUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 3131
+      },
+      "writtenOn": "2018-08-18T18:57:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_8742d10e",
       "revId": "2ce75aeaffd42ebd6df41fed8557c597e68b57ad",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
