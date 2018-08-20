@@ -20,6 +20,7 @@ package org.onap.sdnc.apps.pomba.networkdiscovery;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+
 import org.onap.aai.restclient.client.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,61 +28,69 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
+import com.google.common.base.Splitter;
+
 @Configuration
 public class EnricherConfiguration {
     @Autowired
     private Environment env;
-
+    
     @Value("${enricher.url}")
     private String url;
-
+    
     @Value("${enricher.keyStorePath}")
     private String keyStorePath;
-
+    
     @Value("${enricher.keyStorePassword:OBF:1i9a1u2a1unz1lr61wn51wn11lss1unz1u301i6o}")
     private String keyStorePassword;
-
+    
     @Value("${enricher.connectionTimeout:5000}")
     private int connectionTimeout;
-
+    
     @Value("${enricher.readTimeout:60000}")
     private int readTimeout;
-
-    @Bean(name="enricherClient")
+    
+    @Bean(name = "enricherClient")
     public RestClient restClient() {
-        return new RestClient()
-                .validateServerHostname(false)
-                .validateServerCertChain(false)
-                .connectTimeoutMs(this.connectionTimeout)
-                .readTimeoutMs(this.readTimeout)
+        return new RestClient().validateServerHostname(false).validateServerCertChain(false)
+                .connectTimeoutMs(this.connectionTimeout).readTimeoutMs(this.readTimeout)
                 .clientCertFile(this.keyStorePath)
-                .clientCertPassword(
-                        org.eclipse.jetty.util.security.Password.deobfuscate(this.keyStorePassword));
+                .clientCertPassword(org.eclipse.jetty.util.security.Password.deobfuscate(this.keyStorePassword));
     }
-
-    @Bean(name="enricherBaseUrl")
+    
+    @Bean(name = "enricherBaseUrl")
     public String getURL() {
         return this.url;
     }
-
-    @Bean(name="enricherTypeURLs")
+    
+    @Bean(name = "enricherTypeURLs")
     public Map<String, String> enricherTypeURLs() {
-
+        
         Map<String, String> result = new HashMap<>();
         String types = this.env.getProperty("enricher.types");
         if (types == null) {
             return result;
         }
-
+        
         StringTokenizer tokenizer = new StringTokenizer(types, ", ");
         while (tokenizer.hasMoreTokens()) {
             String type = tokenizer.nextToken();
             String enricherUrl = this.env.getProperty("enricher.type." + type + ".url");
             result.put(type, enricherUrl);
         }
-
+        
         return result;
     }
-
-
+    
+    @Value("${enricher.attributeNameMappingList}")
+    private String enricherAttributeNameMappingList;
+    
+    @Bean(name = "enricherAttributeNameMapping")
+    public Map<String, String> getAttributeNameMap() {
+        Map<String, String> returnMap = new HashMap<String, String>();
+        String noWhiteSpaceString = enricherAttributeNameMappingList.replaceAll("\\s", "");
+        returnMap = Splitter.on(";").withKeyValueSeparator(":").split(noWhiteSpaceString);
+        
+        return returnMap;
+    }
 }
