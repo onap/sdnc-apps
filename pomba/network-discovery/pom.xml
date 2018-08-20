@@ -296,7 +296,7 @@ limitations under the License.
                                     <outputDirectory>${project.basedir}/target/docker-stage/config/auth</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>auth</directory>
+                                            <directory>config/auth</directory>
                                             <includes>
                                                 <include>*.p12</include>
                                             </includes>
