@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a76adc5_29c06c29",
+        "filename": "pomba/network-discovery/config/application.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-20T18:25:01Z",
+      "side": 1,
+      "message": "This can be done with dynamic properties quite easily, e.g.\n\n enricher.map.Id\u003did\n enricher.map.locked\u003dinMaintenance\n enricher.map.vm_state\u003dvmState\n\nIt is more readable/maintainable this way IMO.  For example, see just above with the enricher.types.\u003ctype\u003e properties and the associated A\u0026AI URLs",
+      "revId": "5db112109ea80c204bd7271f02d19f1fb71935f5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_e9a594b5",
         "filename": "pomba/network-discovery/config/application.properties",
         "patchSetId": 2
@@ -13,6 +30,91 @@
       "writtenOn": "2018-08-20T17:59:44Z",
       "side": 1,
       "message": "why it has your name there? pleighid...Also this mapping looks weird for me.. can we use some java annotation. i.e. @Expose @SerializationName...",
+      "revId": "5db112109ea80c204bd7271f02d19f1fb71935f5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_c905387b",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/EnricherConfiguration.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-20T18:25:01Z",
+      "side": 1,
+      "message": "This map was created for no reason",
+      "revId": "5db112109ea80c204bd7271f02d19f1fb71935f5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_a9879cd6",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-20T18:25:01Z",
+      "side": 1,
+      "message": "Your code should really go here to address this TODO",
+      "revId": "5db112109ea80c204bd7271f02d19f1fb71935f5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_29ee2cb5",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-20T18:25:01Z",
+      "side": 1,
+      "message": "You should disable comment formatting in Eclipse - this is just unnecessary noise",
+      "revId": "5db112109ea80c204bd7271f02d19f1fb71935f5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_69698424",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-20T18:25:01Z",
+      "side": 1,
+      "message": "If the attribute does not have a mapping, it must be excluded from the response.\n\nLikewise, if the enricher didn\u0027t return a value for a mapped attribute, should you add an attribute with dataQuality\u003derror?",
+      "revId": "5db112109ea80c204bd7271f02d19f1fb71935f5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_e916f4a6",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-20T18:25:01Z",
+      "side": 1,
+      "message": "Why not do this when building the attribute list in the first place (line 286)?",
       "revId": "5db112109ea80c204bd7271f02d19f1fb71935f5",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
