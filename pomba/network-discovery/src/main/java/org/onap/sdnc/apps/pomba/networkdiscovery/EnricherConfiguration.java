@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import com.google.common.base.Splitter;
 
 @Configuration
 public class EnricherConfiguration {
@@ -83,5 +84,15 @@ public class EnricherConfiguration {
         return result;
     }
 
+    @Value("${enricher.attributeNameMappingList}")
+    private String enricherAttributeNameMappingList;
 
+    @Bean(name="enricherAttributeNameMapping")
+    public Map<String, String> getAttributeNameMap() {
+        Map <String, String> returnMap = new HashMap<String, String>(); 
+        String noWhiteSpaceString = enricherAttributeNameMappingList.replaceAll("\\s","");
+        returnMap = Splitter.on(";").withKeyValueSeparator(":").split(noWhiteSpaceString);
+
+        return returnMap;
+    }
 }
