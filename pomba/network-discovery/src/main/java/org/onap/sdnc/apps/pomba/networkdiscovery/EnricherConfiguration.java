@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import com.google.common.base.Splitter;
 
 @Configuration
 public class EnricherConfiguration {
@@ -47,24 +48,23 @@ public class EnricherConfiguration {
     @Value("${enricher.readTimeout:60000}")
     private int readTimeout;
 
-    @Bean(name="enricherClient")
+    @Bean(name = "enricherClient")
     public RestClient restClient() {
-        return new RestClient()
-                .validateServerHostname(false)
-                .validateServerCertChain(false)
-                .connectTimeoutMs(this.connectionTimeout)
-                .readTimeoutMs(this.readTimeout)
-                .clientCertFile(this.keyStorePath)
-                .clientCertPassword(
-                        org.eclipse.jetty.util.security.Password.deobfuscate(this.keyStorePassword));
+        return new RestClient().validateServerHostname(false)
+                        .validateServerCertChain(false)
+                        .connectTimeoutMs(this.connectionTimeout)
+                        .readTimeoutMs(this.readTimeout)
+                        .clientCertFile(this.keyStorePath)
+                        .clientCertPassword(org.eclipse.jetty.util.security.Password.deobfuscate(
+                                        this.keyStorePassword));
     }
 
-    @Bean(name="enricherBaseUrl")
+    @Bean(name = "enricherBaseUrl")
     public String getURL() {
         return this.url;
     }
 
-    @Bean(name="enricherTypeURLs")
+    @Bean(name = "enricherTypeURLs")
     public Map<String, String> enricherTypeURLs() {
 
         Map<String, String> result = new HashMap<>();
@@ -83,5 +83,12 @@ public class EnricherConfiguration {
         return result;
     }
 
+    @Value("${enricher.attributeNameMappingList}")
+    private String enricherAttributeNameMappingList;
 
+    @Bean(name = "enricherAttributeNameMapping")
+    public Map<String, String> getAttributeNameMap() {
+        String noWhiteSpaceString = enricherAttributeNameMappingList.replaceAll("\\s", "");
+        return (Splitter.on(";").withKeyValueSeparator(":").split(noWhiteSpaceString));
+    }
 }
