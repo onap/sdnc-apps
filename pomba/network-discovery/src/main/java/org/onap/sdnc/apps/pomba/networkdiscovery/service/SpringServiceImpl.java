@@ -87,19 +87,17 @@ public class SpringServiceImpl implements SpringService {
 
     private DocumentBuilder parser;
 
+    @javax.annotation.Resource
+    private Map<String, String> enricherAttributeNameMapping;
 
     public SpringServiceImpl() throws ParserConfigurationException {
         this.parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
 
     @Override
-    public NetworkDiscoveryResponse findbyResourceIdAndType(String transactionId,
-                                                            String requestId,
-                                                            String resourceType,
-                                                            List<String> resourceIds,
-                                                            String notificationURL,
-                                                            String notificationAuthorization,
-                                                            ONAPLogAdapter adapter) throws ApplicationException {
+    public NetworkDiscoveryResponse findbyResourceIdAndType(String transactionId, String requestId, String resourceType,
+            List<String> resourceIds, String notificationURL, String notificationAuthorization, ONAPLogAdapter adapter)
+            throws ApplicationException {
 
         NetworkDiscoveryResponse response = new NetworkDiscoveryResponse();
         response.setRequestId(requestId);
@@ -115,8 +113,8 @@ public class SpringServiceImpl implements SpringService {
         }
 
         // schedule discovery of specified resources
-        Runnable task = new ResourceTask(transactionId, requestId, resourceType, resourceIds,
-                notificationURL, notificationAuthorization, enricherURL, adapter);
+        Runnable task = new ResourceTask(transactionId, requestId, resourceType, resourceIds, notificationURL,
+                notificationAuthorization, enricherURL, adapter);
         this.executor.submit(task);
 
         response.setCode(Status.ACCEPTED.getStatusCode());
@@ -130,19 +128,32 @@ public class SpringServiceImpl implements SpringService {
         this.executor.shutdown();
     }
 
-    private List<Attribute> toAttributeList(String xml) throws SAXException, IOException {
-        // TODO don't return raw A&AI attributes but coerce to swagger-defined enums
+    private List<Attribute> toAttributeList(String xml, ONAPLogAdapter adapter) throws SAXException, IOException {
+        Logger log = adapter.unwrap();
+        // TODO don't return raw A&AI attributes but coerce to swagger-defined
+        // enums
         Document doc = this.parser.parse(new InputSource(new StringReader(xml)));
         NodeList children = doc.getDocumentElement().getChildNodes();
         List<Attribute> result = new ArrayList<>();
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-                Attribute attr = new Attribute();
-                attr.setName(((Element)child).getTagName());
-                attr.setValue(((Element)child).getTextContent());
-                attr.setDataQuality(DataQuality.ok());
-                result.add(attr);
+
+                // remove white space before conversion
+                String attributeName = ((Element) child).getTagName().replaceAll("\\s", "");
+
+                // If the incoming attribute name is not listed in the
+                // attributeNameMapping, then this attribute will be removed.
+                if (enricherAttributeNameMapping.containsKey(attributeName)) {
+                    Attribute attr = new Attribute();
+                    attr.setName(enricherAttributeNameMapping.get(attributeName));
+                    attr.setValue(((Element) child).getTextContent());
+                    attr.setDataQuality(DataQuality.ok());
+                    result.add(attr);
+                } else {
+                    log.info("[" + ((Element) child).getTagName()
+                            + "] was removed due to not listed in enricherAttributeNameMapping.");
+                }
             }
         }
         return result;
@@ -150,10 +161,7 @@ public class SpringServiceImpl implements SpringService {
 
     private void sendNotification(String url, String authorization, Object notification, ONAPLogAdapter adapter) {
 
-        Invocation.Builder request = this.callbackClient
-                .target(url)
-                .request()
-                .accept(MediaType.TEXT_PLAIN_TYPE);
+        Invocation.Builder request = this.callbackClient.target(url).request().accept(MediaType.TEXT_PLAIN_TYPE);
 
         if (authorization != null) {
             request.header(HttpHeaders.AUTHORIZATION, authorization);
@@ -168,21 +176,23 @@ public class SpringServiceImpl implements SpringService {
                 StringBuilder debugRequest = new StringBuilder("REQUEST:\n");
                 debugRequest.append("URL: ").append(url).append("\n");
                 debugRequest.append("Payload: ").append(notification).append("\n");
-//                if (headers != null) {
-//                    debugRequest.append("Headers: ");
-//                    for (Entry<String, List<String>> header : headers.entrySet()) {
-//                        debugRequest.append("\n\t").append(header.getKey()).append(":");
-//                        for (String headerEntry : header.getValue()) {
-//                            debugRequest.append("\"").append(headerEntry).append("\" ");
-//                        }
-//                    }
-//                }
+                // if (headers != null) {
+                // debugRequest.append("Headers: ");
+                // for (Entry<String, List<String>> header : headers.entrySet())
+                // {
+                // debugRequest.append("\n\t").append(header.getKey()).append(":");
+                // for (String headerEntry : header.getValue()) {
+                // debugRequest.append("\"").append(headerEntry).append("\" ");
+                // }
+                // }
+                // }
                 log.debug(debugRequest.toString());
             }
 
             Response result = request.post(Entity.json(notification));
 
-            adapter.unwrap().info("request at url = {} resulted in http response: {}", url, result.getStatusInfo().getStatusCode() + " " + result.getStatusInfo().getReasonPhrase());
+            adapter.unwrap().info("request at url = {} resulted in http response: {}", url,
+                    result.getStatusInfo().getStatusCode() + " " + result.getStatusInfo().getReasonPhrase());
 
             if (log.isDebugEnabled()) {
                 StringBuilder debugResponse = new StringBuilder("RESPONSE:\n");
@@ -206,8 +216,8 @@ public class SpringServiceImpl implements SpringService {
             }
 
         } catch (Exception x) {
-            log.error("Error during {} operation to endpoint at url = {} with error = {}",
-                    "POST", url, x.getLocalizedMessage());
+            log.error("Error during {} operation to endpoint at url = {} with error = {}", "POST", url,
+                    x.getLocalizedMessage());
         }
     }
 
@@ -221,14 +231,8 @@ public class SpringServiceImpl implements SpringService {
         private final String resourceURL;
         private final ONAPLogAdapter adapter;
 
-        public ResourceTask(String transactionId,
-                            String requestId,
-                            String resourceType,
-                            List<String> resourceIds,
-                            String notificationURL,
-                            String notificationAuthorization,
-                            String resourceURL,
-                            ONAPLogAdapter adapter) {
+        public ResourceTask(String transactionId, String requestId, String resourceType, List<String> resourceIds,
+                String notificationURL, String notificationAuthorization, String resourceURL, ONAPLogAdapter adapter) {
             this.transactionId = transactionId;
             this.requestId = requestId;
             this.resourceType = resourceType;
@@ -249,9 +253,11 @@ public class SpringServiceImpl implements SpringService {
             MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
             headers.add(ENRICHER_HEADER_APPLICATION, RestService.SERVICE_NAME);
             headers.add(ENRICHER_HEADER_TRANSACTION, this.transactionId);
+
             for (String resourceId : this.resourceIds) {
                 String url = format.format(new Object[] { resourceId });
-                OperationResult result = SpringServiceImpl.this.enricherClient.get(url, headers, MediaType.APPLICATION_XML_TYPE);
+                OperationResult result = SpringServiceImpl.this.enricherClient.get(url, headers,
+                        MediaType.APPLICATION_XML_TYPE);
 
                 Resource resource = new Resource();
                 resource.setType(this.resourceType);
@@ -265,12 +271,12 @@ public class SpringServiceImpl implements SpringService {
                 if (result.wasSuccessful()) {
                     resource.setDataQuality(DataQuality.ok());
                     try {
-                        resource.setAttributeList(toAttributeList(result.getResult()));
+                        List<Attribute> attributeList = toAttributeList(result.getResult(), adapter);
+                        resource.setAttributeList(attributeList);
                     } catch (Exception x) {
                         resource.setDataQuality(DataQuality.error(x.getMessage()));
                     }
-                }
-                else {
+                } else {
                     resource.setDataQuality(DataQuality.error(result.getFailureCause()));
                 }
             }
@@ -285,6 +291,7 @@ public class SpringServiceImpl implements SpringService {
 
     private static class RequestBuilderWrapper implements RequestBuilder<RequestBuilderWrapper> {
         private Invocation.Builder builder;
+
         private RequestBuilderWrapper(Invocation.Builder builder) {
             this.builder = builder;
         }

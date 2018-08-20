@@ -75,11 +75,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
 @WebAppConfiguration
 @SpringBootTest
-@TestPropertySource(properties = {
-        "enricher.url=http://localhost:9505",
-        "basicAuth.username=admin",
-        "basicAuth.password=password(OBF:1u2a1toa1w8v1tok1u30)"
-})
+@TestPropertySource(properties = { "enricher.url=http://localhost:9505", "basicAuth.username=admin",
+        "basicAuth.password=password(OBF:1u2a1toa1w8v1tok1u30)" })
 @ContextConfiguration(initializers = PropertyPasswordConfiguration.class, classes = Application.class)
 public class NetworkDiscoveryTest {
     private static final String V1 = "v1";
@@ -133,8 +130,8 @@ public class NetworkDiscoveryTest {
         String authorization = "Basic " + Base64.getEncoder().encodeToString("aaa:bbb".getBytes());
         // bad Authorization header
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
-        Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, authorization, APP, this.transactionId,
-                this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+        Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, authorization, APP,
+                this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
         assertEquals(Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
         // should not get WWW-Authenticate header in response
         assertNull(response.getHeaderString(HttpHeaders.WWW_AUTHENTICATE));
@@ -147,7 +144,7 @@ public class NetworkDiscoveryTest {
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, null, this.transactionId,
                 this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertTrue(((String)response.getEntity()).contains(ONAPLogConstants.Headers.PARTNER_NAME));
+        assertTrue(((String) response.getEntity()).contains(ONAPLogConstants.Headers.PARTNER_NAME));
     }
 
     @Test
@@ -157,7 +154,7 @@ public class NetworkDiscoveryTest {
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
                 null, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertTrue(((String)response.getEntity()).contains("requestId"));
+        assertTrue(((String) response.getEntity()).contains("requestId"));
     }
 
     @Test
@@ -167,7 +164,7 @@ public class NetworkDiscoveryTest {
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
                 this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, null);
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertTrue(((String)response.getEntity()).contains("notificationURL"));
+        assertTrue(((String) response.getEntity()).contains("notificationURL"));
     }
 
     @Test
@@ -175,19 +172,19 @@ public class NetworkDiscoveryTest {
         // no resourceIds list
         {
             List<String> resourceIds = null;
-            Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
-                    this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+            Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP,
+                    this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
             assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-            assertTrue(((String)response.getEntity()).contains("resourceIds"));
+            assertTrue(((String) response.getEntity()).contains("resourceIds"));
         }
 
         // empty resourceId list
         {
             List<String> resourceIds = new ArrayList<>();
-            Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
-                    this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+            Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP,
+                    this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
             assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-            assertTrue(((String)response.getEntity()).contains("resourceIds"));
+            assertTrue(((String) response.getEntity()).contains("resourceIds"));
         }
     }
 
@@ -198,30 +195,25 @@ public class NetworkDiscoveryTest {
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
                 this.requestId, null, resourceIds, getCallbackUrl());
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertTrue(((String)response.getEntity()).contains("resourceType"));
+        assertTrue(((String) response.getEntity()).contains("resourceType"));
     }
 
     @Test
     public void testDiscoverVserver() throws Exception {
         String vserverId = UUID.randomUUID().toString();
 
-        String resourcePath = MessageFormat.format(
-                this.environment.getProperty("enricher.type.vserver.url"),
+        String resourcePath = MessageFormat.format(this.environment.getProperty("enricher.type.vserver.url"),
                 new Object[] { vserverId });
 
-        String enricherPayload = String.format(
-                "<vserver xmlns=\"http://org.onap.aai.inventory/v11\">\r\n"
-                + "   <vserver-id>%s</vserver-id>\r\n"
-                + "   <power-state>1</power-state>\r\n"
-                + "   <vm-state>active</vm-state>\r\n"
-                + "   <status>ACTIVE</status>\r\n"
-                + "   <host-status>UNKNOWN</host-status>\r\n"
-                + "   <updated>2017-11-20T04:26:13Z</updated>\r\n"
+        String enricherPayload = String.format("<vserver xmlns=\"http://org.onap.aai.inventory/v11\">\r\n"
+                + "   <vserver-id>%s</vserver-id>\r\n" + "   <power-state>1</power-state>\r\n"
+                + "   <locked>true</locked>\r\n" + "   <hostname>10.147.112.48</hostname>\r\n"
+                + "   <vm-state>active</vm-state>\r\n" + "   <status>ACTIVE</status>\r\n"
+                + "   <host-status>UNKNOWN</host-status>\r\n" + "   <updated>2017-11-20T04:26:13Z</updated>\r\n"
                 + "   <disk-allocation-gb>.010</disk-allocation-gb>\r\n"
-                + "   <memory-usage-mb>null</memory-usage-mb>\r\n"
-                + "   <cpu-util-percent>.043</cpu-util-percent>\r\n"
-                + "   <retrieval-timestamp>2018-06-27 19:41:49 +0000</retrieval-timestamp>\r\n"
-                + "</vserver>", vserverId);
+                + "   <memory-usage-mb>null</memory-usage-mb>\r\n" + "   <cpu-util-percent>.043</cpu-util-percent>\r\n"
+                + "   <retrieval-timestamp>2018-06-27 19:41:49 +0000</retrieval-timestamp>\r\n" + "</vserver>",
+                vserverId);
 
         this.enricherRule.stubFor(get(resourcePath).willReturn(okTextXml(enricherPayload)));
 
@@ -244,8 +236,8 @@ public class NetworkDiscoveryTest {
         ObjectMapper mapper = new ObjectMapper();
         AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
         mapper.setAnnotationIntrospector(introspector);
-        NetworkDiscoveryNotification notification =
-                mapper.readValue(notificationJson, NetworkDiscoveryNotification.class);
+        NetworkDiscoveryNotification notification = mapper.readValue(notificationJson,
+                NetworkDiscoveryNotification.class);
 
         assertEquals(requestId, notification.getRequestId());
         assertEquals(Status.OK.getStatusCode(), notification.getCode().intValue());
@@ -257,15 +249,10 @@ public class NetworkDiscoveryTest {
         assertEquals("vserver", vserver.getType());
         assertEquals(DataQuality.Status.ok, vserver.getDataQuality().getStatus());
 
-        verifyAttribute(vserver.getAttributeList(), "power-state", "1");
-        verifyAttribute(vserver.getAttributeList(), "vm-state", "active");
         verifyAttribute(vserver.getAttributeList(), "status", "ACTIVE");
-        verifyAttribute(vserver.getAttributeList(), "host-status", "UNKNOWN");
-        verifyAttribute(vserver.getAttributeList(), "updated", "2017-11-20T04:26:13Z");
-        verifyAttribute(vserver.getAttributeList(), "disk-allocation-gb", ".010");
-        verifyAttribute(vserver.getAttributeList(), "memory-usage-mb", "null");
-        verifyAttribute(vserver.getAttributeList(), "cpu-util-percent", ".043");
-        verifyAttribute(vserver.getAttributeList(), "retrieval-timestamp", "2018-06-27 19:41:49 +0000");
+        verifyAttribute(vserver.getAttributeList(), "inMaintenance", "true");
+        verifyAttribute(vserver.getAttributeList(), "hostname", "10.147.112.48");
+        verifyAttribute(vserver.getAttributeList(), "vmState", "active");
     }
 
     /**
