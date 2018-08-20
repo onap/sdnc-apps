@@ -41,6 +41,9 @@ public class SpringServiceImpl implements SpringService {
     @Autowired
     private String aaiServiceInstancePath;
 
+    @Autowired
+    private String aaiResourceList;
+
     @Override
     public String decomposeService(String fromAppId,
                                    String transactionId,
@@ -49,7 +52,7 @@ public class SpringServiceImpl implements SpringService {
 
 
         log.info("Querying A&AI for service instance " + serviceInstanceId);
-        JSONObject serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiServiceInstancePath,
+        JSONObject serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiServiceInstancePath, aaiResourceList,
                 transactionId, serviceInstanceId, adapter);
         return serviceInstance.toString();
     }
