@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_3c7183e0",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/EnricherConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T18:04:13Z",
+      "side": 1,
+      "message": "Fixed",
+      "parentUuid": "1a76adc5_dc264f16",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_7c7dbbe6",
         "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2018-08-21T14:04:51Z",
       "side": 1,
       "message": "Remove TODO if you\u0027ve addressed this issue",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_fc722be2",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T18:04:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_7c7dbbe6",
       "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_9c81b791",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T18:04:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_3c8743d9",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_dc6def33",
         "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2018-08-21T14:04:51Z",
       "side": 1,
       "message": "I think debug is good enough for this",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_bc7cb3b6",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T18:04:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_dc6def33",
       "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_1c45a76f",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T18:04:13Z",
+      "side": 1,
+      "message": "There is no requirement to report missing parameters, as there are more than 20 parameters.",
+      "parentUuid": "1a76adc5_9c777702",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_5c61df37",
         "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2018-08-21T14:04:51Z",
       "side": 1,
       "message": "Please don\u0027t blindly reformat everything - it was more readable the way it was before!",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_3c48a386",
+        "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T18:04:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_5c61df37",
       "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
