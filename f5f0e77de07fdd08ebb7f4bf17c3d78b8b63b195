@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_22e87eb3",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/EnricherConfiguration.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-21T20:08:13Z",
+      "side": 1,
+      "message": "Mohammed is correct - please review the coding standards\n\nhttps://google.github.io/styleguide/javaguide.html#s3.3-import-statements",
+      "parentUuid": "1a76adc5_22107e00",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 38
+      },
+      "revId": "f5f0e77de07fdd08ebb7f4bf17c3d78b8b63b195",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_026ea296",
         "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/EnricherConfiguration.java",
         "patchSetId": 3
