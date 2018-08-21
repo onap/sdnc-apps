@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_22107e00",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/EnricherConfiguration.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T19:32:08Z",
+      "side": 1,
+      "message": "This should be sorted by dependency not alphabetically.",
+      "parentUuid": "1a76adc5_8262b2ab",
+      "range": {
+        "startLine": 29,
+        "startChar": 0,
+        "endLine": 29,
+        "endChar": 38
+      },
+      "revId": "f5f0e77de07fdd08ebb7f4bf17c3d78b8b63b195",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_026ea296",
         "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/EnricherConfiguration.java",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2018-08-21T19:17:53Z",
       "side": 1,
       "message": "I prefer the original format.",
+      "range": {
+        "startLine": 51,
+        "startChar": 2,
+        "endLine": 59,
+        "endChar": 22
+      },
+      "revId": "f5f0e77de07fdd08ebb7f4bf17c3d78b8b63b195",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_42133a0d",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/EnricherConfiguration.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T19:32:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_026ea296",
       "range": {
         "startLine": 51,
         "startChar": 2,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_a2032eb7",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T19:32:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_e272867b",
+      "range": {
+        "startLine": 237,
+        "startChar": 0,
+        "endLine": 239,
+        "endChar": 3
+      },
+      "revId": "f5f0e77de07fdd08ebb7f4bf17c3d78b8b63b195",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_a26c8e9d",
         "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
         "patchSetId": 3
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_82d71223",
+        "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T19:32:08Z",
+      "side": 1,
+      "message": "This was from auto-formatter,",
+      "parentUuid": "1a76adc5_a26c8e9d",
+      "range": {
+        "startLine": 123,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 24
+      },
+      "revId": "f5f0e77de07fdd08ebb7f4bf17c3d78b8b63b195",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_c2674ab6",
         "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
         "patchSetId": 3
@@ -105,6 +201,24 @@
       "writtenOn": "2018-08-21T19:17:53Z",
       "side": 1,
       "message": "shift+TAB, please",
+      "revId": "f5f0e77de07fdd08ebb7f4bf17c3d78b8b63b195",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_62d43620",
+        "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 4353
+      },
+      "writtenOn": "2018-08-21T19:32:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a76adc5_c2674ab6",
       "revId": "f5f0e77de07fdd08ebb7f4bf17c3d78b8b63b195",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
