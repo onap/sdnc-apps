@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_dc264f16",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/EnricherConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-21T14:04:51Z",
+      "side": 1,
+      "message": "Still have the unused Map here.  You don\u0027t need returnMap variable either.",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_7c7dbbe6",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-21T14:04:51Z",
+      "side": 1,
+      "message": "Remove TODO if you\u0027ve addressed this issue",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_3c8743d9",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-21T14:04:51Z",
+      "side": 1,
+      "message": "You\u0027re doing two read operations when you only need one.  Do the get here and check for null, then you don\u0027t need containsKey().",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_dc6def33",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-21T14:04:51Z",
+      "side": 1,
+      "message": "I think debug is good enough for this",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_9c777702",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-21T14:04:51Z",
+      "side": 1,
+      "message": "What about attributes that aren\u0027t returned from enricher?  Do you have to mark them as missing?",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_5c61df37",
+        "filename": "pomba/network-discovery/src/test/java/org/onap/sdnc/apps/pomba/networkdiscovery/unittest/service/NetworkDiscoveryTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-21T14:04:51Z",
+      "side": 1,
+      "message": "Please don\u0027t blindly reformat everything - it was more readable the way it was before!",
+      "revId": "a337e8dc46018e22c82399d8bf7752bc53b3a285",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
