@@ -46,14 +46,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.jetty.util.security.Password;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
-import org.onap.sdnc.apps.pomba.networkdiscovery.Application;
-import org.onap.sdnc.apps.pomba.networkdiscovery.PropertyPasswordConfiguration;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Attribute;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.DataQuality;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryNotification;
@@ -66,7 +65,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -78,9 +76,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @TestPropertySource(properties = {
         "enricher.url=http://localhost:9505",
         "basicAuth.username=admin",
-        "basicAuth.password=password(OBF:1u2a1toa1w8v1tok1u30)"
+        "basicAuth.password=OBF:1u2a1toa1w8v1tok1u30"
 })
-@ContextConfiguration(initializers = PropertyPasswordConfiguration.class, classes = Application.class)
+
 public class NetworkDiscoveryTest {
     private static final String V1 = "v1";
     private static final String APP = "junit";
@@ -88,7 +86,8 @@ public class NetworkDiscoveryTest {
     private static final String RESOURCE_TYPE_VSERVER = "vserver";
     private static final String CALLBACK_PATH = "/callback";
 
-    private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString(("admin:admin").getBytes());
+    private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString((
+            "admin:" + Password.deobfuscate("OBF:1u2a1toa1w8v1tok1u30")).getBytes());
     @Autowired
     private Environment environment;
 

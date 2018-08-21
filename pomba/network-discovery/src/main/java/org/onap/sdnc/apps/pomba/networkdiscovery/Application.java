@@ -39,7 +39,6 @@ public class Application extends SpringBootServletInitializer {
     }
 
     public static void main(String[] args) throws Exception {
-        SpringApplication app = new SpringApplication(Application.class);
-        app.addInitializers(new PropertyPasswordConfiguration());
+        SpringApplication.run(Application.class, args);
     }
 }

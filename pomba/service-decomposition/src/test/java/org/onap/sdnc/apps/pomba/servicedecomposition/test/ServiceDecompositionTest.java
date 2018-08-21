@@ -36,21 +36,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.jetty.util.security.Password;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
-import org.onap.sdnc.apps.pomba.servicedecomposition.Application;
-import org.onap.sdnc.apps.pomba.servicedecomposition.PropertyPasswordConfiguration;
 import org.onap.sdnc.apps.pomba.servicedecomposition.service.rs.RestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -64,12 +62,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
         "aai.host=localhost",
         "aai.port=8081",
         "basicAuth.username=admin",
-        "basicAuth.password=password(OBF:1u2a1toa1w8v1tok1u30)"
+        "basicAuth.password=OBF:1u2a1toa1w8v1tok1u30"
 })
-@ContextConfiguration(initializers = PropertyPasswordConfiguration.class, classes = Application.class)
+
 public class ServiceDecompositionTest {
 
-    private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString(("admin:admin").getBytes());
+    private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString((
+            "admin:" + Password.deobfuscate("OBF:1u2a1toa1w8v1tok1u30")).getBytes());
 
     // TODO missing code coverage for VNFC resources
 
