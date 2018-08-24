@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_41eec523",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/util/RestUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 355,
+      "author": {
+        "id": 2475
+      },
+      "writtenOn": "2018-08-24T18:16:35Z",
+      "side": 1,
+      "message": "I would have used a simple trim() here instead of the expensive regex above.",
+      "revId": "970bd243613151e56e723eb8a555319be800c703",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
