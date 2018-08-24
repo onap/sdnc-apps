@@ -349,7 +349,8 @@ public class RestUtil {
 
     private static List<Resource> getResourceTypes(String aaiResourceList) {
         List<Resource> resources = new ArrayList<Resource>();
-        String[] resourceList = aaiResourceList.split(",");
+        String noSpaceAaiResourceList = aaiResourceList.replaceAll("\\s", "");
+        String[] resourceList = noSpaceAaiResourceList.split(",");
         for (int i = 0; i < resourceList.length; i++) {
                 resources.add(new Resource(resourceList[i]));
         }
