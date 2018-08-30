@@ -17,6 +17,8 @@
  */
 package org.onap.sdnc.apps.pomba.networkdiscovery.datamodel;
 
+import org.onap.pomba.common.datatypes.DataQuality;
+
 public class Attribute {
     private String name;
     private String value;

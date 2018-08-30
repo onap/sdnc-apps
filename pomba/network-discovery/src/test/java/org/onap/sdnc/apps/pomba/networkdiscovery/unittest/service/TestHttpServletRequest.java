@@ -15,6 +15,7 @@
  * limitations under the License.
  * ============LICENSE_END=====================================================
  */
+
 package org.onap.sdnc.apps.pomba.networkdiscovery.unittest.service;
 
 import java.io.BufferedReader;

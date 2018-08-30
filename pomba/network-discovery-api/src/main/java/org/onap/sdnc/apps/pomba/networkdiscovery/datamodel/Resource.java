@@ -18,6 +18,7 @@
 package org.onap.sdnc.apps.pomba.networkdiscovery.datamodel;
 
 import java.util.List;
+import org.onap.pomba.common.datatypes.DataQuality;
 
 public class Resource {
     private String id;

@@ -15,6 +15,7 @@
  * limitations under the License.
  * ============LICENSE_END=====================================================
  */
+
 package org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.test;
 
 import static org.junit.Assert.assertEquals;
@@ -24,8 +25,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
+import org.onap.pomba.common.datatypes.DataQuality;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Attribute;
-import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.DataQuality;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryNotification;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Resource;
 
@@ -67,16 +68,5 @@ public class PojoTest {
             assertEquals(DataQuality.Status.ok, attribute.getDataQuality().getStatus());
         }
         assertEquals(0, expectedValues.size());
-    }
-
-    @Test
-    public void dataQualityHelpers() {
-        DataQuality value = DataQuality.ok();
-        assertEquals(DataQuality.Status.ok, value.getStatus());
-        assertNull(value.getErrorText());
-
-        value = DataQuality.error("test");
-        assertEquals(DataQuality.Status.error, value.getStatus());
-        assertEquals("test", value.getErrorText());
     }
 }

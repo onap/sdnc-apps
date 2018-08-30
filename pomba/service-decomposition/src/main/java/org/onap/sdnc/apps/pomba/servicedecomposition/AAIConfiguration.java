@@ -18,7 +18,6 @@
 package org.onap.sdnc.apps.pomba.servicedecomposition;
 
 import org.onap.aai.restclient.client.RestClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;

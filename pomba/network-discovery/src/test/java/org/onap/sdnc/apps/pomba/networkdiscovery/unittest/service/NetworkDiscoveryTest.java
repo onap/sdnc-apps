@@ -53,8 +53,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
+import org.onap.pomba.common.datatypes.DataQuality;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Attribute;
-import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.DataQuality;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryNotification;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryResponse;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Resource;
@@ -257,7 +257,7 @@ public class NetworkDiscoveryTest {
 
         verifyAttribute(vserver.getAttributeList(), "status", "ACTIVE");
         verifyAttribute(vserver.getAttributeList(), "inMaintenance", "true");
-        verifyAttribute(vserver.getAttributeList(), "hostname", "10.147.112.48");
+        verifyAttribute(vserver.getAttributeList(), "hostName", "10.147.112.48");
         verifyAttribute(vserver.getAttributeList(), "vmState", "active");
     }
 

@@ -25,8 +25,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.onap.sdnc.apps.pomba.networkdiscovery.AuthorizationConfiguration;
 
-public class AuthorizationConfigurationTest
-{
+public class AuthorizationConfigurationTest {
     AuthorizationConfiguration authorizationConfiguration =
             mock(AuthorizationConfiguration.class);
 
