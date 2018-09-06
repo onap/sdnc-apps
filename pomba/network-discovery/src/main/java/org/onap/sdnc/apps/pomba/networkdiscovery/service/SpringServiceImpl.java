@@ -132,36 +132,6 @@ public class SpringServiceImpl implements SpringService {
         this.executor.shutdown();
     }
 
-    private List<Attribute> toAttributeList(String xml, ONAPLogAdapter adapter) throws SAXException, IOException {
-        Logger log = adapter.unwrap();
-        Document doc = this.parser.parse(new InputSource(new StringReader(xml)));
-        NodeList children = doc.getDocumentElement().getChildNodes();
-        List<Attribute> result = new ArrayList<>();
-        for (int i = 0; i < children.getLength(); i++) {
-            Node child = children.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE) {
-
-                // remove white space before conversion
-                String attributeName = ((Element) child).getTagName().replaceAll("\\s", "");
-
-                // If the incoming attribute name is not listed in the
-                // attributeNameMapping, then this attribute will be removed.
-                String newName = enricherAttributeNameMapping.get(attributeName);
-                if (newName != null) {
-                    Attribute attr = new Attribute();
-                    attr.setName(newName);
-                    attr.setValue(((Element) child).getTextContent());
-                    attr.setDataQuality(DataQuality.ok());
-                    result.add(attr);
-                } else {
-                    log.debug("[" + ((Element) child).getTagName()
-                                    + "] was removed due to not listed in enricherAttributeNameMapping.");
-                }
-            }
-        }
-        return result;
-    }
-
     private void sendNotification(String url, String authorization, Object notification, ONAPLogAdapter adapter) {
 
         Invocation.Builder request = this.callbackClient.target(url).request().accept(MediaType.TEXT_PLAIN_TYPE);
@@ -296,6 +266,37 @@ public class SpringServiceImpl implements SpringService {
             // call client back with resource details
             sendNotification(this.notificationURL, this.notificationAuthorization, notification, adapter);
         }
+
+        private List<Attribute> toAttributeList(String xml, ONAPLogAdapter adapter) throws SAXException, IOException {
+            Logger log = adapter.unwrap();
+            Document doc = parser.parse(new InputSource(new StringReader(xml)));
+            NodeList children = doc.getDocumentElement().getChildNodes();
+            List<Attribute> result = new ArrayList<>();
+            for (int i = 0; i < children.getLength(); i++) {
+                Node child = children.item(i);
+                if (child.getNodeType() == Node.ELEMENT_NODE) {
+
+                    // remove white space before conversion
+                    String attributeName = ((Element) child).getTagName().replaceAll("\\s", "");
+
+                    // If the incoming attribute name is not listed in the
+                    // attributeNameMapping, then this attribute will be removed.
+                    String newName = enricherAttributeNameMapping.get(attributeName);
+                    if (newName != null) {
+                        Attribute attr = new Attribute();
+                        attr.setName(newName);
+                        attr.setValue(((Element) child).getTextContent());
+                        attr.setDataQuality(DataQuality.ok());
+                        result.add(attr);
+                    } else {
+                        log.debug("[" + ((Element) child).getTagName()
+                                + "] was removed due to not listed in enricherAttributeNameMapping.");
+                    }
+                }
+            }
+            return result;
+        }
+
     }
 
     private static class RequestBuilderWrapper implements RequestBuilder<RequestBuilderWrapper> {
