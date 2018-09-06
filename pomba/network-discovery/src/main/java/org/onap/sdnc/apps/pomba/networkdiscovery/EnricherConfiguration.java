@@ -48,6 +48,9 @@ public class EnricherConfiguration {
     @Value("${enricher.readTimeout:60000}")
     private int readTimeout;
 
+    @Value("${enricher.attributeNameMappingList}")
+    private String enricherAttributeNameMappingList;
+
     @Bean(name = "enricherClient")
     public RestClient restClient() {
         return new RestClient().validateServerHostname(false)
@@ -82,9 +85,6 @@ public class EnricherConfiguration {
 
         return result;
     }
-
-    @Value("${enricher.attributeNameMappingList}")
-    private String enricherAttributeNameMappingList;
 
     @Bean(name = "enricherAttributeNameMapping")
     public Map<String, String> getAttributeNameMap() {
