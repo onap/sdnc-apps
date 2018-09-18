@@ -33,13 +33,13 @@ public class EnricherConfiguration {
     @Autowired
     private Environment env;
 
-    @Value("${enricher.url}")
+    @Value("${enricher.url:https://localhost:9505}")
     private String url;
 
-    @Value("${enricher.keyStorePath}")
+    @Value("${enricher.keyStorePath:config/auth/client-cert-onap.p12}")
     private String keyStorePath;
 
-    @Value("${enricher.keyStorePassword:OBF:1i9a1u2a1unz1lr61wn51wn11lss1unz1u301i6o}")
+    @Value("${enricher.keyStorePassword:OBF:1y0q1uvc1uum1uvg1pil1pjl1uuq1uvk1uuu1y10}")
     private String keyStorePassword;
 
     @Value("${enricher.connectionTimeout:5000}")

@@ -74,6 +74,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 @SpringBootTest
 @TestPropertySource(properties = { "enricher.url=http://localhost:9505",
+        "enricher.keyStorePath=src/test/resources/client-cert-onap.p12",
+        "enricher.keyStorePassword=OBF:1y0q1uvc1uum1uvg1pil1pjl1uuq1uvk1uuu1y10",
         "basicAuth.username=admin",
         "basicAuth.password=OBF:1u2a1toa1w8v1tok1u30" })
 public class NetworkDiscoveryTest {

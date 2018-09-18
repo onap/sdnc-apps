@@ -33,21 +33,6 @@ public class AAIConfiguration {
     @Value("${aai.httpProtocol}")
     private String httpProtocol;
 
-    @Value("${aai.trustStorePath}")
-    private String trustStorePath;
-
-    @Value("${aai.keyStorePath}")
-    private String keyStorePath;
-
-    @Value("${aai.keyStorePassword}")
-    private String keyStorePassword;
-
-    @Value("${aai.keyManagerFactoryAlgorithm}")
-    private String keyManagerFactoryAlgorithm;
-
-    @Value("${aai.keyStoreType}")
-    private String keyStoreType;
-
     @Value("${aai.securityProtocol}")
     private String securityProtocol;
 
