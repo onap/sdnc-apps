@@ -12,10 +12,8 @@ RUN mkdir -p $MICROSERVICE_HOME/bin/
 ADD network-discovery.jar $MICROSERVICE_HOME/lib/
 ADD startService.sh $MICROSERVICE_HOME/bin/
 COPY config/ $MICROSERVICE_HOME/config/
-COPY config/auth/ $MICROSERVICE_HOME/config/auth/
 
 RUN chmod 755 $MICROSERVICE_HOME/config/*
-RUN chmod 755 $MICROSERVICE_HOME/config/auth/*
 RUN chmod 755 $MICROSERVICE_HOME/lib/*
 RUN chmod 755 $MICROSERVICE_HOME/bin/*
 

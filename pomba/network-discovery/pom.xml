@@ -286,25 +286,6 @@ limitations under the License.
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>copy-certificate</id>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <configuration>
-                                    <outputDirectory>${project.basedir}/target/docker-stage/config/auth</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>config/auth</directory>
-                                            <includes>
-                                                <include>*.p12</include>
-                                            </includes>
-                                            <filtering>false</filtering>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>copy-script</id>
                                 <goals>
                                     <goal>copy-resources</goal>
