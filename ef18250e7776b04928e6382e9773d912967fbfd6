@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_219205a0",
+        "filename": "pomba/service-decomposition/config/application.properties",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1077
+      },
+      "writtenOn": "2018-09-25T20:27:08Z",
+      "side": 0,
+      "message": "looks good",
+      "revId": "ef18250e7776b04928e6382e9773d912967fbfd6",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
