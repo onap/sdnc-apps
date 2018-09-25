@@ -59,8 +59,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @SpringBootTest
 @TestPropertySource(properties = {
         "aai.httpProtocol=http",
-        "aai.host=localhost",
-        "aai.port=8081",
+        "aai.serviceName=localhost",
+        "aai.servicePort=8081",
         "basicAuth.username=admin",
         "basicAuth.password=OBF:1u2a1toa1w8v1tok1u30"
 })

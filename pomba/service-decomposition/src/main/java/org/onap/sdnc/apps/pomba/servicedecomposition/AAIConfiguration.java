@@ -24,10 +24,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AAIConfiguration {
-    @Value("${aai.host}")
+    @Value("${aai.serviceName}")
     private String host;
 
-    @Value("${aai.port}")
+    @Value("${aai.servicePort}")
     private String port;
 
     @Value("${aai.httpProtocol}")
