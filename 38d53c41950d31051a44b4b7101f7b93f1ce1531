@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_ceed7927",
+        "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/AAIConfiguration.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 3479
+      },
+      "writtenOn": "2018-09-26T15:19:12Z",
+      "side": 1,
+      "message": "And it wasn\u0027t needed in the past or was it just a miss?  I can\u0027t seem to find the reference in this review.",
+      "parentUuid": "1a76adc5_4e92c9a0",
+      "revId": "38d53c41950d31051a44b4b7101f7b93f1ce1531",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_eeb71539",
         "filename": "pomba/service-decomposition/src/main/java/org/onap/sdnc/apps/pomba/servicedecomposition/exception/DiscoveryException.java",
         "patchSetId": 1
