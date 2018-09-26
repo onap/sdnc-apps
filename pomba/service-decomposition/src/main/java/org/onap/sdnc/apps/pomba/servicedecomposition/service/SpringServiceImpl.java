@@ -25,6 +25,7 @@ import org.onap.sdnc.apps.pomba.servicedecomposition.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException.Error.*;
 
 
 @org.springframework.stereotype.Service
@@ -37,6 +38,9 @@ public class SpringServiceImpl implements SpringService {
 
     @Autowired
     private String aaiBaseUrl;
+
+    @Autowired
+    private String aaiBasicAuthorization;
 
     @Autowired
     private String aaiServiceInstancePath;
@@ -52,8 +56,16 @@ public class SpringServiceImpl implements SpringService {
 
 
         log.info("Querying A&AI for service instance " + serviceInstanceId);
-        JSONObject serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiServiceInstancePath, aaiResourceList,
-                transactionId, serviceInstanceId, adapter);
+        JSONObject serviceInstance = null;
+
+        try {
+            serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiBasicAuthorization, aaiServiceInstancePath, aaiResourceList,
+                    transactionId, serviceInstanceId, adapter);
+        } catch (DiscoveryException de) {
+            throw de;
+        } catch (Exception e) {
+            throw  new DiscoveryException(GENERAL_FAILURE, e , e.getLocalizedMessage());
+        }
         return serviceInstance.toString();
     }
 

@@ -17,6 +17,8 @@
  */
 package org.onap.sdnc.apps.pomba.servicedecomposition;
 
+import java.util.Base64;
+import org.eclipse.jetty.util.security.Password;
 import org.onap.aai.restclient.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +31,12 @@ public class AAIConfiguration {
 
     @Value("${aai.servicePort}")
     private String port;
+
+    @Value("${aai.username}")
+    private String aaiUsername;
+
+    @Value("${aai.password}")
+    private String aaiPassword;
 
     @Value("${aai.httpProtocol}")
     private String httpProtocol;
@@ -48,11 +56,29 @@ public class AAIConfiguration {
     @Value("${aai.resourceList}")
     private String resourceList;
 
+    @Value("${basicAuth.username:admin}")
+    private String username;
+
+    @Value("${basicAuth.password:OBF:1u2a1toa1w8v1tok1u30}")
+    private String password;
+
+    @Bean(name="aaiBasicAuthorization")
+    public String getAAIBasicAuth() {
+        return "Basic " + Base64.getEncoder().encodeToString((this.aaiUsername + ":" + Password.deobfuscate(this.aaiPassword)).getBytes());
+    }
+
+    @Bean(name="basicAuthHeader")
+    public String getSdBasicAuthHeader() {
+        return "Basic " + Base64.getEncoder().encodeToString((this.username + ":" + Password.deobfuscate(this.password)).getBytes());
+    }
+
     @Bean(name="aaiClient")
     public RestClient restClient() {
         return new RestClient()
                 .validateServerHostname(false)
                 .validateServerCertChain(false)
+                .basicAuthPassword(aaiUsername)
+                .basicAuthPassword(Password.deobfuscate(aaiPassword))
                 .connectTimeoutMs(this.connectionTimeout)
                 .readTimeoutMs(this.readTimeout);
     }
