@@ -39,6 +39,9 @@ public class SpringServiceImpl implements SpringService {
     private String aaiBaseUrl;
 
     @Autowired
+    private String aaiBasicAuthorization;
+
+    @Autowired
     private String aaiServiceInstancePath;
 
     @Autowired
@@ -52,8 +55,16 @@ public class SpringServiceImpl implements SpringService {
 
 
         log.info("Querying A&AI for service instance " + serviceInstanceId);
-        JSONObject serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiServiceInstancePath, aaiResourceList,
-                transactionId, serviceInstanceId, adapter);
+        JSONObject serviceInstance = null;
+
+        try {
+            serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiBasicAuthorization, aaiServiceInstancePath, aaiResourceList,
+                    transactionId, serviceInstanceId, adapter);
+        } catch (DiscoveryException de) {
+            throw de;
+        } catch (Exception e) {
+            throw  new DiscoveryException(e.getMessage(), e);
+        }
         return serviceInstance.toString();
     }
 

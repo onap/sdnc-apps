@@ -64,6 +64,11 @@ public class DiscoveryException extends Exception {
         this.httpStatus = httpStatus;
     }
 
+    public DiscoveryException(String message, Exception cause) {
+        super(message, cause);
+        this.httpStatus = Status.INTERNAL_SERVER_ERROR;
+    }
+
     public DiscoveryException(Error error, Exception cause, Object... args) {
         super(error.getMessage(args), cause);
         this.httpStatus = Status.INTERNAL_SERVER_ERROR;

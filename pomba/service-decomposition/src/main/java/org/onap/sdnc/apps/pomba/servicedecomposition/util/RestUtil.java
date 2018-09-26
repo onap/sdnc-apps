@@ -51,6 +51,7 @@ public class RestUtil {
     private static final String TRANSACTION_ID = "X-TransactionId";
     private static final String FROM_APP_ID = "X-FromAppId";
     private static final String APP_NAME = "aaiCtxBuilder";
+    private static final String AUTHORIZATION = "Authorization";
 
     private static final Resource GENERIC_VNF = new Resource("generic-vnf");
 
@@ -104,22 +105,23 @@ public class RestUtil {
     /**
      * @param aaiClient
      * @param baseURL
+     * @param aaiBasicAuthorization
      * @param aaiServiceInstancePath
+     * @param aaiResourceList
      * @param transactionId
      * @param serviceInstanceId
-     * @param modelVersionId
-     * @param modelInvariantId
+     * @param adapter
      * @return
      * @throws DiscoveryException
      */
-    public static JSONObject retrieveAAIModelData(RestClient aaiClient, String baseURL, String aaiServiceInstancePath, String aaiResourceList,
+    public static JSONObject retrieveAAIModelData(RestClient aaiClient, String baseURL, String aaiBasicAuthorization, String aaiServiceInstancePath, String aaiResourceList,
             String transactionId, String serviceInstanceId, ONAPLogAdapter adapter) throws DiscoveryException {
 
         // Follow two variables for transform purpose
         String url = baseURL + generateServiceInstanceURL(aaiServiceInstancePath, serviceInstanceId);
         // Response from service instance API call
         JSONObject serviceInstancePayload = new JSONObject(
-                getResource(aaiClient, url, transactionId));
+                getResource(aaiClient, url, aaiBasicAuthorization, transactionId));
         // Handle the case if the service instance is not found in AAI
         if (serviceInstancePayload == null || serviceInstancePayload.length() == 0) {
             logger.info("Service Instance " + serviceInstanceId + " is not found from AAI");
@@ -131,7 +133,7 @@ public class RestUtil {
         logger.info("The number of the relationships for service instance id {} is: {}", serviceInstanceId,
                 relationMap.size());
 
-        JSONObject response = processVNFRelationMap(aaiClient, aaiResourceList, baseURL, transactionId, relationMap, serviceInstancePayload);
+        JSONObject response = processVNFRelationMap(aaiClient, aaiResourceList, baseURL, aaiBasicAuthorization, transactionId, relationMap, serviceInstancePayload);
         return response;
     }
 
@@ -143,7 +145,7 @@ public class RestUtil {
      * @param relationMap
      * @throws DiscoveryException
      */
-    private static JSONObject processVNFRelationMap(RestClient aaiClient, String aaiResourceList, String baseURL, String transactionId,
+    private static JSONObject processVNFRelationMap(RestClient aaiClient, String aaiResourceList, String baseURL, String aaiBasicAuthorization, String transactionId,
             HashMap<String, List<String>> relationMap, JSONObject serviceInstancePayload) throws DiscoveryException {
         List<JSONObject> vnfLst = new ArrayList<JSONObject>(); // List of the VNF JSON along with related resources
 
@@ -152,7 +154,7 @@ public class RestUtil {
         List<Resource> resourceTypes = getResourceTypes(aaiResourceList);
 
         if (relationMap.get(GENERIC_VNF.getResourceName()) != null) {
-            List<JSONObject> vnfList = processResourceList(aaiClient, baseURL, transactionId, GENERIC_VNF.getResourceName(),
+            List<JSONObject> vnfList = processResourceList(aaiClient, baseURL, aaiBasicAuthorization, transactionId, GENERIC_VNF.getResourceName(),
                     relationMap.get(GENERIC_VNF.getResourceName()));
             // Logic to Create the Generic VNF JSON and extract further relationships
             for (JSONObject vnfPayload : vnfList) {
@@ -160,7 +162,7 @@ public class RestUtil {
                     List<String> vnfcLinkLst = extractRelatedLink(vnfPayload, resourceType.getResourceName());
                     if (vnfcLinkLst != null && !vnfcLinkLst.isEmpty()) {
                         logger.info("The number of the API call for vnfc is:" + vnfcLinkLst.size());
-                        List<JSONObject> vnfcList = processResourceList(aaiClient, baseURL, transactionId,
+                        List<JSONObject> vnfcList = processResourceList(aaiClient, baseURL, aaiBasicAuthorization, transactionId,
                                 resourceType.getResourceName(), vnfcLinkLst);
                         if (vnfcList != null) {
                             vnfPayload.put(resourceType.getCollectionName(), vnfcList);
@@ -194,7 +196,7 @@ public class RestUtil {
      * @return
      * @throws DiscoveryException
      */
-    private static List<JSONObject> processResourceList(RestClient aaiClient, String aaiBaseURL, String transactionId,
+    private static List<JSONObject> processResourceList(RestClient aaiClient, String aaiBaseURL, String aaiBasicAuthorization, String transactionId,
             String resourceType, List<String> resourceList) throws DiscoveryException {
         List<JSONObject> resourcePayloadList = new ArrayList<JSONObject>();
         for (String resourceLink : resourceList) {
@@ -207,7 +209,7 @@ public class RestUtil {
 
             // Response from generic VNF API call
             JSONObject resourcePayload = new JSONObject(
-                    getResource(aaiClient, resourceURL, transactionId));
+                    getResource(aaiClient, resourceURL, aaiBasicAuthorization, transactionId));
             if (resourcePayload == null || resourcePayload.length() == 0) {
                 logger.info("Resource with url " + resourceLink + " is not found from AAI");
             } else {
@@ -265,14 +267,14 @@ public class RestUtil {
     /**
      * @param client
      * @param url
+     * @param aaiBasicAuthorization
      * @param transId
-     * @param mediaType
      * @return
      * @throws DiscoveryException
      */
-    private static String getResource(RestClient client, String url, String transId)
+    private static String getResource(RestClient client, String url, String aaiBasicAuthorization, String transId)
             throws DiscoveryException {
-        OperationResult result = client.get(url, buildHeaders(transId), MediaType.valueOf(MediaType.APPLICATION_JSON));
+        OperationResult result = client.get(url, buildHeaders(aaiBasicAuthorization, transId), MediaType.valueOf(MediaType.APPLICATION_JSON));
 
         if (result.getResultCode() == 200) {
             String jsonString = result.getResult();
@@ -340,10 +342,11 @@ public class RestUtil {
 
 
 
-    private static Map<String, List<String>> buildHeaders(String transactionId) {
+    private static Map<String, List<String>> buildHeaders(String aaiBasicAuthorization, String transactionId) {
         MultivaluedMap<String, String> headers = new MultivaluedMapImpl();
         headers.put(TRANSACTION_ID, Collections.singletonList(transactionId));
         headers.put(FROM_APP_ID, Collections.singletonList(APP_NAME));
+        headers.put(AUTHORIZATION, Collections.singletonList(aaiBasicAuthorization));
         return headers;
     }
 
