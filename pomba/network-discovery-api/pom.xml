@@ -41,7 +41,7 @@ limitations under the License.
         <dependency>
             <groupId>org.onap.logging-analytics.pomba</groupId>
             <artifactId>pomba-audit-common</artifactId>
-            <version>1.3.1-SNAPSHOT</version>
+            <version>1.3.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
