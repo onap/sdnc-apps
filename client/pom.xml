@@ -17,11 +17,11 @@
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>client-parent</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
     </parent>
 
     <properties>
-        <northbound.version>1.4.0-SNAPSHOT</northbound.version>
+        <northbound.version>1.4.0</northbound.version>
     </properties>
 
     <dependencies>
