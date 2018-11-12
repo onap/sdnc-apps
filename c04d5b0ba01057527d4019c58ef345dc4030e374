@@ -1,0 +1,9 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Michael O'Brien <frank.obrien@amdocs.com>
+Code-Review+1: Geora Barsky <georab@amdocs.com>
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Mon, 12 Nov 2018 20:40:52 +0000
+Reviewed-on: https://gerrit.onap.org/r/72341
+Project: sdnc/apps
+Branch: refs/heads/casablanca
