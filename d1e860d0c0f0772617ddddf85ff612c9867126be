@@ -1,0 +1,9 @@
+Code-Review+1: James MacNider <James.MacNider@amdocs.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Code-Review+2: David Stilwell <stilwelld@att.com>
+Submitted-by: David Stilwell <stilwelld@att.com>
+Submitted-at: Thu, 15 Nov 2018 20:52:20 +0000
+Reviewed-on: https://gerrit.onap.org/r/72688
+Project: sdnc/apps
+Branch: refs/heads/casablanca
