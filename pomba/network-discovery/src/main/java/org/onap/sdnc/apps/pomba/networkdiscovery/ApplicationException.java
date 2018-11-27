@@ -47,10 +47,6 @@ public class ApplicationException extends Exception {
     private final Status httpStatus;
     private String responseCode;
 
-    public ApplicationException(String message) {
-        this(message, Status.INTERNAL_SERVER_ERROR);
-    }
-
     public ApplicationException(Error errorCode, Status httpStatus, Object... args) {
         super(errorCode.getMessage(args));
         if (httpStatus == null) {
@@ -59,19 +55,6 @@ public class ApplicationException extends Exception {
 
         this.responseCode = errorCode.getResponseCode();
         this.httpStatus = httpStatus;
-    }
-
-    public ApplicationException(String message, Status httpStatus) {
-        super(message);
-        if (httpStatus == null) {
-            throw new NullPointerException("httpStatus");
-        }
-        this.httpStatus = httpStatus;
-    }
-
-    public ApplicationException(String message, Exception cause) {
-        super(message, cause);
-        this.httpStatus = Status.INTERNAL_SERVER_ERROR;
     }
 
     public Status getHttpStatus() {

@@ -1,0 +1,18 @@
+{
+    "auth": {
+        "identity": {
+            "methods": [
+                "password"
+            ],
+            "password": {
+                "user": {
+                    "name": "%USER%",
+                    "domain": {
+                        "name": "Default"
+                    },
+                    "password": "%PASSWORD%"
+                }
+            } 
+        }
+    }
+}

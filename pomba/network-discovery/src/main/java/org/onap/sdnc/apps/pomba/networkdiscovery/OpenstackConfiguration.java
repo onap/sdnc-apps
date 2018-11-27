@@ -20,58 +20,77 @@ package org.onap.sdnc.apps.pomba.networkdiscovery;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import org.eclipse.jetty.util.security.Password;
 import org.onap.aai.restclient.client.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import com.google.common.base.Splitter;
 
 @Configuration
-public class EnricherConfiguration {
+public class OpenstackConfiguration {
     @Autowired
     private Environment env;
 
-    @Value("${enricher.url:https://localhost:9505}")
-    private String url;
+    @Value("${openstack.identity.url:http://localhost:5000/v3}")
+    private String identityUrl;
 
-    @Value("${enricher.keyStorePath:config/auth/client-cert-onap.p12}")
+    @Value("${openstack.identity.user}")
+    private String identityUser;
+
+    @Value("${openstack.identity.password}")
+    private String identityPassword;
+
+    @Value("${openstack.api.microversion}")
+    private String apiMicroversion;
+
+    @Value("${openstack.identity.keyStorePath:config/auth/client-cert-onap.p12}")
     private String keyStorePath;
 
-    @Value("${enricher.keyStorePassword:OBF:1y0q1uvc1uum1uvg1pil1pjl1uuq1uvk1uuu1y10}")
+    @Value("${openstack.identity.keyStorePassword:OBF:1y0q1uvc1uum1uvg1pil1pjl1uuq1uvk1uuu1y10}")
     private String keyStorePassword;
 
-    @Value("${enricher.connectionTimeout:5000}")
+    @Value("${openstack.connectionTimeout:5000}")
     private int connectionTimeout;
 
-    @Value("${enricher.readTimeout:60000}")
+    @Value("${openstack.readTimeout:60000}")
     private int readTimeout;
 
-    @Value("${enricher.attributeNameMappingList}")
-    private String enricherAttributeNameMappingList;
-
-    @Bean(name = "enricherClient")
+    @Bean(name = "openstackClient")
     public RestClient restClient() {
         return new RestClient().validateServerHostname(false)
                         .validateServerCertChain(false)
                         .connectTimeoutMs(this.connectionTimeout)
-                        .readTimeoutMs(this.readTimeout)
-                        .clientCertFile(this.keyStorePath)
-                        .clientCertPassword(org.eclipse.jetty.util.security.Password.deobfuscate(
-                                        this.keyStorePassword));
+                        .readTimeoutMs(this.readTimeout);
     }
 
-    @Bean(name = "enricherBaseUrl")
-    public String getURL() {
-        return this.url;
+    @Bean(name = "openstackIdentityUrl")
+    public String getIdentityURL() {
+        return this.identityUrl;
     }
 
-    @Bean(name = "enricherTypeURLs")
-    public Map<String, String> enricherTypeURLs() {
+    @Bean(name = "openstackIdentityUser")
+    public String getIdentityUser() {
+        return this.identityUser;
+    }
+
+    @Bean(name = "openstackIdentityPassword")
+    public String getIdentityPassword() {
+        return Password.deobfuscate(this.identityPassword);
+    }
+
+    @Bean(name = "openstackApiMicroversion")
+    public String getApiMicroversion() {
+        return this.apiMicroversion;
+    }
+
+    @Bean(name = "openstackTypeURLs")
+    public Map<String, String> getOpenstackTypeURLs() {
 
         Map<String, String> result = new HashMap<>();
-        String types = this.env.getProperty("enricher.types");
+        String types = this.env.getProperty("openstack.types");
         if (types == null) {
             return result;
         }
@@ -79,16 +98,11 @@ public class EnricherConfiguration {
         StringTokenizer tokenizer = new StringTokenizer(types, ", ");
         while (tokenizer.hasMoreTokens()) {
             String type = tokenizer.nextToken();
-            String enricherUrl = this.env.getProperty("enricher.type." + type + ".url");
-            result.put(type, enricherUrl);
+            String openstackUrl = this.env.getProperty("openstack.type." + type + ".url");
+            result.put(type, openstackUrl);
         }
 
         return result;
     }
 
-    @Bean(name = "enricherAttributeNameMapping")
-    public Map<String, String> getAttributeNameMap() {
-        String noWhiteSpaceString = enricherAttributeNameMappingList.replaceAll("\\s", "");
-        return (Splitter.on(";").withKeyValueSeparator(":").split(noWhiteSpaceString));
-    }
 }

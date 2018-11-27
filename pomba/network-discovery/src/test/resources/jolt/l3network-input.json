@@ -1,0 +1,32 @@
+{
+    "network": {
+        "provider:physical_network": "public",
+        "ipv6_address_scope": null,
+        "revision_number": 9,
+        "port_security_enabled": true,
+        "mtu": 1500,
+        "id": "8df84f0a-737a-4628-be9c-c3c78454f9d9",
+        "router:external": true,
+        "availability_zone_hints": [],
+        "availability_zones": [
+            "nova"
+        ],
+        "ipv4_address_scope": null,
+        "shared": true,
+        "project_id": "c44b872f6830498b88c4989d67b2a6b7",
+        "status": "ACTIVE",
+        "subnets": [
+            "d0e6ecad-7bc9-4138-b9e8-e742bdf9afd5"
+        ],
+        "description": "",
+        "tags": [],
+        "updated_at": "2018-10-03T21:15:10Z",
+        "is_default": false,
+        "provider:segmentation_id": 503,
+        "name": "NET_503",
+        "admin_state_up": true,
+        "tenant_id": "c44b872f6830498b88c4989d67b2a6b7",
+        "created_at": "2018-03-20T16:49:01Z",
+        "provider:network_type": "vlan"
+    }
+}
