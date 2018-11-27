@@ -1,0 +1,25 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "network": {
+        "id": "l3-network.id",
+        "name": "l3-network.name",
+        "admin_state_up": "l3-network.AdminState",
+        "shared": "l3-network.sharedNetwork",
+        "status": "l3-network.status",
+        "subnets": "l3-network.subnets",
+        "tenant_id": "l3-network.tenantId"
+      }
+    }
+  },
+  {
+    "operation": "default",
+    "spec": {
+      "*": {
+        "host-status": "UNKNOWN"
+      }
+    }
+  }
+
+]

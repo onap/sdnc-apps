@@ -20,7 +20,7 @@ package org.onap.sdnc.apps.pomba.networkdiscovery.unittest.service;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.okTextXml;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
@@ -28,13 +28,16 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.bazaarvoice.jolt.JsonUtils;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -42,16 +45,19 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import org.eclipse.jetty.util.security.Password;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.onap.pomba.common.datatypes.DataQuality;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Attribute;
@@ -64,7 +70,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -73,11 +78,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
 @WebAppConfiguration
 @SpringBootTest
-@TestPropertySource(properties = { "enricher.url=http://localhost:9505",
+@TestPropertySource(properties = { "openstack.type.vserver.url=http://localhost:8774/v2.1/servers/{0}",
+        "openstack.identity.url=http://localhost:5000/v3/auth/tokens",
         "enricher.keyStorePath=src/test/resources/client-cert-onap.p12",
         "enricher.keyStorePassword=OBF:1y0q1uvc1uum1uvg1pil1pjl1uuq1uvk1uuu1y10",
         "basicAuth.username=admin",
         "basicAuth.password=OBF:1u2a1toa1w8v1tok1u30" })
+
 public class NetworkDiscoveryTest {
     private static final String V1 = "v1";
     private static final String APP = "junit";
@@ -87,11 +94,12 @@ public class NetworkDiscoveryTest {
 
     private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString((
             "admin:" + Password.deobfuscate("OBF:1u2a1toa1w8v1tok1u30")).getBytes());
-    @Autowired
-    private Environment environment;
 
     @Rule
-    public WireMockRule enricherRule = new WireMockRule(wireMockConfig().port(9505));
+    public WireMockRule identityRule = new WireMockRule(wireMockConfig().port(5000));
+
+    @Rule
+    public WireMockRule openstackRule = new WireMockRule(wireMockConfig().port(8774));
 
     @Rule
     public WireMockRule callbackRule = new WireMockRule(wireMockConfig().dynamicPort());
@@ -101,7 +109,10 @@ public class NetworkDiscoveryTest {
 
     private String transactionId = UUID.randomUUID().toString();
     private String requestId = UUID.randomUUID().toString();
-    private HttpServletRequest httpRequest = new TestHttpServletRequest();
+    private HttpServletRequest httpRequest = Mockito.mock(HttpServletRequest.class);
+    
+    private static final String TEST_RESOURCES = "src/test/resources/jolt/";
+
 
     public NetworkDiscoveryTest() throws URISyntaxException {
 
@@ -139,6 +150,18 @@ public class NetworkDiscoveryTest {
     }
 
     @Test
+    public void testNoVersion() throws Exception {
+        // no Authorization header
+        String authorization = "Basic " + Base64.getEncoder().encodeToString("aaa:bbb".getBytes());
+        List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
+        Response response = this.service.findbyResourceIdAndType(this.httpRequest, null, authorization, APP,
+                this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+        assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+        // should get WWW-Authenticate header in response
+        assertTrue(((String) response.getEntity()).contains("version"));
+    }
+
+    @Test
     public void testVerifyAppId() throws Exception {
         // no X-FromAppId header
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
@@ -150,7 +173,6 @@ public class NetworkDiscoveryTest {
 
     @Test
     public void testVerifyRequestId() throws Exception {
-        // no X-FromAppId header
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
                         null, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
@@ -160,7 +182,6 @@ public class NetworkDiscoveryTest {
 
     @Test
     public void testVerifyNotificationUrl() throws Exception {
-        // no X-FromAppId header
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
                         this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, null);
@@ -200,31 +221,31 @@ public class NetworkDiscoveryTest {
     }
 
     @Test
+    public void testVerifyInternalError() throws Exception {
+        // no request
+        List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
+        Response response = this.service.findbyResourceIdAndType(null, V1, AUTH, APP, this.transactionId,
+                        this.requestId, null, resourceIds, getCallbackUrl());
+        assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+    }
+
+    @Test
     public void testDiscoverVserver() throws Exception {
         String vserverId = UUID.randomUUID().toString();
 
-        String resourcePath = MessageFormat.format(
-                        this.environment.getProperty("enricher.type.vserver.url"),
-                        new Object[] { vserverId });
+        String resourcePath = MessageFormat.format("/v2.1/servers/{0}",
+                new Object[] { vserverId });
 
-        String enricherPayload = String.format("<vserver xmlns=\"http://org.onap.aai.inventory/v11\">\r\n"
-                        + "   <vserver-id>%s</vserver-id>\r\n"
-                        + "   <power-state>1</power-state>\r\n"
-                        + "   <locked>true</locked>\r\n"
-                        + "   <hostname>10.147.112.48</hostname>\r\n"
-                        + "   <vm-state>active</vm-state>\r\n"
-                        + "   <status>ACTIVE</status>\r\n"
-                        + "   <host-status>UNKNOWN</host-status>\r\n"
-                        + "   <updated>2017-11-20T04:26:13Z</updated>\r\n"
-                        + "   <disk-allocation-gb>.010</disk-allocation-gb>\r\n"
-                        + "   <memory-usage-mb>null</memory-usage-mb>\r\n"
-                        + "   <cpu-util-percent>.043</cpu-util-percent>\r\n"
-                        + "   <retrieval-timestamp>2018-06-27 19:41:49 +0000</retrieval-timestamp>\r\n"
-                        + "</vserver>",
-                        vserverId);
+        String identityPath = "/v3/auth/tokens";
+      
+        Object sourceObject = JsonUtils.filepathToObject(TEST_RESOURCES + "vserver-input.json");
 
-        this.enricherRule.stubFor(get(resourcePath).willReturn(okTextXml(enricherPayload)));
+        String openstackApiResponse = JsonUtils.toJsonString(sourceObject);
 
+        this.openstackRule.stubFor(get(resourcePath).willReturn(okJson(openstackApiResponse)));
+
+        this.identityRule.stubFor(post(identityPath).willReturn(okJson("{}").withHeader("X-Subject-Token", "tokenId")));
+        
         this.callbackRule.stubFor(post(CALLBACK_PATH).willReturn(ok("Acknowledged")));
 
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, null, this.requestId,
@@ -259,9 +280,57 @@ public class NetworkDiscoveryTest {
 
         verifyAttribute(vserver.getAttributeList(), "status", "ACTIVE");
         verifyAttribute(vserver.getAttributeList(), "inMaintenance", "true");
-        verifyAttribute(vserver.getAttributeList(), "hostName", "10.147.112.48");
+        verifyAttribute(vserver.getAttributeList(), "hostname", "norm-bouygues");
         verifyAttribute(vserver.getAttributeList(), "vmState", "active");
     }
+    
+    @Test
+    public void testDiscoverVserverFailure() throws Exception {
+        String vserverId = UUID.randomUUID().toString();
+
+        String resourcePath = MessageFormat.format("/v2.1/servers/{0}",
+                new Object[] { vserverId });
+
+        String identityPath = "/v3/auth/tokens";
+ 
+        this.openstackRule.stubFor(get(resourcePath).willReturn(WireMock.notFound()));
+
+        this.identityRule.stubFor(post(identityPath).willReturn(okJson("{}").withHeader("X-Subject-Token", "tokenId")));
+        
+        this.callbackRule.stubFor(post(CALLBACK_PATH).willReturn(ok("Acknowledged")));
+
+        Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, null, this.requestId,
+                        RESOURCE_TYPE_VSERVER, Arrays.asList(vserverId), getCallbackUrl());
+
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        NetworkDiscoveryResponse entity = (NetworkDiscoveryResponse) response.getEntity();
+        assertEquals(requestId, entity.getRequestId());
+        assertEquals(Status.ACCEPTED.getStatusCode(), entity.getCode().intValue());
+        assertEquals(Boolean.FALSE, entity.getAckFinalIndicator());
+
+        List<ServeEvent> events = waitForRequests(this.callbackRule, 1, 10);
+        LoggedRequest notificationRequest = events.get(0).getRequest();
+        assertEquals(AUTH, notificationRequest.getHeader(HttpHeaders.AUTHORIZATION));
+        String notificationJson = notificationRequest.getBodyAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
+        mapper.setAnnotationIntrospector(introspector);
+        NetworkDiscoveryNotification notification = mapper.readValue(notificationJson,
+                        NetworkDiscoveryNotification.class);
+
+        assertEquals(requestId, notification.getRequestId());
+        assertEquals(Status.OK.getStatusCode(), notification.getCode().intValue());
+        assertEquals(Boolean.TRUE, notification.getAckFinalIndicator());
+
+        assertEquals(1, notification.getResources().size());
+        Resource vserver = notification.getResources().get(0);
+        assertEquals(vserverId, vserver.getId());
+        assertEquals("vserver", vserver.getType());
+        assertEquals(DataQuality.Status.error, vserver.getDataQuality().getStatus());
+        assertNull(vserver.getAttributeList());
+    }
+
 
     /**
      * Verify API returns a final response indicating no discovery possible.
@@ -276,9 +345,47 @@ public class NetworkDiscoveryTest {
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
 
         NetworkDiscoveryResponse entity = (NetworkDiscoveryResponse) response.getEntity();
+        System.err.println("entity:" + entity);
         assertEquals(Boolean.TRUE, entity.getAckFinalIndicator());
         assertEquals(Status.NO_CONTENT.getStatusCode(), entity.getCode().intValue());
     }
+    
+    @Test
+    public void testLoginFailure() throws Exception {
+        String vserverId = UUID.randomUUID().toString();
+
+        String identityPath = "/v3/auth/tokens";
+      
+        this.identityRule.stubFor(post(identityPath).willReturn(WireMock.unauthorized()));
+        
+        this.callbackRule.stubFor(post(CALLBACK_PATH).willReturn(ok("Acknowledged")));
+
+        Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, null, this.requestId,
+                        RESOURCE_TYPE_VSERVER, Arrays.asList(vserverId), getCallbackUrl());
+
+        assertEquals(Status.OK.getStatusCode(), response.getStatus());
+        NetworkDiscoveryResponse entity = (NetworkDiscoveryResponse) response.getEntity();
+        assertEquals(requestId, entity.getRequestId());
+        assertEquals(Status.ACCEPTED.getStatusCode(), entity.getCode().intValue());
+        assertEquals(Boolean.FALSE, entity.getAckFinalIndicator());
+
+        List<ServeEvent> events = waitForRequests(this.callbackRule, 1, 10);
+        LoggedRequest notificationRequest = events.get(0).getRequest();
+        assertEquals(AUTH, notificationRequest.getHeader(HttpHeaders.AUTHORIZATION));
+        String notificationJson = notificationRequest.getBodyAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
+        mapper.setAnnotationIntrospector(introspector);
+        NetworkDiscoveryNotification notification = mapper.readValue(notificationJson,
+                        NetworkDiscoveryNotification.class);
+
+        assertEquals(requestId, notification.getRequestId());
+        assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), notification.getCode().intValue());
+        assertEquals(Boolean.TRUE, notification.getAckFinalIndicator());
+        assertNull(notification.getResources());
+    }
+
 
     private void verifyAttribute(List<Attribute> attributeList, String attrName, String attrValue) {
         for (Attribute attr : attributeList) {

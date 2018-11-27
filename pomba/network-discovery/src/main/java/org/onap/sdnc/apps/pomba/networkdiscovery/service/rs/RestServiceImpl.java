@@ -64,14 +64,13 @@ public class RestServiceImpl implements RestService {
                                             String notificationURL) throws ApplicationException {
 
         ONAPLogAdapter adapter = new ONAPLogAdapter(log);
-        adapter.getServiceDescriptor().setServiceName(SERVICE_NAME);
-        adapter.entering(request);
+
         try {
+            adapter.getServiceDescriptor().setServiceName(SERVICE_NAME);
+            adapter.entering(request);
 
             if (version == null) {
-                // only unit tests can pass null here
-                // url matching will guarantee non-null in real server
-                version = "v1";
+                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "version");
             }
 
             if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
@@ -95,7 +94,7 @@ public class RestServiceImpl implements RestService {
 
             if (transactionId == null || transactionId.isEmpty()) {
                 transactionId = UUID.randomUUID().toString();
-                log.debug("transactionId is missing; using newly generated value: " + transactionId);
+                log.debug("transactionId is missing; using newly generated value: {}", transactionId);
             }
 
             // just reuse received Authorization header in callback

@@ -45,11 +45,7 @@ public class ApplicationException extends Exception {
     private static final long serialVersionUID = -4874149714911165454L;
 
     private final Status httpStatus;
-    private String responseCode;
-
-    public ApplicationException(String message) {
-        this(message, Status.INTERNAL_SERVER_ERROR);
-    }
+    private final String responseCode;
 
     public ApplicationException(Error errorCode, Status httpStatus, Object... args) {
         super(errorCode.getMessage(args));
@@ -59,19 +55,6 @@ public class ApplicationException extends Exception {
 
         this.responseCode = errorCode.getResponseCode();
         this.httpStatus = httpStatus;
-    }
-
-    public ApplicationException(String message, Status httpStatus) {
-        super(message);
-        if (httpStatus == null) {
-            throw new NullPointerException("httpStatus");
-        }
-        this.httpStatus = httpStatus;
-    }
-
-    public ApplicationException(String message, Exception cause) {
-        super(message, cause);
-        this.httpStatus = Status.INTERNAL_SERVER_ERROR;
     }
 
     public Status getHttpStatus() {

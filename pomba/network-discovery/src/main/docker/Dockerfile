@@ -6,6 +6,7 @@ ARG MICROSERVICE_HOME=/opt/app/
 RUN mkdir -p $MICROSERVICE_HOME
 RUN mkdir -p $MICROSERVICE_HOME/config/
 RUN mkdir -p $MICROSERVICE_HOME/config/auth/
+RUN mkdir -p $MICROSERVICE_HOME/config/jolt/
 RUN mkdir -p $MICROSERVICE_HOME/lib/
 RUN mkdir -p $MICROSERVICE_HOME/bin/
 

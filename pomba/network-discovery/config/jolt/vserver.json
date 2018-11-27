@@ -1,0 +1,32 @@
+[
+  {
+    "operation": "shift",
+    "spec": {
+      "server": {
+        "id": "vserver.id",
+        "name": "vserver.name",
+        "locked":  "vserver.inMaintenance",
+        "OS-EXT-SRV-ATTR:hostname":  "vserver.hostname",
+        "image": {
+            "id": "vserver.imageId"
+        },
+        
+        "status": "vserver.status",
+        "OS-EXT-STS:vm_state": "vserver.vmState",
+        "tenant_id": "vserver.tenantId",
+        "hostId": "vserver.hostId",
+        "OS-EXT-SRV-ATTR:host": "vserver.host",      
+        "host_status": "vserver.hostStatus"
+      }
+    }
+  },
+  {
+    "operation": "default",
+    "spec": {
+      "*": {
+        "hostStatus": "UNKNOWN"
+      }
+    }
+  }
+
+]

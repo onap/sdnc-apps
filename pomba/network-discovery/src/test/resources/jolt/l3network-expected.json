@@ -1,0 +1,14 @@
+{
+	"l3-network": {
+		"id": "8df84f0a-737a-4628-be9c-c3c78454f9d9",
+		"name": "NET_503",
+		"AdminState": true,
+		"sharedNetwork": true,
+		"status": "ACTIVE",
+		"subnets": [
+			"d0e6ecad-7bc9-4138-b9e8-e742bdf9afd5"
+		],
+		"tenantId": "c44b872f6830498b88c4989d67b2a6b7",
+		"host-status": "UNKNOWN"
+	}
+}
