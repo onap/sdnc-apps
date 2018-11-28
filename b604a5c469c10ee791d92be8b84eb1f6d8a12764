@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_23d5e61b",
+        "filename": "pomba/service-decomposition/config/application.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 2965
+      },
+      "writtenOn": "2018-11-28T15:59:26Z",
+      "side": 1,
+      "message": "Since values are hardcoded as basic_auth and client_cert, maybe add a comment for that.",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 18
+      },
+      "revId": "b604a5c469c10ee791d92be8b84eb1f6d8a12764",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
