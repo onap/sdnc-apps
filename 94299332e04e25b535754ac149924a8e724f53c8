@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_a3e8f6e2",
+        "filename": "pomba/network-discovery/config/application.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 2965
+      },
+      "writtenOn": "2018-11-28T16:14:21Z",
+      "side": 1,
+      "message": "IPs and user/password should probably be changed to dummy values.",
+      "revId": "94299332e04e25b535754ac149924a8e724f53c8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
