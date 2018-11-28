@@ -1,0 +1,15 @@
+{
+  "vserver" : {
+    "id" : "2c311eae-f542-4173-8a01-582922abd495",
+    "name" : "norm_bouygues",
+    "inMaintenance" : true,
+    "hostname" : "norm-bouygues",
+    "imageId" : "c0022890-d91f-422c-91c5-3866edeae768",
+    "status" : "ACTIVE",
+    "vmState" : "active",
+    "tenantId" : "15ad36d394e744838e947ca90609f805",
+    "hostId" : "ea1660efbbedda164379afacdc622305c4b88cebfb84119472d286a8",
+    "host" : "Setup-NCSO-OTT-E-C2",
+    "hostStatus" : "UP"
+  }
+}
