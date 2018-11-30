@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_56e8d90f",
+        "filename": "pomba/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 3131
+      },
+      "writtenOn": "2018-11-30T21:03:53Z",
+      "side": 1,
+      "message": "James said we should just roll this back to 1.4.1 since we won\u0027t be releasing the http version",
+      "revId": "e7dbbae5f376418b4f8f76d3c312082a6fcc1b99",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
