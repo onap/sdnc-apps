@@ -22,7 +22,7 @@ limitations under the License.
     <parent>
         <groupId>org.onap.sdnc.apps.pomba</groupId>
         <artifactId>pomba</artifactId>
-        <version>1.4.1-SNAPSHOT</version>
+        <version>1.4.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -296,7 +296,7 @@ limitations under the License.
                                             <includes>
                                                 <include>*.properties</include>
                                                 <include>*.xml</include>
-                                                <include>**/*.json</include>   
+                                                <include>**/*.json</include>
                                             </includes>
                                             <filtering>false</filtering>
                                         </resource>
