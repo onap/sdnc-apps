@@ -37,7 +37,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.onap.aai.restclient.client.OperationResult;
@@ -137,13 +139,21 @@ public class SpringServiceImpl implements SpringService {
         Logger log = adapter.unwrap();
         adapter.invoke(new RequestBuilderWrapper(request), InvocationMode.SYNCHRONOUS);
         try {
-            adapter.unwrap().info("Posting notfication to url = {} , payload: {}", url,
+            log.info("Posting notfication to url = {} , payload: {}", url,
                     JsonUtils.toJsonString(Entity.json(notification).getEntity()));
 
             Response result = request.post(Entity.json(notification));
 
-            adapter.unwrap().info("request at url = {} resulted in http status {} and response: {}", url,
-                    result.getStatus(), result.getEntity());
+            StatusType status = result.getStatusInfo();
+
+            if (status.getFamily().equals(Family.SUCCESSFUL)) {
+                log.info("request at url = {} resulted in http status code {}", 
+                    url, status.getStatusCode());
+            } else {
+                log.error("request at url = {} resulted in http status code {}, reason: {}",
+                    url, status.getStatusCode(), status.getReasonPhrase());
+            }
+
 
         } catch (Exception x) {
             log.error("Error during {} operation to endpoint at url = {} with error = {}", "POST", url,
@@ -213,8 +223,6 @@ public class SpringServiceImpl implements SpringService {
                 OperationResult result = SpringServiceImpl.this.openstackClient.get(url, headers,
                         MediaType.APPLICATION_JSON_TYPE);
 
-                adapter.unwrap().info("Openstack GET result: {}", result.getResult());
-
                 Resource resource = new Resource();
                 resource.setType(this.resourceType);
                 resource.setId(resourceId);
@@ -224,15 +232,21 @@ public class SpringServiceImpl implements SpringService {
                 }
                 resources.add(resource);
 
+                Logger log = adapter.unwrap();
+
                 if (result.wasSuccessful()) {
+                    log.info("Openstack GET result code: {}", result.getResultCode());
+
                     String transformedOutput = TransformationUtil.transform(result.getResult(), this.resourceType);
 
-                    adapter.unwrap().info("Jolt transformed output: {}", transformedOutput);
+                    log.debug("Jolt transformed output: {}", transformedOutput);
 
                     resource.setDataQuality(DataQuality.ok());
                     List<Attribute> attributeList = TransformationUtil.toAttributeList(transformedOutput);
                     resource.setAttributeList(attributeList);
                 } else {
+                    log.error("Openstack GET result code: {}.  Failure cause: {}", 
+                        result.getResultCode(), result.getFailureCause());
                     resource.setDataQuality(DataQuality.error(result.getFailureCause()));
                 }
             }

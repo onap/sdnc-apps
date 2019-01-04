@@ -34,6 +34,8 @@ import org.onap.aai.restclient.client.RestClient;
 import org.onap.logging.ref.slf4j.ONAPLogAdapter;
 import org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException;
 
+import org.slf4j.Logger;
+
 public class OSAuthentication {
 
     private static final String CONFIG_AUTH_DIR = "config/auth";
@@ -61,8 +63,16 @@ public class OSAuthentication {
 		OperationResult result = openstackClient.post(openstackIdentityUrl, payload, headers,
 				MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
 
-		adapter.unwrap().info("request at url = {} resulted in http response: {}", openstackIdentityUrl,
-				result.getResult());
+		Logger log = adapter.unwrap();
+
+		if (result.wasSuccessful()) {
+			log.info("request at url = {} resulted in http response code: {}", 
+				openstackIdentityUrl, result.getResultCode());
+		} else {
+			log.error("request at url = {} resulted in http response code: {}.  Failure cause: {}", 
+				openstackIdentityUrl, result.getResultCode(), result.getFailureCause());
+		}
+
 
 		String token = result.getHeaders().getFirst(X_SUBJECT_TOKEN);
 		
@@ -70,7 +80,7 @@ public class OSAuthentication {
 		    throw new ApplicationException(UNAUTHORIZED, Status.UNAUTHORIZED);
 		}
 
-		adapter.unwrap().debug("Got token: {}", token);
+		log.debug("Got token: {}", token);
 
 		return token;
 	}
