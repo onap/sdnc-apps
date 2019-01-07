@@ -17,72 +17,69 @@
  */
 package org.onap.sdnc.apps.pomba.networkdiscovery.service;
 
-import static org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException.Error.UNAUTHORIZED;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.Response.Status.Family;
 
 import org.apache.commons.io.IOUtils;
-import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.restclient.client.RestClient;
 import org.onap.logging.ref.slf4j.ONAPLogAdapter;
 import org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException;
-
-import org.slf4j.Logger;
 
 public class OSAuthentication {
 
     private static final String CONFIG_AUTH_DIR = "config/auth";
     private static final String X_SUBJECT_TOKEN = "X-Subject-Token";
 
-    private static final String USER_PATTERN = "%USER%";    
-    private static final String PASSWORD_PATTERN = "%PASSWORD%";
+    private static final String USER_PATTERN = "%USER%";
+    private static final String PW_PATTERN = "%PASSWORD%";
 
     private OSAuthentication() {
         throw new IllegalStateException("Utility class");
     }
 
-	public static String getToken(String openstackIdentityUrl, String userId, String password, RestClient openstackClient, ONAPLogAdapter adapter)
-			throws IOException, ApplicationException {
+    public static String getToken(String openstackIdentityUrl, String userId, String password, Client openstackClient,
+            ONAPLogAdapter adapter) throws ApplicationException {
 
-		MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
+        String mappingConfigPath = CONFIG_AUTH_DIR + File.separator + "osauth.json";
+        File file = new File(mappingConfigPath);
 
-		String mappingConfigPath = CONFIG_AUTH_DIR + File.separator + "osauth.json";
+        Response result;
+        try {
+            String payload = IOUtils.toString(new FileInputStream(file), "UTF-8");
+            payload = payload.replaceAll(USER_PATTERN, userId);
+            payload = payload.replaceAll(PW_PATTERN, password);
 
-		File file = new File(mappingConfigPath);
-		String payload = IOUtils.toString(new FileInputStream(file), "UTF-8");
-        payload = payload.replaceAll(USER_PATTERN, userId);
-		payload = payload.replaceAll(PASSWORD_PATTERN, password);
+            result = openstackClient.target(openstackIdentityUrl).request()
+                    .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(payload, MediaType.APPLICATION_JSON));
+        } catch (Exception e) {
+            // catch the case when the connection times out (e.g., host not available).
+            throw new ApplicationException(ApplicationException.Error.GENERAL_FAILURE, Status.NOT_FOUND,
+                    "Openstack API login failed - " + e.getMessage());
+        }
 
-		OperationResult result = openstackClient.post(openstackIdentityUrl, payload, headers,
-				MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
+        String jsonResult = result.readEntity(String.class);
+        
+        if (result.getStatusInfo().getFamily() != Family.SUCCESSFUL) {
+            throw new ApplicationException(ApplicationException.Error.GENERAL_FAILURE, Status.NOT_FOUND, jsonResult);
+        }
 
-		Logger log = adapter.unwrap();
+        String token = result.getHeaderString(X_SUBJECT_TOKEN);
+        if (token == null) {
+            throw new ApplicationException(ApplicationException.Error.GENERAL_FAILURE, Status.NOT_FOUND,
+                    "Failed to get token from Openstack API response");
+        }
 
-		if (result.wasSuccessful()) {
-			log.info("request at url = {} resulted in http response code: {}", 
-				openstackIdentityUrl, result.getResultCode());
-		} else {
-			log.error("request at url = {} resulted in http response code: {}.  Failure cause: {}", 
-				openstackIdentityUrl, result.getResultCode(), result.getFailureCause());
-		}
+        adapter.unwrap().debug("Got token: {}", token);
 
-
-		String token = result.getHeaders().getFirst(X_SUBJECT_TOKEN);
-		
-		if (token == null) {
-		    throw new ApplicationException(UNAUTHORIZED, Status.UNAUTHORIZED);
-		}
-
-		log.debug("Got token: {}", token);
-
-		return token;
-	}
+        return token;
+    }
 
 }

@@ -28,8 +28,6 @@ public interface SpringService {
                                                             String requestId,
                                                             String resourceType,
                                                             List<String> resourceIds,
-                                                            String notificationURL,
-                                                            String notificationAuthorization,
                                                             ONAPLogAdapter adapter)
     throws ApplicationException;
 }

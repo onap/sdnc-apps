@@ -19,7 +19,6 @@
 package org.onap.sdnc.apps.pomba.networkdiscovery.unittest.service;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -29,14 +28,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.bazaarvoice.jolt.JsonUtils;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
-import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
@@ -62,7 +55,6 @@ import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.onap.pomba.common.datatypes.DataQuality;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Attribute;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryNotification;
-import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryResponse;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Resource;
 import org.onap.sdnc.apps.pomba.networkdiscovery.service.rs.RestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +82,6 @@ public class NetworkDiscoveryTest {
     private static final String APP = "junit";
 
     private static final String RESOURCE_TYPE_VSERVER = "vserver";
-    private static final String CALLBACK_PATH = "/callback";
 
     private static final String AUTH = "Basic " + Base64.getEncoder().encodeToString((
             "admin:" + Password.deobfuscate("OBF:1u2a1toa1w8v1tok1u30")).getBytes());
@@ -131,7 +122,7 @@ public class NetworkDiscoveryTest {
         // no Authorization header
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, null, APP, this.transactionId,
-                        this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+                        this.requestId, RESOURCE_TYPE_VSERVER, resourceIds);
         assertEquals(Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
         // should get WWW-Authenticate header in response
         assertTrue(response.getHeaderString(HttpHeaders.WWW_AUTHENTICATE).startsWith("Basic realm"));
@@ -143,7 +134,7 @@ public class NetworkDiscoveryTest {
         // bad Authorization header
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, authorization, APP,
-                        this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+                        this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds);
         assertEquals(Status.UNAUTHORIZED.getStatusCode(), response.getStatus());
         // should not get WWW-Authenticate header in response
         assertNull(response.getHeaderString(HttpHeaders.WWW_AUTHENTICATE));
@@ -155,7 +146,7 @@ public class NetworkDiscoveryTest {
         String authorization = "Basic " + Base64.getEncoder().encodeToString("aaa:bbb".getBytes());
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, null, authorization, APP,
-                this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+                this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds);
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
         // should get WWW-Authenticate header in response
         assertTrue(((String) response.getEntity()).contains("version"));
@@ -166,7 +157,7 @@ public class NetworkDiscoveryTest {
         // no X-FromAppId header
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, null, this.transactionId,
-                        this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+                        this.requestId, RESOURCE_TYPE_VSERVER, resourceIds);
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
         assertTrue(((String) response.getEntity()).contains(ONAPLogConstants.Headers.PARTNER_NAME));
     }
@@ -175,18 +166,9 @@ public class NetworkDiscoveryTest {
     public void testVerifyRequestId() throws Exception {
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
-                        null, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+                        null, RESOURCE_TYPE_VSERVER, resourceIds);
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
         assertTrue(((String) response.getEntity()).contains("requestId"));
-    }
-
-    @Test
-    public void testVerifyNotificationUrl() throws Exception {
-        List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
-        Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
-                        this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, null);
-        assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
-        assertTrue(((String) response.getEntity()).contains("notificationURL"));
     }
 
     @Test
@@ -195,7 +177,7 @@ public class NetworkDiscoveryTest {
         {
             List<String> resourceIds = null;
             Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP,
-                            this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+                            this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds);
             assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
             assertTrue(((String) response.getEntity()).contains("resourceIds"));
         }
@@ -204,7 +186,7 @@ public class NetworkDiscoveryTest {
         {
             List<String> resourceIds = new ArrayList<>();
             Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP,
-                            this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds, getCallbackUrl());
+                            this.transactionId, this.requestId, RESOURCE_TYPE_VSERVER, resourceIds);
             assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
             assertTrue(((String) response.getEntity()).contains("resourceIds"));
         }
@@ -215,7 +197,7 @@ public class NetworkDiscoveryTest {
         // no resource type
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
-                        this.requestId, null, resourceIds, getCallbackUrl());
+                        this.requestId, null, resourceIds);
         assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
         assertTrue(((String) response.getEntity()).contains("resourceType"));
     }
@@ -225,7 +207,7 @@ public class NetworkDiscoveryTest {
         // no request
         List<String> resourceIds = Arrays.asList(UUID.randomUUID().toString());
         Response response = this.service.findbyResourceIdAndType(null, V1, AUTH, APP, this.transactionId,
-                        this.requestId, null, resourceIds, getCallbackUrl());
+                        this.requestId, null, resourceIds);
         assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
     }
 
@@ -245,28 +227,12 @@ public class NetworkDiscoveryTest {
         this.openstackRule.stubFor(get(resourcePath).willReturn(okJson(openstackApiResponse)));
 
         this.identityRule.stubFor(post(identityPath).willReturn(okJson("{}").withHeader("X-Subject-Token", "tokenId")));
-        
-        this.callbackRule.stubFor(post(CALLBACK_PATH).willReturn(ok("Acknowledged")));
 
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, null, this.requestId,
-                        RESOURCE_TYPE_VSERVER, Arrays.asList(vserverId), getCallbackUrl());
+                        RESOURCE_TYPE_VSERVER, Arrays.asList(vserverId));
 
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
-        NetworkDiscoveryResponse entity = (NetworkDiscoveryResponse) response.getEntity();
-        assertEquals(requestId, entity.getRequestId());
-        assertEquals(Status.ACCEPTED.getStatusCode(), entity.getCode().intValue());
-        assertEquals(Boolean.FALSE, entity.getAckFinalIndicator());
-
-        List<ServeEvent> events = waitForRequests(this.callbackRule, 1, 10);
-        LoggedRequest notificationRequest = events.get(0).getRequest();
-        assertEquals(AUTH, notificationRequest.getHeader(HttpHeaders.AUTHORIZATION));
-        String notificationJson = notificationRequest.getBodyAsString();
-
-        ObjectMapper mapper = new ObjectMapper();
-        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
-        mapper.setAnnotationIntrospector(introspector);
-        NetworkDiscoveryNotification notification = mapper.readValue(notificationJson,
-                        NetworkDiscoveryNotification.class);
+        NetworkDiscoveryNotification notification = (NetworkDiscoveryNotification) response.getEntity();
 
         assertEquals(requestId, notification.getRequestId());
         assertEquals(Status.OK.getStatusCode(), notification.getCode().intValue());
@@ -285,7 +251,7 @@ public class NetworkDiscoveryTest {
     }
     
     @Test
-    public void testDiscoverVserverFailure() throws Exception {
+    public void testDiscoverVserverFailureNotFound() throws Exception {
         String vserverId = UUID.randomUUID().toString();
 
         String resourcePath = MessageFormat.format("/v2.1/servers/{0}",
@@ -296,29 +262,12 @@ public class NetworkDiscoveryTest {
         this.openstackRule.stubFor(get(resourcePath).willReturn(WireMock.notFound()));
 
         this.identityRule.stubFor(post(identityPath).willReturn(okJson("{}").withHeader("X-Subject-Token", "tokenId")));
-        
-        this.callbackRule.stubFor(post(CALLBACK_PATH).willReturn(ok("Acknowledged")));
 
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, null, this.requestId,
-                        RESOURCE_TYPE_VSERVER, Arrays.asList(vserverId), getCallbackUrl());
+                        RESOURCE_TYPE_VSERVER, Arrays.asList(vserverId));
 
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
-        NetworkDiscoveryResponse entity = (NetworkDiscoveryResponse) response.getEntity();
-        assertEquals(requestId, entity.getRequestId());
-        assertEquals(Status.ACCEPTED.getStatusCode(), entity.getCode().intValue());
-        assertEquals(Boolean.FALSE, entity.getAckFinalIndicator());
-
-        List<ServeEvent> events = waitForRequests(this.callbackRule, 1, 10);
-        LoggedRequest notificationRequest = events.get(0).getRequest();
-        assertEquals(AUTH, notificationRequest.getHeader(HttpHeaders.AUTHORIZATION));
-        String notificationJson = notificationRequest.getBodyAsString();
-
-        ObjectMapper mapper = new ObjectMapper();
-        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
-        mapper.setAnnotationIntrospector(introspector);
-        NetworkDiscoveryNotification notification = mapper.readValue(notificationJson,
-                        NetworkDiscoveryNotification.class);
-
+        NetworkDiscoveryNotification notification = (NetworkDiscoveryNotification) response.getEntity();
         assertEquals(requestId, notification.getRequestId());
         assertEquals(Status.OK.getStatusCode(), notification.getCode().intValue());
         assertEquals(Boolean.TRUE, notification.getAckFinalIndicator());
@@ -331,7 +280,6 @@ public class NetworkDiscoveryTest {
         assertNull(vserver.getAttributeList());
     }
 
-
     /**
      * Verify API returns a final response indicating no discovery possible.
      */
@@ -341,13 +289,8 @@ public class NetworkDiscoveryTest {
         String resourceType = "unsupported";
         List<String> resourceIds = Arrays.asList("dummyId");
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, this.transactionId,
-                        this.requestId, resourceType, resourceIds, getCallbackUrl());
-        assertEquals(Status.OK.getStatusCode(), response.getStatus());
-
-        NetworkDiscoveryResponse entity = (NetworkDiscoveryResponse) response.getEntity();
-        System.err.println("entity:" + entity);
-        assertEquals(Boolean.TRUE, entity.getAckFinalIndicator());
-        assertEquals(Status.NO_CONTENT.getStatusCode(), entity.getCode().intValue());
+                        this.requestId, resourceType, resourceIds);
+        assertEquals(Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
     
     @Test
@@ -357,35 +300,25 @@ public class NetworkDiscoveryTest {
         String identityPath = "/v3/auth/tokens";
       
         this.identityRule.stubFor(post(identityPath).willReturn(WireMock.unauthorized()));
-        
-        this.callbackRule.stubFor(post(CALLBACK_PATH).willReturn(ok("Acknowledged")));
 
         Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, null, this.requestId,
-                        RESOURCE_TYPE_VSERVER, Arrays.asList(vserverId), getCallbackUrl());
+                        RESOURCE_TYPE_VSERVER, Arrays.asList(vserverId));
 
-        assertEquals(Status.OK.getStatusCode(), response.getStatus());
-        NetworkDiscoveryResponse entity = (NetworkDiscoveryResponse) response.getEntity();
-        assertEquals(requestId, entity.getRequestId());
-        assertEquals(Status.ACCEPTED.getStatusCode(), entity.getCode().intValue());
-        assertEquals(Boolean.FALSE, entity.getAckFinalIndicator());
-
-        List<ServeEvent> events = waitForRequests(this.callbackRule, 1, 10);
-        LoggedRequest notificationRequest = events.get(0).getRequest();
-        assertEquals(AUTH, notificationRequest.getHeader(HttpHeaders.AUTHORIZATION));
-        String notificationJson = notificationRequest.getBodyAsString();
-
-        ObjectMapper mapper = new ObjectMapper();
-        AnnotationIntrospector introspector = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
-        mapper.setAnnotationIntrospector(introspector);
-        NetworkDiscoveryNotification notification = mapper.readValue(notificationJson,
-                        NetworkDiscoveryNotification.class);
-
-        assertEquals(requestId, notification.getRequestId());
-        assertEquals(Status.INTERNAL_SERVER_ERROR.getStatusCode(), notification.getCode().intValue());
-        assertEquals(Boolean.TRUE, notification.getAckFinalIndicator());
-        assertNull(notification.getResources());
+        assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
+    
+    @Test
+    public void testLoginFailureMissingToken() throws Exception {        
+        String vserverId = UUID.randomUUID().toString();
+        String identityPath = "/v3/auth/tokens";
 
+        this.identityRule.stubFor(post(identityPath).willReturn(okJson("{}")));
+        
+        Response response = this.service.findbyResourceIdAndType(this.httpRequest, V1, AUTH, APP, null, this.requestId,
+                        RESOURCE_TYPE_VSERVER, Arrays.asList(vserverId));
+
+        assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());
+    }
 
     private void verifyAttribute(List<Attribute> attributeList, String attrName, String attrValue) {
         for (Attribute attr : attributeList) {
@@ -397,25 +330,4 @@ public class NetworkDiscoveryTest {
         fail("Attribute " + attrName + " not found");
     }
 
-    private List<ServeEvent> waitForRequests(WireMockRule service, int minRequests, long timeoutSeconds)
-                    throws InterruptedException {
-
-        long remaining = timeoutSeconds * 1000L;
-        long retryInterval = Math.min(remaining / 5, 1000);
-        while (true) {
-            List<ServeEvent> events = service.getAllServeEvents();
-            if (events.size() >= minRequests) {
-                return events;
-            }
-            if (remaining <= 0) {
-                fail("Timeout waiting for " + minRequests + " requests");
-            }
-            Thread.sleep(retryInterval);
-            remaining -= retryInterval;
-        }
-    }
-
-    private String getCallbackUrl() {
-        return "http://localhost:" + this.callbackRule.port() + CALLBACK_PATH;
-    }
 }
