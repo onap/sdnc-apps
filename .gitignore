@@ -6,3 +6,4 @@ target/
 output.log
 debug-logs/
 logs/
+/target-ide/
