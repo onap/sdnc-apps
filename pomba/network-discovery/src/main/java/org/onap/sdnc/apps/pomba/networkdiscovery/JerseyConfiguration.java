@@ -19,6 +19,7 @@ package org.onap.sdnc.apps.pomba.networkdiscovery;
 
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -27,34 +28,24 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletProperties;
+import org.onap.sdnc.apps.pomba.networkdiscovery.service.rs.RestService;
 import org.onap.sdnc.apps.pomba.networkdiscovery.service.rs.RestServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.listing.ApiListingResource;
+import io.swagger.jaxrs.listing.SwaggerSerializers;
 
 @Component
 @ApplicationPath("/")
 public class JerseyConfiguration extends ResourceConfig {
+    
+    public static final String SERVICE_NAME = "network-discovery";
+
     private static final Logger log = Logger.getLogger(JerseyConfiguration.class.getName());
-
-    @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES);
-        objectMapper.enable(DeserializationFeature.READ_ENUMS_USING_TO_STRING);
-        return objectMapper;
-    }
-
+    
     @Autowired
     public JerseyConfiguration() {
         register(RestServiceImpl.class);
@@ -66,4 +57,26 @@ public class JerseyConfiguration extends ResourceConfig {
     public Client jerseyClient() {
         return ClientBuilder.newClient(new ClientConfig());
     }
+    
+    @PostConstruct
+    public void init() {
+        // Register components where DI is needed
+        this.configureSwagger();
+    }
+
+    private void configureSwagger() {
+        // Available at localhost:port/swagger.json
+        this.register(ApiListingResource.class);
+        this.register(SwaggerSerializers.class);
+
+        BeanConfig config = new BeanConfig();
+        config.setTitle("Network Discovery Swagger");
+        config.setVersion("v1");
+        config.setSchemes(new String[] { "https", "http" });
+        config.setBasePath("/" + SERVICE_NAME);
+        config.setResourcePackage(RestService.class.getPackage().getName());
+        config.setPrettyPrint(true);
+        config.setScan(true);
+    }
+    
 }

@@ -21,8 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+
 import org.eclipse.jetty.util.security.Password;
-import org.onap.aai.restclient.client.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -59,11 +61,8 @@ public class OpenstackConfiguration {
     private int readTimeout;
 
     @Bean(name = "openstackClient")
-    public RestClient restClient() {
-        return new RestClient().validateServerHostname(false)
-                        .validateServerCertChain(false)
-                        .connectTimeoutMs(this.connectionTimeout)
-                        .readTimeoutMs(this.readTimeout);
+    public Client restClient() {
+        return ClientBuilder.newClient();
     }
 
     @Bean(name = "openstackIdentityUrl")

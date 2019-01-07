@@ -129,7 +129,6 @@ public class TransformationUtilTest {
         for (Attribute attribute : resultAttributeList) {
             resultAttributes.put(attribute.getName(), attribute.getValue());
         }
-       // assertThat(expectedAttributes, resultAttributes);
         assertThat(expectedAttributes, CoreMatchers.is(resultAttributes));
     }
 

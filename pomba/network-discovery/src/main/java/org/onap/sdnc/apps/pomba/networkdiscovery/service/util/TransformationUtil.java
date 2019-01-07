@@ -35,7 +35,7 @@ public class TransformationUtil {
     private static final String CONFIG_JOLT = "config/jolt";
     private static final String EMPTY_STRING = "";
 
-    public TransformationUtil() {
+    private TransformationUtil() {
         throw new IllegalStateException("Utility class");
     }
 

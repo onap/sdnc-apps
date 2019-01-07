@@ -34,6 +34,7 @@ import org.onap.logging.ref.slf4j.ONAPLogAdapter;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.onap.logging.ref.slf4j.ONAPLogConstants.ResponseStatus;
 import org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException;
+import org.onap.sdnc.apps.pomba.networkdiscovery.JerseyConfiguration;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryResponse;
 import org.onap.sdnc.apps.pomba.networkdiscovery.service.SpringService;
 import org.slf4j.Logger;
@@ -60,54 +61,34 @@ public class RestServiceImpl implements RestService {
                                             String transactionId,
                                             String requestId,
                                             String resourceType,
-                                            List<String> resourceIds,
-                                            String notificationURL) throws ApplicationException {
+                                            List<String> resourceIds) throws ApplicationException {
 
         ONAPLogAdapter adapter = new ONAPLogAdapter(log);
 
         try {
-            adapter.getServiceDescriptor().setServiceName(SERVICE_NAME);
+            adapter.getServiceDescriptor().setServiceName(JerseyConfiguration.SERVICE_NAME);
             adapter.entering(request);
 
-            if (version == null) {
-                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "version");
-            }
-
-            if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
-                throw new ApplicationException(UNAUTHORIZED, Status.UNAUTHORIZED);
-            }
-            if ((fromAppId == null) || fromAppId.trim().isEmpty()) {
-                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, ONAPLogConstants.Headers.PARTNER_NAME);
-            }
-            if (requestId == null || requestId.isEmpty()) {
-                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "requestId");
-            }
-            if (notificationURL == null) {
-                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "notificationURL");
-            }
-            if (resourceType == null || resourceType.isEmpty()) {
-                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "resourceType");
-            }
-            if (resourceIds == null || resourceIds.isEmpty()) {
-                throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "resourceIds");
-            }
+            validateInput(version, authorization, fromAppId, requestId, resourceType, resourceIds);
 
             if (transactionId == null || transactionId.isEmpty()) {
                 transactionId = UUID.randomUUID().toString();
                 log.debug("transactionId is missing; using newly generated value: {}", transactionId);
             }
 
-            // just reuse received Authorization header in callback
             NetworkDiscoveryResponse response = this.service.findbyResourceIdAndType(transactionId,
-                    requestId, resourceType, resourceIds, notificationURL, authorization, adapter);
+                    requestId, resourceType, resourceIds, adapter);
             adapter.getResponseDescriptor().setResponseStatus(ResponseStatus.COMPLETED);
-            return Response.ok(response).build();
+            Response returnedResponse = Response.ok(response).build();
+            adapter.unwrap().info("request at url = {} resulted in http status {} and response: {}", request.getServletPath(),
+                    returnedResponse.getStatus(), returnedResponse.getEntity());
+            return returnedResponse;
 
         } catch (ApplicationException x) {
             adapter.getResponseDescriptor()
                     .setResponseCode(x.getResponseCode())
                     .setResponseStatus(ResponseStatus.ERROR);
-            log.error(x.getMessage(), x);
+            log.error(x.getMessage());
             ResponseBuilder builder = Response.status(x.getHttpStatus()).entity(x.getMessage());
             if (authorization == null) {
                 builder.header(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=\"network-discovery\"");
@@ -122,6 +103,30 @@ public class RestServiceImpl implements RestService {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(x.getMessage()).build();
         } finally {
             adapter.exiting();
+        }
+    }
+
+    private void validateInput(String version, String authorization, String fromAppId, String requestId,
+            String resourceType, List<String> resourceIds) throws ApplicationException {
+        if (version == null) {
+            throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "version");
+        }
+
+        if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
+            throw new ApplicationException(UNAUTHORIZED, Status.UNAUTHORIZED);
+        }
+        if ((fromAppId == null) || fromAppId.trim().isEmpty()) {
+            throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, ONAPLogConstants.Headers.PARTNER_NAME);
+        }
+        if (requestId == null || requestId.isEmpty()) {
+            throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "requestId");
+        }
+
+        if (resourceType == null || resourceType.isEmpty()) {
+            throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "resourceType");
+        }
+        if (resourceIds == null || resourceIds.isEmpty()) {
+            throw new ApplicationException(MISSING_PARAM, Status.BAD_REQUEST, "resourceIds");
         }
     }
 }

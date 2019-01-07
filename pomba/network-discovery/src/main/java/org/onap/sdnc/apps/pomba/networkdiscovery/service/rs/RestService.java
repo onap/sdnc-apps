@@ -38,15 +38,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.onap.logging.ref.slf4j.ONAPLogConstants;
 import org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException;
-import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryResponse;
+import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryNotification;
 
 
 @Api(protocols="http", tags= {"resource"})
 @Path("{version: v1}/network")
 @Produces(MediaType.APPLICATION_JSON)
 public interface RestService {
-
-    public static final String SERVICE_NAME = "network-discovery";
 
     @GET
     @Path("/resource")
@@ -55,14 +53,13 @@ public interface RestService {
     @ApiOperation(
             value = "Get Network Information",
             notes = "Retrieve information from primary data sources",
-            response = NetworkDiscoveryResponse.class,
             authorizations = @Authorization("basicAuth")
     )
     @ApiResponses(
             value = {
-                    @ApiResponse(code = 200, message = "Request has completed and no more information is forthcoming."),
-                    @ApiResponse(code = 202, message = "Request has been accepted and more information will be posted to notificationURL."),
+                    @ApiResponse(code = 200, message = "Request has completed.", response = NetworkDiscoveryNotification.class),
                     @ApiResponse(code = 400, message = "Missing mandatory field in the request or HTTP header."),
+                    @ApiResponse(code = 401, message = "Missing basicAuth header."),
                     @ApiResponse(code = 404, message = "Requested resource was not found."),
                     @ApiResponse(code = 500, message = "Request failed due to internal error")
             })
@@ -94,10 +91,6 @@ public interface RestService {
 
                                             @QueryParam("resourceId")
                                             @ApiParam(required=true)
-                                            List<String> resourceIds,
-
-                                            @QueryParam("notificationURL")
-                                            @ApiParam(required=true)
-                                            String notificationURL) throws ApplicationException;
+                                            List<String> resourceIds) throws ApplicationException;
 
 }
