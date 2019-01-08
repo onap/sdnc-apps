@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_47a22d4c",
+        "filename": "pomba/network-discovery/src/main/java/org/onap/sdnc/apps/pomba/networkdiscovery/service/SpringServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 2965
+      },
+      "writtenOn": "2019-01-08T15:29:44Z",
+      "side": 1,
+      "message": "it would be cleaner to instantiate \u0027resources\u0027 outside the for loop.",
+      "range": {
+        "startLine": 94,
+        "startChar": 12,
+        "endLine": 97,
+        "endChar": 13
+      },
+      "revId": "e509ddaa44cf2034425b237828ab2ec51c2ed89e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
