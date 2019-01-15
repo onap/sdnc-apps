@@ -31,6 +31,7 @@ import org.glassfish.jersey.servlet.ServletProperties;
 import org.onap.sdnc.apps.pomba.networkdiscovery.service.rs.RestService;
 import org.onap.sdnc.apps.pomba.networkdiscovery.service.rs.RestServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
@@ -39,13 +40,16 @@ import io.swagger.jaxrs.listing.ApiListingResource;
 import io.swagger.jaxrs.listing.SwaggerSerializers;
 
 @Component
-@ApplicationPath("/")
+@ApplicationPath("/network-discovery")
 public class JerseyConfiguration extends ResourceConfig {
-    
+
     public static final String SERVICE_NAME = "network-discovery";
 
+    @Value("${spring.jersey.application-path:/network-discovery}")
+    private String apiPath;   
+
     private static final Logger log = Logger.getLogger(JerseyConfiguration.class.getName());
-    
+
     @Autowired
     public JerseyConfiguration() {
         register(RestServiceImpl.class);
@@ -61,7 +65,7 @@ public class JerseyConfiguration extends ResourceConfig {
     @PostConstruct
     public void init() {
         // Register components where DI is needed
-        this.configureSwagger();
+        configureSwagger();
     }
 
     private void configureSwagger() {
@@ -70,10 +74,10 @@ public class JerseyConfiguration extends ResourceConfig {
         this.register(SwaggerSerializers.class);
 
         BeanConfig config = new BeanConfig();
-        config.setTitle("Network Discovery Swagger");
+        config.setTitle("Network Discovery API");
         config.setVersion("v1");
-        config.setSchemes(new String[] { "https", "http" });
-        config.setBasePath("/" + SERVICE_NAME);
+        config.setSchemes(new String[] { "https", "http" });        
+        config.setBasePath(apiPath);
         config.setResourcePackage(RestService.class.getPackage().getName());
         config.setPrettyPrint(true);
         config.setScan(true);
