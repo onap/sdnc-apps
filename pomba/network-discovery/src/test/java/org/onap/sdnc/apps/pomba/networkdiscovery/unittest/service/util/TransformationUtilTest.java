@@ -18,21 +18,15 @@
 
 package org.onap.sdnc.apps.pomba.networkdiscovery.unittest.service.util;
 
-import static org.junit.Assert.assertThat;
-
 import com.bazaarvoice.jolt.JsonUtils;
 import com.bazaarvoice.jolt.exception.JsonUnmarshalException;
+import com.google.gson.Gson;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Attribute;
+import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Resource;
 import org.onap.sdnc.apps.pomba.networkdiscovery.service.util.TransformationUtil;
 
 public class TransformationUtilTest {
@@ -49,11 +43,15 @@ public class TransformationUtilTest {
 
         String resultJson = TransformationUtil.transform(JsonUtils.toJsonString(sourceObject), "vserver");
 
+        Gson gson = new Gson();
+        Resource resourceInst = gson.fromJson(resultJson, Resource.class);
+        String resourceInstJson = gson.toJson(resourceInst);
+
         Object expectedObject = JsonUtils.filepathToObject(TEST_RESOURCES + "vserver-expected.json");
 
         Assert.assertEquals("Json transformation result does not match expected content",
                 JsonUtils.toPrettyJsonString(expectedObject),
-                JsonUtils.toPrettyJsonString(JsonUtils.jsonToObject(resultJson)));
+                JsonUtils.toPrettyJsonString(JsonUtils.jsonToObject(resourceInstJson)));
 
     }
 
@@ -63,11 +61,15 @@ public class TransformationUtilTest {
         Object sourceObject = JsonUtils.filepathToObject(TEST_RESOURCES + "l3network-input.json");
         String resultJson = TransformationUtil.transform(JsonUtils.toJsonString(sourceObject), "l3-network");
 
+        Gson gson = new Gson();
+        Resource resourceInst = gson.fromJson(resultJson, Resource.class);
+        String resourceInstJson = gson.toJson(resourceInst);
+
         Object expectedObject = JsonUtils.filepathToObject(TEST_RESOURCES + "l3network-expected.json");
 
         Assert.assertEquals("Json transformation result does not match expected content",
                 JsonUtils.toPrettyJsonString(expectedObject),
-                JsonUtils.toPrettyJsonString(JsonUtils.jsonToObject(resultJson)));
+                JsonUtils.toPrettyJsonString(JsonUtils.jsonToObject(resourceInstJson)));
 
     }
 
@@ -87,49 +89,6 @@ public class TransformationUtilTest {
         expectedEx.expectMessage("Unable to unmarshal JSON");
 
         TransformationUtil.transform("xxx", "foobar");
-    }
-
-    @Test
-    public void testToAttributeList() {
-        Map<String, String> expectedAttributes = new HashMap<String, String>();
-        expectedAttributes.put("name", "norm_bouygues");
-        expectedAttributes.put("hostId", "ea1660efbbedda164379afacdc622305c4b88cebfb84119472d286a8");
-        expectedAttributes.put("hostStatus", "UP");
-        expectedAttributes.put("id", "2c311eae-f542-4173-8a01-582922abd495");
-        expectedAttributes.put("status", "ACTIVE");
-        expectedAttributes.put("vmState", "active");
-        expectedAttributes.put("hostname", "norm-bouygues");
-        expectedAttributes.put("inMaintenance", "true");
-        expectedAttributes.put("imageId", "c0022890-d91f-422c-91c5-3866edeae768");
-        expectedAttributes.put("tenantId", "15ad36d394e744838e947ca90609f805");
-        expectedAttributes.put("host", "Setup-NCSO-OTT-E-C2");
-
-        Object inputJson = JsonUtils.filepathToObject(TEST_RESOURCES + "vserver-expected.json");
-        List<Attribute> resultAttributeList = TransformationUtil.toAttributeList(JsonUtils.toJsonString(inputJson));
-
-        Map<String, String> resultAttributes = new HashMap<>();
-
-        for (Attribute attribute : resultAttributeList) {
-            resultAttributes.put(attribute.getName(), attribute.getValue());
-        }
-        assertThat(expectedAttributes, CoreMatchers.is(resultAttributes));
-    }
-
-    @Test
-    public void testToAttributeListNullJsonValue() {
-        Map<String, String> expectedAttributes = new HashMap<String, String>();
-        expectedAttributes.put("name", "");
-
-        String inputJson = "{\"server\": { \"name\": null }}";
-
-        List<Attribute> resultAttributeList = TransformationUtil.toAttributeList(inputJson);
-
-        Map<String, String> resultAttributes = new HashMap<>();
-
-        for (Attribute attribute : resultAttributeList) {
-            resultAttributes.put(attribute.getName(), attribute.getValue());
-        }
-        assertThat(expectedAttributes, CoreMatchers.is(resultAttributes));
     }
 
 }

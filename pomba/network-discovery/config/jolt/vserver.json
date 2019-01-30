@@ -3,30 +3,40 @@
     "operation": "shift",
     "spec": {
       "server": {
-        "id": "vserver.id",
-        "name": "vserver.name",
-        "locked":  "vserver.inMaintenance",
-        "OS-EXT-SRV-ATTR:hostname":  "vserver.hostname",
-        "image": {
-            "id": "vserver.imageId"
-        },
-        
-        "status": "vserver.status",
-        "OS-EXT-STS:vm_state": "vserver.vmState",
-        "tenant_id": "vserver.tenantId",
-        "hostId": "vserver.hostId",
-        "OS-EXT-SRV-ATTR:host": "vserver.host",      
-        "host_status": "vserver.hostStatus"
+        "id": "id",
+        "name": "name",
+        "locked":   "tempList[].inMaintenance",
+        "OS-EXT-SRV-ATTR:hostname": "tempList[].hostname",
+        "image.id": "tempList[].imageId",
+        "status":  "tempList[].status",
+        "OS-EXT-STS:vm_state" : "tempList[].vmState",
+        "user_id" : "tempList[].userId",     
+        "tenant_id" : "tempList[].tenantId",
+        "hostId" : "tempList[].hostId",
+        "OS-EXT-SRV-ATTR:host" : "tempList[].host",
+        "host_status" : "tempList[].hostStatus"
       }
     }
-  },
+  } 
+  ,
   {
-    "operation": "default",
+    "operation": "shift",
     "spec": {
+      "tempList": {
+        "*": {
+        	"*" : {
+        	   "$": "attributeList[#3].name",
+        	   "@": "attributeList[#3].value"
+        	},
+        	"#ok": "attributeList[#2].dataQuality.status"
+        }
+      },
       "*": {
-        "hostStatus": "UNKNOWN"
-      }
-    }
-  }
+         "@" : "&"
+      },
+      "#vserver": "type",
+      "#ok": "dataQuality.status"  
+     }
+   }   
 
 ]
