@@ -213,7 +213,7 @@ public class NetworkDiscoveryTest {
 
     @Test
     public void testDiscoverVserver() throws Exception {
-        String vserverId = UUID.randomUUID().toString();
+        String vserverId = "2c311eae-f542-4173-8a01-582922abd495";
 
         String resourcePath = MessageFormat.format("/v2.1/servers/{0}",
                 new Object[] { vserverId });

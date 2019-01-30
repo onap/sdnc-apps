@@ -1,15 +1,63 @@
 {
-  "vserver" : {
-    "id" : "2c311eae-f542-4173-8a01-582922abd495",
-    "name" : "norm_bouygues",
-    "inMaintenance" : true,
-    "hostname" : "norm-bouygues",
-    "imageId" : "c0022890-d91f-422c-91c5-3866edeae768",
-    "status" : "ACTIVE",
-    "vmState" : "active",
-    "tenantId" : "15ad36d394e744838e947ca90609f805",
-    "hostId" : "ea1660efbbedda164379afacdc622305c4b88cebfb84119472d286a8",
-    "host" : "Setup-NCSO-OTT-E-C2",
-    "hostStatus" : "UP"
-  }
+  "id" : "2c311eae-f542-4173-8a01-582922abd495",
+  "name" : "norm_bouygues",
+  "type" : "vserver",
+  "dataQuality" : {
+    "status" : "ok"
+  },
+  "attributeList" : [ {
+    "name" : "inMaintenance",
+    "value" : "true",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
+    "name" : "hostname",
+    "value" : "norm-bouygues",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
+    "name" : "status",
+    "value" : "ACTIVE",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
+    "name" : "vmState",
+    "value" : "active",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
+    "name" : "userId",
+    "value" : "bdaf4fcde1574450bfa488b3221033d8",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
+    "name" : "tenantId",
+    "value" : "15ad36d394e744838e947ca90609f805",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
+    "name" : "hostId",
+    "value" : "ea1660efbbedda164379afacdc622305c4b88cebfb84119472d286a8",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
+    "name" : "host",
+    "value" : "Setup-NCSO-OTT-E-C2",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
+    "name" : "hostStatus",
+    "value" : "UP",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  } ]
 }

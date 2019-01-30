@@ -17,23 +17,13 @@ package org.onap.sdnc.apps.pomba.networkdiscovery.service.util;
 
 import com.bazaarvoice.jolt.Chainr;
 import com.bazaarvoice.jolt.JsonUtils;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.onap.pomba.common.datatypes.DataQuality;
-import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Attribute;
 
 public class TransformationUtil {
 
     private static final String CONFIG_JOLT = "config/jolt";
-    private static final String EMPTY_STRING = "";
 
     private TransformationUtil() {
         throw new IllegalStateException("Utility class");
@@ -55,45 +45,6 @@ public class TransformationUtil {
         Object output = chainr.transform(sourceObject);
 
         return JsonUtils.toJsonString(output);
-    }
-
-    /**
-     * Converts the second level of JsonElements from the given json to a list of
-     * Network Discovery Attributes.
-     * 
-     * @param json
-     * @return
-     */
-    public static List<Attribute> toAttributeList(String json) {
-
-        JsonParser parser = new JsonParser();
-        JsonElement elem = parser.parse(json);
-
-        Set<Entry<String, JsonElement>> entrySet = elem.getAsJsonObject().entrySet();
-
-        List<Attribute> result = new ArrayList<>();
-
-        Iterator<Entry<String, JsonElement>> iter = entrySet.iterator();
-        while (iter.hasNext()) {
-            Entry<String, JsonElement> next = iter.next();
-
-            JsonElement vserverElem = next.getValue();
-            Set<Entry<String, JsonElement>> vserverEntrySet = vserverElem.getAsJsonObject().entrySet();
-            Iterator<Entry<String, JsonElement>> vserverIter = vserverEntrySet.iterator();
-            while (vserverIter.hasNext()) {
-                Entry<String, JsonElement> vserverNext = vserverIter.next();
-                Attribute attr = new Attribute();
-                attr.setName(vserverNext.getKey());
-                if (vserverNext.getValue().isJsonNull()) {
-                    attr.setValue(EMPTY_STRING);
-                } else {
-                    attr.setValue(vserverNext.getValue().getAsString());
-                }
-                attr.setDataQuality(DataQuality.ok());
-                result.add(attr);
-            }
-        }
-        return result;
     }
 
 }

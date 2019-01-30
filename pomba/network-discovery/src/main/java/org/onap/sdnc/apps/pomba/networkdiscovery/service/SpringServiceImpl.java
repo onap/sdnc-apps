@@ -17,6 +17,8 @@
  */
 package org.onap.sdnc.apps.pomba.networkdiscovery.service;
 
+import com.google.gson.Gson;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,6 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.onap.logging.ref.slf4j.ONAPLogAdapter;
 import org.onap.pomba.common.datatypes.DataQuality;
 import org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException;
-import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Attribute;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryNotification;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.NetworkDiscoveryResponse;
 import org.onap.sdnc.apps.pomba.networkdiscovery.datamodel.Resource;
@@ -87,12 +88,7 @@ public class SpringServiceImpl implements SpringService {
         MessageFormat format = new MessageFormat(openstackURL);
         
         for (String resourceId : resourceIds) {
-            String url = format.format(new Object[] { resourceId });
-            Resource resource = new Resource();
-            resource.setType(resourceType);
-            resource.setId(resourceId);
-            resources.add(resource);
-        
+            String url = format.format(new Object[] { resourceId });        
             Response result;
             try {
                 result = openstackClient.target(url).request().header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
@@ -111,14 +107,17 @@ public class SpringServiceImpl implements SpringService {
 
             if (result.getStatusInfo().getFamily() == Family.SUCCESSFUL) {
                 String transformedOutput = TransformationUtil.transform(jsonResult, resourceType);
-        
                 log.debug("Jolt transformed output: {}", transformedOutput);
-        
-                resource.setDataQuality(DataQuality.ok());
-                List<Attribute> attributeList = TransformationUtil.toAttributeList(transformedOutput);
-                resource.setAttributeList(attributeList);
+
+                Gson gson = new Gson();
+                Resource resourceInst = gson.fromJson(transformedOutput, Resource.class);
+                resources.add(resourceInst);
             } else {
+                Resource resource = new Resource();
+                resource.setType(resourceType);
+                resource.setId(resourceId);
                 resource.setDataQuality(DataQuality.error(jsonResult));
+                resources.add(resource);
             }
         }
 
