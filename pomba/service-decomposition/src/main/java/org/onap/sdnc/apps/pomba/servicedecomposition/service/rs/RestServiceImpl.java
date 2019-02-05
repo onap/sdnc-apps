@@ -49,8 +49,6 @@ public class RestServiceImpl implements RestService {
     @Resource(name="basicAuthHeader")
     private String basicAuthHeader;
 
-    public RestServiceImpl() {}
-
     @Override
     public Response getContext(HttpServletRequest request,
                                String authorization,
@@ -72,7 +70,7 @@ public class RestServiceImpl implements RestService {
             }
             if (transactionId == null || transactionId.isEmpty()) {
                 transactionId = UUID.randomUUID().toString();
-                log.debug(ONAPLogConstants.Headers.REQUEST_ID+ " is missing; using newly generated value: " + transactionId);
+                log.debug("{} is missing; using newly generated value: {}", ONAPLogConstants.Headers.REQUEST_ID, transactionId);
             }
             RestUtil.validateURL(serviceInstanceId);
             String context = service.decomposeService(fromAppId, transactionId, serviceInstanceId, adapter);
@@ -84,6 +82,7 @@ public class RestServiceImpl implements RestService {
             return Response.ok().entity(context).build();
 
         } catch (DiscoveryException x) {
+            log.error(x.getHttpStatus().getReasonPhrase(), x);
             adapter.getResponseDescriptor()
                     .setResponseCode(x.getResponseCode())
                     .setResponseStatus(ResponseStatus.ERROR);
@@ -95,6 +94,7 @@ public class RestServiceImpl implements RestService {
             return builder.build();
 
         } catch (Exception e) {
+            log.error(Status.INTERNAL_SERVER_ERROR.getReasonPhrase(), e);
             adapter.getResponseDescriptor()
                     .setResponseCode(GENERAL_FAILURE.getResponseCode())
                     .setResponseStatus(ResponseStatus.ERROR);

@@ -89,7 +89,14 @@
                 "model-invariant-id": "74bc1518-282d-4148-860f-8892b6369456",
                 "model-version-id": "4e3d28cf-d654-41af-a47b-04b4bd0ac58e",
                 "model-customization-id": "cc51ab7d-9b03-4bd6-9104-09df0c7c7907",
-                "module-index": 0
+                "module-index": 0,
+                "relationship-list": {
+                   "relationship": [
+                   {
+                      "related-to": "l3-network",
+                      "related-link": "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951870"
+                      }]
+                }
             }
         ]
     }

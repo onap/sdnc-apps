@@ -27,6 +27,6 @@ public class AAIBasicAuthCondition implements Condition {
     public boolean matches(ConditionContext conditionContext, AnnotatedTypeMetadata annotatedTypeMetadata)
     {
         String authenticationMode = conditionContext.getEnvironment().getProperty("aai.authentication");
-        return authenticationMode.equalsIgnoreCase("basic_auth");
+        return "basic_auth".equalsIgnoreCase(authenticationMode);
     }
 }

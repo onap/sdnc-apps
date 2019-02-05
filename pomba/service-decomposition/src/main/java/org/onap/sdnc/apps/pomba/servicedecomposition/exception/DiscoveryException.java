@@ -53,7 +53,7 @@ public class DiscoveryException extends Exception {
     private static final long serialVersionUID = -4874149714911165454L;
 
     private final Status httpStatus;
-    private String responseCode;
+    private final String responseCode;
 
     public DiscoveryException(Error error, Status httpStatus, Object... args) {
         super(error.getMessage(args));
@@ -66,6 +66,7 @@ public class DiscoveryException extends Exception {
 
     public DiscoveryException(Error error, Exception cause, Object... args) {
         super(error.getMessage(args), cause);
+        this.responseCode = error.getResponseCode();
         this.httpStatus = Status.INTERNAL_SERVER_ERROR;
     }
 

@@ -25,7 +25,6 @@ import org.onap.sdnc.apps.pomba.servicedecomposition.util.RestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException.Error.*;
 
 
 @org.springframework.stereotype.Service
@@ -49,25 +48,14 @@ public class SpringServiceImpl implements SpringService {
     private String aaiResourceList;
 
     @Override
-    public String decomposeService(String fromAppId,
-                                   String transactionId,
-                                   String serviceInstanceId,
-                                   ONAPLogAdapter adapter) throws DiscoveryException {
+    public String decomposeService(String fromAppId, String transactionId, String serviceInstanceId,
+            ONAPLogAdapter adapter) throws DiscoveryException {
 
+        log.info("Querying A&AI for service instance {}", serviceInstanceId);
 
-        log.info("Querying A&AI for service instance " + serviceInstanceId);
-        JSONObject serviceInstance = null;
-
-        try {
-            serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiBasicAuthorization, aaiServiceInstancePath, aaiResourceList,
-                    transactionId, serviceInstanceId, adapter);
-        } catch (DiscoveryException de) {
-            throw de;
-        } catch (Exception e) {
-            throw  new DiscoveryException(GENERAL_FAILURE, e , e.getLocalizedMessage());
-        }
+        JSONObject serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiBasicAuthorization,
+                aaiServiceInstancePath, aaiResourceList, transactionId, serviceInstanceId);
         return serviceInstance.toString();
     }
-
 
 }

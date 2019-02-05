@@ -27,6 +27,6 @@ public class AAIClientCertCondition implements Condition {
     public boolean matches(ConditionContext conditionContext, AnnotatedTypeMetadata annotatedTypeMetadata)
     {
         String authenticationMode = conditionContext.getEnvironment().getProperty("aai.authentication");
-        return authenticationMode.equalsIgnoreCase("client_cert");
+        return "client_cert".equalsIgnoreCase(authenticationMode);
     }
 }

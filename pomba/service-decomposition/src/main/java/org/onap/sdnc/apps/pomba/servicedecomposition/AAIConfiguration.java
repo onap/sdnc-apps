@@ -101,8 +101,7 @@ public class AAIConfiguration {
     @Bean(name="aaiClient")
     public RestClient restClientWithClientCert() {
         RestClient restClient = new RestClient();
-        System.out.println("in client cert");
-        if (httpProtocol.equals("https"))
+        if ("https".equals(httpProtocol))
             restClient.validateServerHostname(false).validateServerCertChain(false).trustStore(trustStorePath).clientCertFile(keyStorePath).clientCertPassword(keyStorePassword).connectTimeoutMs(connectionTimeout).readTimeoutMs(readTimeout);
         else
             restClient.validateServerHostname(false).validateServerCertChain(false).connectTimeoutMs(connectionTimeout).readTimeoutMs(readTimeout);

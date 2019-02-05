@@ -25,10 +25,8 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.onap.sdnc.apps.pomba.servicedecomposition.AuthorizationConfiguration;
 
-public class AuthorizationConfigurationTest
-{
-    AuthorizationConfiguration authorizationConfiguration =
-            mock(AuthorizationConfiguration.class);
+public class AuthorizationConfigurationTest {
+    AuthorizationConfiguration authorizationConfiguration = mock(AuthorizationConfiguration.class);
 
     @Test
     public void testGetSdBasicAuthHeader() {
