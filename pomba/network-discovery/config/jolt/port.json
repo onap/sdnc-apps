@@ -2,16 +2,11 @@
   {
     "operation": "shift",
     "spec": {
-      "network": {
+      "port": {
         "id": "id",
         "name": "name",
         "admin_state_up": "tempList[].adminStateUp",
-        "shared": "tempList[].sharedNetwork",
-        "status": "tempList[].status",
-        "subnets" : {
-          "*": "tempList[].subnets"
-         },
-        "tenant_id" : "tempList[].tenantId"
+        "mac_address" : "tempList[].macAddress"
       }
     }
   },
@@ -30,7 +25,7 @@
       "*": {
          "@" : "&"
       },
-      "#l3-network": "type",
+      "#port": "type",
       "#ok": "dataQuality.status"
      }
    }

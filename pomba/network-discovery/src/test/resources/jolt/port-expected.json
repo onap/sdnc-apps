@@ -1,0 +1,21 @@
+{
+  "id" : "bcd87883-c92f-4f2b-b5bf-1288948facdd",
+  "name" : "bcd8",
+  "type" : "port",
+  "dataQuality" : {
+    "status" : "ok"
+  },
+  "attributeList" : [ {
+    "name" : "adminStateUp",
+    "value" : "true",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
+    "name" : "macAddress",
+    "value" : "fa:16:3e:ff:f7:af",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  } ]
+}

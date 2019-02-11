@@ -72,6 +72,24 @@ public class TransformationUtilTest {
                 JsonUtils.toPrettyJsonString(JsonUtils.jsonToObject(resourceInstJson)));
 
     }
+    
+    @Test
+    public void testTransformPort() {
+
+        Object sourceObject = JsonUtils.filepathToObject(TEST_RESOURCES + "port-input.json");
+        String resultJson = TransformationUtil.transform(JsonUtils.toJsonString(sourceObject), "port");
+
+        Gson gson = new Gson();
+        Resource resourceInst = gson.fromJson(resultJson, Resource.class);
+        String resourceInstJson = gson.toJson(resourceInst);
+
+        Object expectedObject = JsonUtils.filepathToObject(TEST_RESOURCES + "port-expected.json");
+
+        Assert.assertEquals("Json transformation result does not match expected content",
+                JsonUtils.toPrettyJsonString(expectedObject),
+                JsonUtils.toPrettyJsonString(JsonUtils.jsonToObject(resourceInstJson)));
+
+    }
 
     @Test
     public void testTransformFailureFileNotFound() {

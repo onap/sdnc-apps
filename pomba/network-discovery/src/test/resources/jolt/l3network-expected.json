@@ -6,7 +6,7 @@
     "status" : "ok"
   },
   "attributeList" : [ {
-    "name" : "adminState",
+    "name" : "adminStateUp",
     "value" : "true",
     "dataQuality" : {
       "status" : "ok"
