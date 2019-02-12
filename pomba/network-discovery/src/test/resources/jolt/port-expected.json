@@ -12,6 +12,12 @@
       "status" : "ok"
     }
   }, {
+    "name" : "description",
+    "value" : "Port description",
+    "dataQuality" : {
+      "status" : "ok"
+    }
+  }, {
     "name" : "macAddress",
     "value" : "fa:16:3e:ff:f7:af",
     "dataQuality" : {
