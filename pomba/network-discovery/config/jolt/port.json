@@ -6,6 +6,7 @@
         "id": "id",
         "name": "name",
         "admin_state_up": "tempList[].adminStateUp",
+        "description" : "tempList[].description",
         "mac_address" : "tempList[].macAddress"
       }
     }

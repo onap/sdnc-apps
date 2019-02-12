@@ -2,7 +2,7 @@
     "port": {
         "status": "ACTIVE",
         "binding:host_id": "Setup-D2-OTT-A-Master",
-        "description": "",
+        "description": "Port description",
         "allowed_address_pairs": [],
         "tags": [],
         "extra_dhcp_opts": [],
