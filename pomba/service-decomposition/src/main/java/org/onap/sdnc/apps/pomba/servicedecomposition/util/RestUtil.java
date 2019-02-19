@@ -45,8 +45,8 @@ import org.slf4j.LoggerFactory;
 
 
 public class RestUtil {
-    
-    
+
+
     private static final String RELATIONSHIP_KEY = "relationship";
     private static final String RELATIONSHIP_LIST_KEY = "relationship-list";
     // Parameters for Query AAI Model Data API
@@ -59,6 +59,7 @@ public class RestUtil {
     private static final Resource GENERIC_VNF = new Resource("generic-vnf");
     private static final Resource VF_MODULE = new Resource("vf-module");
     private static final Resource L3_NETWORK = new Resource("l3-network");
+    private static final Resource PNF = new Resource("pnf");
 
     public static class Resource {
         private String resourceName;
@@ -88,7 +89,6 @@ public class RestUtil {
 
     private static final String EMPTY_JSON_STRING = "{}";
 
-    private static final String DEPTH = "?depth=2";
     private static Logger logger = LoggerFactory.getLogger(RestUtil.class);
 
     private RestUtil() {
@@ -123,14 +123,14 @@ public class RestUtil {
      * @return
      * @throws DiscoveryException
      */
-    public static JSONObject retrieveAAIModelData(RestClient aaiClient, String baseURL, String aaiBasicAuthorization, String aaiServiceInstancePath, String aaiResourceList,
+    public static JSONObject retrieveAAIModelData(RestClient aaiClient, String baseURL, String depth, String aaiBasicAuthorization, String aaiServiceInstancePath, String aaiResourceList,
             String transactionId, String serviceInstanceId) throws DiscoveryException {
 
         // Follow two variables for transform purpose
         String url = baseURL + generateServiceInstanceURL(aaiServiceInstancePath, serviceInstanceId);
         // Response from service instance API call
         JSONObject serviceInstancePayload = new JSONObject(
-                getResource(aaiClient, url, aaiBasicAuthorization, transactionId));
+                getResource(aaiClient, url, depth, aaiBasicAuthorization, transactionId));
         // Handle the case if the service instance is not found in AAI
         if (serviceInstancePayload.length() == 0) {
             logger.info("Service Instance {} is not found from AAI", serviceInstanceId);
@@ -142,15 +142,24 @@ public class RestUtil {
         logger.info("The number of the relationship types for service instance id {} is: {}", serviceInstanceId,
                 relationMap.size());
 
-        JSONObject response = processVNFRelationMap(aaiClient, aaiResourceList, baseURL, aaiBasicAuthorization, transactionId, relationMap, serviceInstancePayload);
-               
+        JSONObject response = processVNFRelationMap(aaiClient, aaiResourceList, baseURL, depth, aaiBasicAuthorization, transactionId, relationMap, serviceInstancePayload);
+
         if (relationMap.containsKey(L3_NETWORK.getResourceName())) {
-            List<String> l3NetworkRelatedLinks = relationMap.get(L3_NETWORK.getResourceName());           
-            List<JSONObject> l3networkPayload = processResourceList(aaiClient, baseURL, aaiBasicAuthorization, transactionId,
+            List<String> l3NetworkRelatedLinks = relationMap.get(L3_NETWORK.getResourceName());
+            List<JSONObject> l3networkPayload = processResourceList(aaiClient, baseURL, depth, aaiBasicAuthorization, transactionId,
                     L3_NETWORK.getResourceName(), l3NetworkRelatedLinks);
-            
+
             response.put(L3_NETWORK.getCollectionName(), l3networkPayload);
         }
+
+        if (relationMap.containsKey(PNF.getResourceName())) {
+            List<String> l3NetworkRelatedLinks = relationMap.get(PNF.getResourceName());
+            List<JSONObject> l3networkPayload = processResourceList(aaiClient, baseURL, depth, aaiBasicAuthorization, transactionId,
+                    PNF.getResourceName(), l3NetworkRelatedLinks);
+
+            response.put(PNF.getCollectionName(), l3networkPayload);
+        }
+
 
         return response;
 
@@ -163,7 +172,7 @@ public class RestUtil {
      * @param relationMap
      * @throws DiscoveryException
      */
-    private static JSONObject processVNFRelationMap(RestClient aaiClient, String aaiResourceList, String baseURL, String aaiBasicAuthorization, String transactionId,
+    private static JSONObject processVNFRelationMap(RestClient aaiClient, String aaiResourceList, String baseURL, String depth, String aaiBasicAuthorization, String transactionId,
             Map<String, List<String>> relationMap, JSONObject serviceInstancePayload) throws DiscoveryException {
         List<JSONObject> vnfLst = new ArrayList<>(); // List of the VNF JSON along with related resources
 
@@ -172,7 +181,7 @@ public class RestUtil {
         List<Resource> resourceTypes = getResourceTypes(aaiResourceList);
 
         if (relationMap.get(GENERIC_VNF.getResourceName()) != null) {
-            List<JSONObject> vnfList = processResourceList(aaiClient, baseURL, aaiBasicAuthorization, transactionId,
+            List<JSONObject> vnfList = processResourceList(aaiClient, baseURL, depth, aaiBasicAuthorization, transactionId,
                     GENERIC_VNF.getResourceName(), relationMap.get(GENERIC_VNF.getResourceName()));
             // Logic to Create the Generic VNF JSON and extract further relationships
             for (JSONObject vnfPayload : vnfList) {
@@ -189,13 +198,13 @@ public class RestUtil {
 
                     logger.info("Number of relationships found for generic-vnf '{}', resource type '{}' are: {}", vnfId,
                             resourceType.getResourceName(), vnfcLinkLst.size());
-                    List<JSONObject> vnfcList = processResourceList(aaiClient, baseURL, aaiBasicAuthorization,
+                    List<JSONObject> vnfcList = processResourceList(aaiClient, baseURL, depth, aaiBasicAuthorization,
                             transactionId, resourceType.getResourceName(), vnfcLinkLst);
                     vnfPayload.put(resourceType.getCollectionName(), vnfcList);
                 }
 
                 // Process vf-module looking for l3-network:
-                processVfModuleList(aaiClient, baseURL, aaiBasicAuthorization, transactionId, vnfPayload);
+                processVfModuleList(aaiClient, baseURL, depth, aaiBasicAuthorization, transactionId, vnfPayload);
                 // Add final vnf payload to list
                 vnfLst.add(vnfPayload);
             }
@@ -212,7 +221,7 @@ public class RestUtil {
 
     }
 
-    private static void processVfModuleList(RestClient aaiClient, String baseURL, String aaiBasicAuthorization, String transactionId,
+    private static void processVfModuleList(RestClient aaiClient, String baseURL, String depth, String aaiBasicAuthorization, String transactionId,
             JSONObject vnfPayload) throws DiscoveryException {
 
        if (!vnfPayload.has(VF_MODULE.getCollectionName())) {
@@ -224,7 +233,7 @@ public class RestUtil {
        if (!vfmoduleCollection.has(VF_MODULE.getResourceName())) {
            return;
        }
-       
+
        JSONArray vfModuleList = vfmoduleCollection.getJSONArray(VF_MODULE.getResourceName());
 
         for (int i = 0; i < vfModuleList.length(); i++) {
@@ -233,11 +242,11 @@ public class RestUtil {
                 logger.error("VF Module not found for vnf-id {}", vnfPayload.opt("vnf-id"));
                 continue;
             }
-            processVfModule(aaiClient, baseURL, aaiBasicAuthorization, transactionId, vfModulePayload);
-        }     
+            processVfModule(aaiClient, baseURL, depth, aaiBasicAuthorization, transactionId, vfModulePayload);
+        }
    }
 
-    private static void processVfModule(RestClient aaiClient, String baseURL, String aaiBasicAuthorization,
+    private static void processVfModule(RestClient aaiClient, String baseURL, String depth, String aaiBasicAuthorization,
             String transactionId, JSONObject vfModulePayload) throws DiscoveryException {
 
         Map<String, List<String>> relationMap = extractRelationships(vfModulePayload);
@@ -252,7 +261,7 @@ public class RestUtil {
 
         logger.info("Number of relationships found for vf-module '{}', resource type '{}' are: {}", vfModuleId, L3_NETWORK.getResourceName(), l3NetworkRelatedLinks.size());
 
-        List<JSONObject> l3NetworkObjects = processResourceList(aaiClient, baseURL, aaiBasicAuthorization,
+        List<JSONObject> l3NetworkObjects = processResourceList(aaiClient, baseURL, depth, aaiBasicAuthorization,
                 transactionId, L3_NETWORK.getResourceName(), l3NetworkRelatedLinks);
 
         // Add l3-network with related resource payload to the vfModulePayload:
@@ -268,20 +277,15 @@ public class RestUtil {
      * @return
      * @throws DiscoveryException
      */
-    private static List<JSONObject> processResourceList(RestClient aaiClient, String aaiBaseURL, String aaiBasicAuthorization, String transactionId,
+    private static List<JSONObject> processResourceList(RestClient aaiClient, String aaiBaseURL, String depth, String aaiBasicAuthorization, String transactionId,
             String resourceType, List<String> resourceList) throws DiscoveryException {
         List<JSONObject> resourcePayloadList = new ArrayList<>();
         for (String resourceLink : resourceList) {
             String resourceURL = aaiBaseURL + resourceLink;
-            // With latest AAI development, in order to retrieve the both generic VNF + vf_module, we can use
-            // one API call but with depth=2
-            if (resourceType.equals(GENERIC_VNF.getResourceName())) {
-                resourceURL += DEPTH;
-            }
 
             // Response from generic VNF API call
             JSONObject resourcePayload = new JSONObject(
-                    getResource(aaiClient, resourceURL, aaiBasicAuthorization, transactionId));
+                    getResource(aaiClient, resourceURL, depth, aaiBasicAuthorization, transactionId));
             if (resourcePayload.length() == 0) {
                 logger.info("Resource with url {} is not found from AAI", resourceLink);
             } else {
@@ -352,9 +356,9 @@ public class RestUtil {
      * @return
      * @throws DiscoveryException
      */
-    private static String getResource(RestClient client, String url, String aaiBasicAuthorization, String transId)
+    private static String getResource(RestClient client, String url, String depth, String aaiBasicAuthorization, String transId)
             throws DiscoveryException {
-        OperationResult result = client.get(url, buildHeaders(aaiBasicAuthorization, transId), MediaType.valueOf(MediaType.APPLICATION_JSON));
+        OperationResult result = client.get((url + ((null != depth) ? ("?depth=" +depth) : "")), buildHeaders(aaiBasicAuthorization, transId), MediaType.valueOf(MediaType.APPLICATION_JSON));
 
         if (result.wasSuccessful()) {
             return result.getResult();

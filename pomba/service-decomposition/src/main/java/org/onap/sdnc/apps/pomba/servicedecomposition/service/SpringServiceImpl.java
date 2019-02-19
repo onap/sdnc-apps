@@ -39,6 +39,9 @@ public class SpringServiceImpl implements SpringService {
     private String aaiBaseUrl;
 
     @Autowired
+    private String aaiUrlDepth;
+
+    @Autowired
     private String aaiBasicAuthorization;
 
     @Autowired
@@ -53,7 +56,7 @@ public class SpringServiceImpl implements SpringService {
 
         log.info("Querying A&AI for service instance {}", serviceInstanceId);
 
-        JSONObject serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiBasicAuthorization,
+        JSONObject serviceInstance = RestUtil.retrieveAAIModelData(aaiClient, aaiBaseUrl, aaiUrlDepth, aaiBasicAuthorization,
                 aaiServiceInstancePath, aaiResourceList, transactionId, serviceInstanceId);
         return serviceInstance.toString();
     }

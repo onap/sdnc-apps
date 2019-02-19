@@ -69,6 +69,10 @@ public class AAIConfiguration {
     @Value("${aai.resourceList}")
     private String resourceList;
 
+    @Value("${aai.urlDepth}")
+    private String urlDepth;
+
+
     @Value("${basicAuth.username:admin}")
     private String username;
 
@@ -111,6 +115,11 @@ public class AAIConfiguration {
     @Bean(name="aaiBaseUrl")
     public String getURL() {
         return this.httpProtocol + "://" + this.host + ":" + this.port;
+    }
+
+    @Bean(name="aaiUrlDepth")
+    public String getUrlDepth() {
+        return this.urlDepth;
     }
 
     @Bean(name="aaiServiceInstancePath")

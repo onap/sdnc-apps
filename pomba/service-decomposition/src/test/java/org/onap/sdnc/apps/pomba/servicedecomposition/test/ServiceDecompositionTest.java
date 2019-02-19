@@ -97,7 +97,7 @@ public class ServiceDecompositionTest {
     public void testDemoFirewallService() throws Exception {
         // setup A&AI responses
         addResponse(
-                "/aai/v13/nodes/service-instance/c6456519-6acf-4adb-997c-3c363dd4caaf",
+                "/aai/v13/nodes/service-instance/c6456519-6acf-4adb-997c-3c363dd4caaf?depth=2",
                 "junit/aai-service-instance.json");
         addResponse(
                 "/aai/v13/network/generic-vnfs/generic-vnf/6700c313-fbb7-4cf9-ac70-0293ec56df68?depth=2",
@@ -107,13 +107,13 @@ public class ServiceDecompositionTest {
                 "junit/aai-generic-vnf2.json");
         addResponse(
                 "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/CloudOwner/RegionOne/tenants/tenant"
-                        + "/b49b830686654191bb1e952a74b014ad/vservers/vserver/b494cd6e-b9f3-45e0-afe7-e1d1a5f5d74a",
+                        + "/b49b830686654191bb1e952a74b014ad/vservers/vserver/b494cd6e-b9f3-45e0-afe7-e1d1a5f5d74a?depth=2",
                 "junit/aai-vserver.json");
         addResponse(
-                "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951870",
+                "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951870?depth=2",
                 "junit/aai-l3-network1.json");
         addResponse(
-                "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951872",
+                "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951872?depth=2",
                 "junit/aai-l3-network2.json");
 
         final String serviceInstanceId = "c6456519-6acf-4adb-997c-3c363dd4caaf";
@@ -157,7 +157,7 @@ public class ServiceDecompositionTest {
     public void testDemoFirewallServiceWithL3Networks() throws Exception {
         // setup A&AI responses
         addResponse(
-                "/aai/v13/nodes/service-instance/c6456519-6acf-4adb-997c-3c363dd4caaf",
+                "/aai/v13/nodes/service-instance/c6456519-6acf-4adb-997c-3c363dd4caaf?depth=2",
                 "junit/aai-service-instance2.json");
         addResponse(
                 "/aai/v13/network/generic-vnfs/generic-vnf/6700c313-fbb7-4cf9-ac70-0293ec56df68?depth=2",
@@ -167,13 +167,13 @@ public class ServiceDecompositionTest {
                 "junit/aai-generic-vnf2.json");
         addResponse(
                 "/aai/v13/cloud-infrastructure/cloud-regions/cloud-region/CloudOwner/RegionOne/tenants/tenant"
-                        + "/b49b830686654191bb1e952a74b014ad/vservers/vserver/b494cd6e-b9f3-45e0-afe7-e1d1a5f5d74a",
+                        + "/b49b830686654191bb1e952a74b014ad/vservers/vserver/b494cd6e-b9f3-45e0-afe7-e1d1a5f5d74a?depth=2",
                 "junit/aai-vserver.json");
         addResponse(
-                "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951870",
+                "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951870?depth=2",
                 "junit/aai-l3-network1.json");
         addResponse(
-                "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951872",
+                "/aai/v13/network/l3-networks/l3-network/HNP1d77c-1094-41ec-b7f3-94bb30951872?depth=2",
                 "junit/aai-l3-network2.json");
 
         final String serviceInstanceId = "c6456519-6acf-4adb-997c-3c363dd4caaf";
@@ -277,7 +277,7 @@ public class ServiceDecompositionTest {
     /** Unknown service-instance-id return HTTP 404. */
     @Test
     public void testInvalidServiceId() throws Exception {
-        aai.stubFor(get("/aai/v13/nodes/service-instance/noSuchServiceId").willReturn(notFound()));
+        aai.stubFor(get("/aai/v13/nodes/service-instance/noSuchServiceId?depth=2").willReturn(notFound()));
 
         Response response =
                 this.service.getContext(httpRequest, AUTH, "junit", null, "noSuchServiceId");
