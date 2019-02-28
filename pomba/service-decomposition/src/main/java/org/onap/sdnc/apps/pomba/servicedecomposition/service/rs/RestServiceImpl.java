@@ -19,7 +19,6 @@
 package org.onap.sdnc.apps.pomba.servicedecomposition.service.rs;
 
 import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException.Error.*;
-
 import java.util.UUID;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +41,7 @@ import org.springframework.stereotype.Component;
 public class RestServiceImpl implements RestService {
     private static Logger log = LoggerFactory.getLogger(RestServiceImpl.class);
     private static final String EMPTY_JSON_OBJECT = "{}";
+    private static UUID instanceId = UUID.randomUUID();
 
     @Autowired
     private SpringService service;
@@ -58,6 +58,7 @@ public class RestServiceImpl implements RestService {
 
         ONAPLogAdapter adapter = new ONAPLogAdapter(log);
         adapter.getServiceDescriptor().setServiceName(SERVICE_NAME);
+        adapter.getServiceDescriptor().setServiceUUID(instanceId.toString());
         adapter.entering(request);
         try {
             if (authorization == null || !this.basicAuthHeader.equals(authorization)) {
