@@ -6,12 +6,12 @@
     <packaging>pom</packaging>
     <groupId>org.onap.sdnc</groupId>
     <artifactId>apps</artifactId>
-    <version>1.5.1-SNAPSHOT</version>
+    <version>1.5.2-SNAPSHOT</version>
 
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
         <artifactId>odlparent-lite</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.3-SNAPSHOT</version>
     </parent>
 
     <name>sdnc-apps</name>
