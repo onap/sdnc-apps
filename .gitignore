@@ -1,6 +1,7 @@
 *.classpath
 *.project
 *.checkstyle
+.idea
 .settings/
 target/
 output.log
