@@ -28,7 +28,7 @@ limitations under the License.
 
     <groupId>org.onap.sdnc.apps.pomba</groupId>
     <artifactId>pomba</artifactId>
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.6.1</version>
     <packaging>pom</packaging>
 
     <modules>
