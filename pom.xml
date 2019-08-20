@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <groupId>org.onap.sdnc</groupId>
     <artifactId>apps</artifactId>
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.6.2-SNAPSHOT</version>
 
     <parent>
         <groupId>org.onap.ccsdk.parent</groupId>
