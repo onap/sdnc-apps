@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Dan Timoney <dtimoney@att.com>
+Code-Review+2: David Stilwell <stilwelld@att.com>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Tue, 20 Aug 2019 17:23:33 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/sdnc/apps/+/93961
+Project: sdnc/apps
+Branch: refs/heads/master
