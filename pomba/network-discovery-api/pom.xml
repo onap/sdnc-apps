@@ -28,7 +28,7 @@ limitations under the License.
 
     <groupId>org.onap.sdnc.apps.pomba</groupId>
     <artifactId>network-discovery-api</artifactId>
-    <version>1.6.2-SNAPSHOT</version>
+    <version>1.7.0-SNAPSHOT</version>
     <name>Network Discovery API</name>
 
     <dependencies>
