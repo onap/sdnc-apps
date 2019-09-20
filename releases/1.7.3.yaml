@@ -1,0 +1,5 @@
+---
+distribution_type: 'maven'
+version: '1.7.3'
+project: 'sdnc-apps'
+log_dir: 'sdnc-apps-maven-stage-elalto/4/'
