@@ -1,0 +1,11 @@
+---
+distribution_type: 'container'
+container_release_tag: '1.7.3'
+project: 'sdnc-apps'
+log_dir: 'sdnc-apps-maven-docker-stage-elalto/4/'
+ref: a29670f76262b9db705857d6bb1f40ef6f8d304d
+containers:
+    - name: 'network-discovery'
+      version: '1.7.3-latest'
+    - name: 'service-decomposition'
+      version: '1.7.3-latest'
