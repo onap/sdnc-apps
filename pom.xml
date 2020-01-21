@@ -19,7 +19,6 @@
     <description>POM to be used for apps in SDNC project</description>
     
     <modules>
-        <module>client</module>
         <module>pomba</module>
     </modules>
 </project>
