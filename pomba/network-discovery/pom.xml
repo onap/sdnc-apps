@@ -40,12 +40,9 @@ limitations under the License.
         
     </properties>
 
-
-
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <!-- Import dependency management from Spring Boot -->
+            <dependency><!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>1.5.17.RELEASE</version>
@@ -54,7 +51,6 @@ limitations under the License.
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <!-- Jolt transformation dependencies -->
         <dependency>
@@ -75,14 +71,14 @@ limitations under the License.
 
         <!-- Springboot dependencies -->
         <dependency>
-		    <groupId>org.eclipse.jetty</groupId>
-		    <artifactId>jetty-webapp</artifactId>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-webapp</artifactId>
         </dependency>
 
         <dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-jersey</artifactId>
-		    <exclusions>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-jersey</artifactId>
+  <exclusions>
 			<exclusion>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-tomcat</artifactId>
@@ -148,6 +144,15 @@ limitations under the License.
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -162,17 +167,6 @@ limitations under the License.
                 </executions>
             </plugin>
         </plugins>
-  
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
-          
     </build>
 
     <profiles>
@@ -343,5 +337,4 @@ limitations under the License.
             </build>
         </profile>
     </profiles>
-
 </project>

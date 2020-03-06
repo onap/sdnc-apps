@@ -39,8 +39,7 @@ limitations under the License.
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <!-- Import dependency management from Spring Boot -->
+            <dependency><!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>1.5.17.RELEASE</version>
@@ -49,7 +48,6 @@ limitations under the License.
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <!-- Springframework dependencies -->
         <dependency>
@@ -140,6 +138,15 @@ limitations under the License.
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -153,15 +160,6 @@ limitations under the License.
                 </executions>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
 
     <profiles>
@@ -329,5 +327,4 @@ limitations under the License.
             </build>
         </profile>
     </profiles>
-
 </project>
