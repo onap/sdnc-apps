@@ -1,0 +1,11 @@
+---
+distribution_type: 'container'
+container_release_tag: '1.8.0'
+project: 'sdnc-oam'
+log_dir: 'sdnc-apps-maven-docker-stage-master/215/'
+ref: f58ed99972fe216d039ec264c5c0f46138148a4e
+containers:
+    - name: 'network-discovery''
+      version: '1.8.0-latest'
+    - name: 'service-decomposition''
+      version: '1.8.0-latest'
