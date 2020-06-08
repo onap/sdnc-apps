@@ -1,0 +1,50 @@
+version: '2.1'
+
+services:
+  db:
+    image: mariadb:10.3
+    container_name: gra_db_container
+    ports:
+      - "13306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=openECOMP1.0
+      - MYSQL_ROOT_HOST=%
+    logging:       
+      driver:   "json-file"
+      options:  
+        max-size: "30m"
+        max-file: "5"
+  
+      
+  gra:
+    image: onap/sdnc-gra-image:latest
+    depends_on:
+      - db
+    container_name: sdnc_gra_container
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    links:
+      - db:dbhost
+    environment:
+      - MYSQL_DB_HOST=dbhost
+      - MYSQL_ROOT_PASSWORD=openECOMP1.0
+      - MYSQL_DB_USER=sdnc
+      - MYSQL_DB_PASSWD=abc123
+      - MYSQL_DB_DATABASE=sdnctl
+      - TRUSTSTORE_PASSWORD=changeit
+      - CACERT_PASSWORD=changeit
+      - SDNC_CERT_DIR=/opt/onap/sdnc/config
+      - JAVA_SECURITY_DIR=/usr/lib/jvm/default-jvm/jre/lib/security
+      - TRUSTSTORE=truststoreONAPall.jks
+    volumes:
+      - ../resources:/opt/onap/sdnc/config
+    logging:       
+      driver:   "json-file"
+      options:  
+        max-size: "30m"
+        max-file: "5"
+    extra_hosts:
+      aaf-onap-test.osaaf.org: 10.12.5.145
+
+
