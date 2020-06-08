@@ -1,0 +1,33 @@
+{
+    "preload-list" : [
+      {
+        "preload-id" : "preload1",
+        "preload-type" : "network",
+        "preload-data" : {
+          "preload-network-topology-information" : {
+            "network-topology-identifier-structure" : {
+              "network-id" : "123",
+              "network-name" : "sky-net",
+              "network-role" : "master",
+              "network-type" : "evil",
+              "network-technology" : "AI",
+              "eipam-v4-address-plan" : "evilv4",
+              "eipam-v6-address-plan" : "evilv6",
+              "is-trunked" : false,
+              "subnets" : [
+                {
+                  "start-address" : "10.1.10.0",
+                  "gateway-address" : "10.1.10.255",
+                  "cidr-mask" : "16",
+                  "ip-version" : "4",
+                  "dhcp-enabled" : "false",
+                  "subnet-name" : "satellites",
+                  "subnet-role" : "monitor"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+}
