@@ -1,0 +1,482 @@
+{
+    "preload-list": [
+        {
+            "preload-id": "preload2",
+            "preload-type": "network",
+            "preload-data": {
+                "preload-network-topology-information": {
+                    "host-routes": [
+                        {
+                            "next-hop": "10.1.12.1",
+                            "route-prefix": "12"
+                        }
+                    ],
+                    "is-external-network": true,
+                    "is-provider-network": true,
+                    "is-shared-network": true,
+                    "network-policy": [
+                        {
+                            "network-policy-fqdn": "policy-sdnc.onap.org",
+                            "network-policy-id": "123"
+                        }
+                    ],
+                    "network-topology-identifier-structure": {
+                        "eipam-v4-address-plan": "plan9",
+                        "eipam-v6-address-plan": "plan9v6",
+                        "is-trunked": true,
+                        "network-id": "321",
+                        "network-instance-group-id": "abc123",
+                        "network-name": "syfy",
+                        "network-role": "secret",
+                        "network-technology": "soupcan",
+                        "network-type": "fake",
+                        "related-networks": {
+                            "related-network": [
+                                {
+                                    "network-id": "string",
+                                    "network-role": "string",
+                                    "vlan-tags": {
+                                        "is-private": true,
+                                        "lower-tag-id": 0,
+                                        "upper-tag-id": 0,
+                                        "vlan-interface": "string"
+                                    }
+                                }
+                            ]
+                        },
+                        "segmentation-id": "string"
+                    },
+                    "physical-network-name": "string",
+                    "route-table-reference": [
+                        {
+                            "route-table-reference-fqdn": "string",
+                            "route-table-reference-id": "string"
+                        }
+                    ],
+                    "subnets": [
+                        {
+                            "addr-from-start": "Y",
+                            "cidr-mask": "string",
+                            "dhcp-enabled": "Y",
+                            "dhcp-end-address": "string",
+                            "dhcp-start-address": "string",
+                            "gateway-address": "string",
+                            "ip-version": "string",
+                            "start-address": "string",
+                            "subnet-name": "string",
+                            "subnet-role": "string",
+                            "subnet-sequence": 0
+                        }
+                    ],
+                    "vpn-bindings": [
+                        {
+                            "aic-zone": "string",
+                            "global-route-target": "string",
+                            "route-target-role": "string",
+                            "vpn-binding-id": "string",
+                            "vpn-name": "string"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "preload-id": "preload2",
+            "preload-type": "vf-module",
+            "preload-data": {
+                "preload-vf-module-topology-information": {
+                    "vf-module-topology": {
+                        "aic-clli": "string",
+                        "aic-cloud-region": "string",
+                        "cloud-owner": "string",
+                        "onap-model-information": {
+                            "model-customization-uuid": "string",
+                            "model-invariant-uuid": "string",
+                            "model-name": "string",
+                            "model-uuid": "string",
+                            "model-version": "string"
+                        },
+                        "sdnc-generated-cloud-resources": true,
+                        "tenant": "string",
+                        "vf-module-assignments": {
+                            "dhcp-subnet-assignments": {
+                                "dhcp-subnet-assignment": [
+                                    {
+                                        "ip-version": "string",
+                                        "network-role": "string",
+                                        "neutron-subnet-id": "string"
+                                    }
+                                ]
+                            },
+                            "vf-module-status": "string",
+                            "vlan-vnfc-instance-groups": {
+                                "vlan-vnfc-instance-group": [
+                                    {
+                                        "instance-group-function": "string",
+                                        "instance-group-id": "string",
+                                        "vnf-id": "string",
+                                        "vnfcs": {
+                                            "vnfc": [
+                                                {
+                                                    "vnfc-name": "string",
+                                                    "vnic-groups": {
+                                                        "vnic-group": [
+                                                            {
+                                                                "network-instance-group-function": "string",
+                                                                "vlan-assignment-policy-name": "string",
+                                                                "vlan-common-ip-addresses": {
+                                                                    "ip-addresses": {
+                                                                        "ipv4-address": "string",
+                                                                        "ipv6-address": "string",
+                                                                        "vipv4-address": "string",
+                                                                        "vipv6-address": "string"
+                                                                    }
+                                                                },
+                                                                "vlan-tag-index-next": 0,
+                                                                "vlan-vnics": {
+                                                                    "vlan-vnic": [
+                                                                        {
+                                                                            "vnic-port-id": "string",
+                                                                            "vnic-sub-interfaces": {
+                                                                                "sub-interface-network-data": [
+                                                                                    {
+                                                                                        "floating-ips": {
+                                                                                            "floating-ip-v4": [
+                                                                                                "string"
+                                                                                            ],
+                                                                                            "floating-ip-v6": [
+                                                                                                "string"
+                                                                                            ]
+                                                                                        },
+                                                                                        "network-id": "string",
+                                                                                        "network-information-items": {
+                                                                                            "network-information-item": [
+                                                                                                {
+                                                                                                    "ip-count": 0,
+                                                                                                    "ip-version": "string",
+                                                                                                    "network-ips": {
+                                                                                                        "network-ip": [
+                                                                                                            "string"
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    "use-dhcp": "Y"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        "network-name": 0,
+                                                                                        "network-role": "string",
+                                                                                        "network-role-tag": "string",
+                                                                                        "neutron-network-id": "string",
+                                                                                        "vlan-tag-id": 0
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "vnic-interface-role": "string"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "vms": {
+                                "vm": [
+                                    {
+                                        "nfc-naming-code": "string",
+                                        "onap-model-information": {
+                                            "model-customization-uuid": "string",
+                                            "model-invariant-uuid": "string",
+                                            "model-name": "string",
+                                            "model-uuid": "string",
+                                            "model-version": "string"
+                                        },
+                                        "vm-count": 0,
+                                        "vm-names": {
+                                            "vm-name": [
+                                                "string"
+                                            ],
+                                            "vnfc-names": [
+                                                {
+                                                    "vnfc-name": "string",
+                                                    "vnfc-networks": {
+                                                        "vnfc-network-data": [
+                                                            {
+                                                                "connection-point": {
+                                                                    "connection-point-id": "string",
+                                                                    "port-id": "string",
+                                                                    "vlan-data": [
+                                                                        {
+                                                                            "vlan-role": "string",
+                                                                            "vlan-tag-description": "string",
+                                                                            "vlan-tag-id": "string",
+                                                                            "vlan-uuid": "string"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "vnfc-network-role": "string",
+                                                                "vnfc-ports": {
+                                                                    "vnfc-port": [
+                                                                        {
+                                                                            "common-sub-interface-role": "string",
+                                                                            "vnfc-port-id": "string",
+                                                                            "vnic-sub-interfaces": {
+                                                                                "sub-interface-network-data": [
+                                                                                    {
+                                                                                        "floating-ips": {
+                                                                                            "floating-ip-v4": [
+                                                                                                "string"
+                                                                                            ],
+                                                                                            "floating-ip-v6": [
+                                                                                                "string"
+                                                                                            ]
+                                                                                        },
+                                                                                        "network-id": "string",
+                                                                                        "network-information-items": {
+                                                                                            "network-information-item": [
+                                                                                                {
+                                                                                                    "ip-count": 0,
+                                                                                                    "ip-version": "string",
+                                                                                                    "network-ips": {
+                                                                                                        "network-ip": [
+                                                                                                            "string"
+                                                                                                        ]
+                                                                                                    },
+                                                                                                    "use-dhcp": "Y"
+                                                                                                }
+                                                                                            ]
+                                                                                        },
+                                                                                        "network-name": 0,
+                                                                                        "network-role": "string",
+                                                                                        "network-role-tag": "string",
+                                                                                        "neutron-network-id": "string",
+                                                                                        "vlan-tag-id": 0
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "vnfc-subnet": [
+                                                                    {
+                                                                        "vnfc-ip-assignments": [
+                                                                            {
+                                                                                "vnfc-address-family": "ipv4",
+                                                                                "vnfc-subnet-dhcp": "Y",
+                                                                                "vnfc-subnet-ip": [
+                                                                                    {
+                                                                                        "ip-type": "FIXED",
+                                                                                        "vnfc-client-key": "string",
+                                                                                        "vnfc-ip-address": "string"
+                                                                                    }
+                                                                                ],
+                                                                                "vnfc-subnet-ip-count": 0
+                                                                            }
+                                                                        ],
+                                                                        "vnfc-subnet-role": "string"
+                                                                    }
+                                                                ],
+                                                                "vnfc-type": "string"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "vm-networks": {
+                                            "vm-network": [
+                                                {
+                                                    "floating-ips": {
+                                                        "floating-ip-v4": [
+                                                            "string"
+                                                        ],
+                                                        "floating-ip-v6": [
+                                                            "string"
+                                                        ]
+                                                    },
+                                                    "interface-route-prefixes": {
+                                                        "interface-route-prefix": [
+                                                            "string"
+                                                        ]
+                                                    },
+                                                    "is-trunked": true,
+                                                    "mac-addresses": {
+                                                        "mac-address": [
+                                                            "string"
+                                                        ]
+                                                    },
+                                                    "network-information-items": {
+                                                        "network-information-item": [
+                                                            {
+                                                                "ip-count": 0,
+                                                                "ip-version": "string",
+                                                                "network-ips": {
+                                                                    "network-ip": [
+                                                                        "string"
+                                                                    ]
+                                                                },
+                                                                "use-dhcp": "Y"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "network-role": "string",
+                                                    "network-role-tag": "string",
+                                                    "related-networks": {
+                                                        "related-network": [
+                                                            {
+                                                                "network-id": "string",
+                                                                "network-role": "string",
+                                                                "vlan-tags": {
+                                                                    "is-private": true,
+                                                                    "lower-tag-id": 0,
+                                                                    "upper-tag-id": 0,
+                                                                    "vlan-interface": "string"
+                                                                }
+                                                            }
+                                                        ]
+                                                    },
+                                                    "segmentation-id": "string",
+                                                    "sriov-parameters": {
+                                                        "application-tags": {
+                                                            "c-tags": {
+                                                                "c-tag": [
+                                                                    "string"
+                                                                ],
+                                                                "ctag": [
+                                                                    "string"
+                                                                ]
+                                                            },
+                                                            "ctags": {
+                                                                "c-tag": [
+                                                                    "string"
+                                                                ],
+                                                                "ctag": [
+                                                                    "string"
+                                                                ]
+                                                            },
+                                                            "s-tags": {
+                                                                "s-tag": [
+                                                                    "string"
+                                                                ],
+                                                                "stag": [
+                                                                    "string"
+                                                                ]
+                                                            },
+                                                            "stags": {
+                                                                "s-tag": [
+                                                                    "string"
+                                                                ],
+                                                                "stag": [
+                                                                    "string"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "heat-vlan-filters": {
+                                                            "heat-vlan-filter": [
+                                                                "string"
+                                                            ]
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "vm-type": "string",
+                                        "vm-type-tag": "string"
+                                    }
+                                ]
+                            }
+                        },
+                        "vf-module-parameters": {
+                            "param": [
+                                {
+                                    "name": "string",
+                                    "resource-resolution-data": {
+                                        "capability-name": "string",
+                                        "payload": "string",
+                                        "resource-key": [
+                                            {
+                                                "name": "string",
+                                                "value": "string"
+                                            }
+                                        ],
+                                        "status": "string"
+                                    },
+                                    "value": "string"
+                                }
+                            ]
+                        },
+                        "vf-module-topology-identifier": {
+                            "vf-module-id": "string",
+                            "vf-module-name": "string",
+                            "vf-module-type": "string"
+                        }
+                    },
+                    "vnf-resource-assignments": {
+                        "availability-zones": {
+                            "availability-zone": [
+                                "string"
+                            ],
+                            "max-count": 0
+                        },
+                        "vnf-networks": {
+                            "vnf-network": [
+                                {
+                                    "contrail-network-fqdn": "string",
+                                    "is-trunked": true,
+                                    "network-id": "string",
+                                    "network-name": "string",
+                                    "network-role": "string",
+                                    "neutron-id": "string",
+                                    "related-networks": {
+                                        "related-network": [
+                                            {
+                                                "network-id": "string",
+                                                "network-role": "string",
+                                                "vlan-tags": {
+                                                    "is-private": true,
+                                                    "lower-tag-id": 0,
+                                                    "upper-tag-id": 0,
+                                                    "vlan-interface": "string"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "segmentation-id": "string",
+                                    "subnets-data": {
+                                        "subnet-data": [
+                                            {
+                                                "cidr-mask": "string",
+                                                "dhcp-enabled": "Y",
+                                                "gateway-address": "string",
+                                                "ip-version": "string",
+                                                "network-start-address": "string",
+                                                "sdnc-subnet-id": "string",
+                                                "subnet-id": "string",
+                                                "subnet-name": "string",
+                                                "subnet-role": "string"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        "vnf-status": "string"
+                    },
+                    "vnf-topology-identifier-structure": {
+                        "nf-code": "string",
+                        "nf-function": "string",
+                        "nf-role": "string",
+                        "nf-type": "string",
+                        "vnf-id": "string",
+                        "vnf-name": "string",
+                        "vnf-type": "string"
+                    }
+                }
+            }
+        }
+    ]
+}
