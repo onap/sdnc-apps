@@ -20,6 +20,7 @@
 
 package org.onap.sdnc.apps.ms.gra.controllers;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,6 +74,8 @@ public class OperationsApiController implements OperationsApi {
 
     @org.springframework.beans.factory.annotation.Autowired
     public OperationsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         this.objectMapper = objectMapper;
         this.request = request;
     }
@@ -115,12 +118,12 @@ public class OperationsApiController implements OperationsApi {
 
         SvcLogicContext ctxIn = new SvcLogicContext();
 
-        GenericResourceApiPreloadModelInformation preloadModelInfo = null;
+        GenericResourceApiPreloaddataPreloadData preloadData = null;
 
 
         // Add input to SvcLogicContext
         try {
-            ctxIn.mergeJson("input", objectMapper.writeValueAsString(graInput.getInput()));
+            ctxIn.mergeJson(svcOperation+"-input", objectMapper.writeValueAsString(graInput.getInput()));
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to parse error on input preload data", svcOperation);
             resp.setResponseCode("500");
@@ -133,8 +136,8 @@ public class OperationsApiController implements OperationsApi {
 
         // Add config tree data to SvcLogicContext
         try {
-            preloadModelInfo = getConfigPreloadData(preloadId, preloadType);
-            ctxIn.mergeJson("preload-data", objectMapper.writeValueAsString(preloadModelInfo.getPreloadList()));
+            preloadData = getConfigPreloadData(preloadId, preloadType);
+            ctxIn.mergeJson("preload-data", objectMapper.writeValueAsString(preloadData));
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to parse error on saved config preload data", svcOperation);
             resp.setResponseCode("500");
@@ -147,8 +150,8 @@ public class OperationsApiController implements OperationsApi {
 
         // Add operational tree data to SvcLogicContext
         try {
-            preloadModelInfo = getOperationalPreloadData(preloadId, preloadType);
-            ctxIn.mergeJson("operational-data", objectMapper.writeValueAsString(preloadModelInfo.getPreloadList()));
+            preloadData = getOperationalPreloadData(preloadId, preloadType);
+            ctxIn.mergeJson("operational-data", objectMapper.writeValueAsString(preloadData));
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to parse error on saved operational preload data", svcOperation);
             resp.setResponseCode("500");
@@ -173,24 +176,29 @@ public class OperationsApiController implements OperationsApi {
             if ("200".equals(resp.getResponseCode())) {
                 // If DG returns success, update database
                 String ctxJson = ctxOut.toJsonString("preload-data");
-                GenericResourceApiPreloadModelInformation preloadToLoad = objectMapper.readValue(ctxJson, GenericResourceApiPreloadModelInformation.class);
-                saveConfigPreloadData(preloadToLoad);
-                saveOperationalPreloadData(preloadToLoad);
+                log.info("DG preload-data is {}", ctxJson);
+                GenericResourceApiPreloaddataPreloadData preloadToLoad = objectMapper.readValue(ctxJson, GenericResourceApiPreloaddataPreloadData.class);
+                saveConfigPreloadData(preloadId, preloadType, preloadToLoad);
+                saveOperationalPreloadData(preloadId, preloadType, preloadToLoad);
             }
 
         } catch (NullPointerException npe) {
+            log.error("Caught NPE", npe);
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
         } catch (SvcLogicException e) {
+            log.error("Caught SvcLogicException", e);
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
         } catch (JsonMappingException e) {
+            log.error("Caught JsonMappingException", e);
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
         } catch (JsonProcessingException e) {
+            log.error("Caught JsonProcessingException", e);
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
@@ -229,12 +237,12 @@ public class OperationsApiController implements OperationsApi {
 
         SvcLogicContext ctxIn = new SvcLogicContext();
 
-        GenericResourceApiPreloadModelInformation preloadModelInfo = null;
+        GenericResourceApiPreloaddataPreloadData preloadData = null;
 
 
         // Add input to SvcLogicContext
         try {
-            ctxIn.mergeJson("input", objectMapper.writeValueAsString(graInput.getInput()));
+            ctxIn.mergeJson(svcOperation+"-input", objectMapper.writeValueAsString(graInput.getInput()));
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to parse error on input preload data", svcOperation);
             resp.setResponseCode("500");
@@ -247,8 +255,8 @@ public class OperationsApiController implements OperationsApi {
 
         // Add config tree data to SvcLogicContext
         try {
-            preloadModelInfo = getConfigPreloadData(preloadId, preloadType);
-            ctxIn.mergeJson("preload-data", objectMapper.writeValueAsString(preloadModelInfo.getPreloadList()));
+            preloadData = getConfigPreloadData(preloadId, preloadType);
+            ctxIn.mergeJson("preload-data", objectMapper.writeValueAsString(preloadData));
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to parse error on saved config preload data", svcOperation);
             resp.setResponseCode("500");
@@ -261,8 +269,8 @@ public class OperationsApiController implements OperationsApi {
 
         // Add operational tree data to SvcLogicContext
         try {
-            preloadModelInfo = getOperationalPreloadData(preloadId, preloadType);
-            ctxIn.mergeJson("operational-data", objectMapper.writeValueAsString(preloadModelInfo.getPreloadList()));
+            preloadData = getOperationalPreloadData(preloadId, preloadType);
+            ctxIn.mergeJson("operational-data", objectMapper.writeValueAsString(preloadData));
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to parse error on saved operational preload data", svcOperation);
             resp.setResponseCode("500");
@@ -287,9 +295,9 @@ public class OperationsApiController implements OperationsApi {
             if ("200".equals(resp.getResponseCode())) {
                 // If DG returns success, update database
                 String ctxJson = ctxOut.toJsonString("preload-data");
-                GenericResourceApiPreloadModelInformation preloadToLoad = objectMapper.readValue(ctxJson, GenericResourceApiPreloadModelInformation.class);
-                saveConfigPreloadData(preloadToLoad);
-                saveOperationalPreloadData(preloadToLoad);
+                GenericResourceApiPreloaddataPreloadData preloadToLoad = objectMapper.readValue(ctxJson, GenericResourceApiPreloaddataPreloadData.class);
+                saveConfigPreloadData(preloadId, preloadType, preloadToLoad);
+                saveOperationalPreloadData(preloadId, preloadType, preloadToLoad);
             }
 
         } catch (NullPointerException npe) {
@@ -326,59 +334,40 @@ public class OperationsApiController implements OperationsApi {
                 (preloadData.getInput().getPreloadVfModuleTopologyInformation() == null));
     }
 
-    private GenericResourceApiPreloadModelInformation getConfigPreloadData(String preloadId, String preloadType) throws JsonProcessingException {
-        GenericResourceApiPreloadModelInformation preloadModelInfo = new GenericResourceApiPreloadModelInformation();
+    private GenericResourceApiPreloaddataPreloadData getConfigPreloadData(String preloadId, String preloadType) throws JsonProcessingException {
+
         List<ConfigPreloadData> configPreloadData = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
 
-        for (ConfigPreloadData preloadItem : configPreloadData) {
-
-            GenericResourceApiPreloadmodelinformationPreloadList preloadListItem = new GenericResourceApiPreloadmodelinformationPreloadList();
-            preloadListItem.setPreloadId(preloadItem.getPreloadId());
-            preloadListItem.setPreloadType(preloadItem.getPreloadType());
-            preloadListItem.setPreloadData(objectMapper.readValue(preloadItem.getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
-            preloadModelInfo.addPreloadListItem(preloadListItem);
-
-        }
-        return (preloadModelInfo);
-    }
-
-    private void saveConfigPreloadData(GenericResourceApiPreloadModelInformation preloadModelInfo) throws JsonProcessingException {
-        List<GenericResourceApiPreloadmodelinformationPreloadList> preloadListItems = preloadModelInfo.getPreloadList();
-
-        for (GenericResourceApiPreloadmodelinformationPreloadList preloadListItem: preloadListItems) {
-            String preloadId = preloadListItem.getPreloadId();
-            String preloadType = preloadListItem.getPreloadType();
-            configPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
-            configPreloadDataRepository.save(new ConfigPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadListItem.getPreloadData())));
-        }
-    }
-    private void saveOperationalPreloadData(GenericResourceApiPreloadModelInformation preloadModelInfo) throws JsonProcessingException {
-        List<GenericResourceApiPreloadmodelinformationPreloadList> preloadListItems = preloadModelInfo.getPreloadList();
-
-        for (GenericResourceApiPreloadmodelinformationPreloadList preloadListItem: preloadListItems) {
-            String preloadId = preloadListItem.getPreloadId();
-            String preloadType = preloadListItem.getPreloadType();
-            operationalPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
-            operationalPreloadDataRepository.save(new OperationalPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadListItem.getPreloadData())));
+        if (configPreloadData.isEmpty()) {
+            return(null);
+        } else {
+            return(objectMapper.readValue(configPreloadData.get(0).getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
         }
     }
 
+    private GenericResourceApiPreloaddataPreloadData getOperationalPreloadData(String preloadId, String preloadType) throws JsonProcessingException {
 
-    private GenericResourceApiPreloadModelInformation getOperationalPreloadData(String preloadId, String preloadType) throws JsonProcessingException {
-        GenericResourceApiPreloadModelInformation preloadModelInfo = new GenericResourceApiPreloadModelInformation();
-        List<OperationalPreloadData> operPreloadData = operationalPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
+        List<OperationalPreloadData> configPreloadData = operationalPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
 
-        for (OperationalPreloadData preloadItem : operPreloadData) {
-
-            GenericResourceApiPreloadmodelinformationPreloadList preloadListItem = new GenericResourceApiPreloadmodelinformationPreloadList();
-            preloadListItem.setPreloadId(preloadItem.getPreloadId());
-            preloadListItem.setPreloadType(preloadItem.getPreloadType());
-            preloadListItem.setPreloadData(objectMapper.readValue(preloadItem.getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
-            preloadModelInfo.addPreloadListItem(preloadListItem);
-
+        if (configPreloadData.isEmpty()) {
+            return(null);
+        } else {
+            return(objectMapper.readValue(configPreloadData.get(0).getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
         }
-        return (preloadModelInfo);
     }
 
+    private void saveConfigPreloadData(String preloadId, String preloadType, GenericResourceApiPreloaddataPreloadData preloadData) throws JsonProcessingException {
+
+        configPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
+        configPreloadDataRepository.save(new ConfigPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadData)));
+
+    }
+
+    private void saveOperationalPreloadData(String preloadId, String preloadType, GenericResourceApiPreloaddataPreloadData preloadData) throws JsonProcessingException {
+
+        operationalPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
+        operationalPreloadDataRepository.save(new OperationalPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadData)));
+
+    }
 
 }
