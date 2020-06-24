@@ -1,7 +1,7 @@
 {
     "preload-list": [
         {
-            "preload-id": "preload1",
+            "preload-id": "preload2",
             "preload-type": "network",
             "preload-data": {
                 "preload-network-topology-information": {
@@ -24,7 +24,7 @@
                         "eipam-v4-address-plan": "plan9",
                         "eipam-v6-address-plan": "plan9v6",
                         "is-trunked": true,
-                        "network-id": "321",
+                        "network-id": "preload2",
                         "network-instance-group-id": "abc123",
                         "network-name": "syfy",
                         "network-role": "secret",

@@ -129,6 +129,11 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -196,6 +201,7 @@
                             <generateApiTests>true</generateApiTests>
                             <ignoreFileOverride>${project.basedir}/.swagger-codegen-ignore</ignoreFileOverride>
                             <withXml>true</withXml>
+                            <templateDirectory>${project.basedir}/src/main/templates</templateDirectory>
                             <configOptions>
                                 <java8>true</java8>
                                 <springBootVersion>2.2.4-RELEASE</springBootVersion>

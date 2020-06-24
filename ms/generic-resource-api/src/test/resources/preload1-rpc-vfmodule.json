@@ -353,7 +353,7 @@
         "nf-function": "function1",
         "nf-role": "role1",
         "nf-type": "type1",
-        "vnf-id": "123",
+        "vnf-id": "preload1",
         "vnf-name": "vnf1",
         "vnf-type": "vnftype1"
       }

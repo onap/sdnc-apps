@@ -45,7 +45,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories("org.onap.sdnc.apps.ms.gra.*")
-@ComponentScan(basePackages={"org.onap.sdnc.apps.ms.gra.*"})
+@ComponentScan(basePackages={"org.onap.sdnc.apps.ms.gra.*", "org.onap.ccsdk.apps.services"})
 @EntityScan("org.onap.sdnc.apps.ms.gra.*")
 @EnableTransactionManagement
 public class WebConfig implements WebMvcConfigurer {

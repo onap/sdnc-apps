@@ -23,6 +23,8 @@ package org.onap.sdnc.apps.ms.gra.controllers;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.onap.ccsdk.apps.services.RestApplicationException;
+import org.onap.ccsdk.apps.services.RestException;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
@@ -43,6 +45,7 @@ import javax.validation.Valid;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 @ComponentScan(basePackages = {"org.onap.sdnc.apps.ms.gra.*"})
@@ -85,10 +88,14 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiPreloadModelInformation> configGENERICRESOURCEAPIpreloadInformationGet() {
+    public ResponseEntity<GenericResourceApiPreloadModelInformation> configGENERICRESOURCEAPIpreloadInformationGet() throws RestApplicationException {
         GenericResourceApiPreloadModelInformation genericResourceApiPreloadModelInformation = new GenericResourceApiPreloadModelInformation();
 
-        configPreloadDataRepository.findAll().forEach(configPreloadData -> {
+        if (configPreloadDataRepository.count() == 0) {
+            throw new RestApplicationException("data-missing", "Request could not be completed because the relevant data model content does not exist", HttpStatus.NOT_FOUND.value());
+        }
+
+        for (ConfigPreloadData configPreloadData : configPreloadDataRepository.findAll()) {
             GenericResourceApiPreloadmodelinformationPreloadList preloadListItem = new GenericResourceApiPreloadmodelinformationPreloadList();
 
             preloadListItem.setPreloadId(configPreloadData.getPreloadId());
@@ -97,16 +104,17 @@ public class ConfigApiController implements ConfigApi {
                 preloadListItem.setPreloadData(objectMapper.readValue(configPreloadData.getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
             } catch (JsonProcessingException e) {
                 log.error("Could not convert preload data", e);
+                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
             genericResourceApiPreloadModelInformation.addPreloadListItem(preloadListItem);
-        });
+        }
 
 
         return new ResponseEntity<>(genericResourceApiPreloadModelInformation, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPost(@Valid GenericResourceApiPreloadModelInformation graPreloadModelInfo) {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPost(@Valid GenericResourceApiPreloadModelInformation graPreloadModelInfo) throws RestApplicationException {
 
         List<GenericResourceApiPreloadmodelinformationPreloadList> preloadList = graPreloadModelInfo.getPreloadList();
 
@@ -115,13 +123,11 @@ public class ConfigApiController implements ConfigApi {
             while (iter.hasNext()) {
                 GenericResourceApiPreloadmodelinformationPreloadList curItem = iter.next();
 
-                // Remove any entries already existing for this preloadId/preloadType
-               configPreloadDataRepository.deleteByPreloadIdAndPreloadType(curItem.getPreloadId(), curItem.getPreloadType());
-
                 try {
                     configPreloadDataRepository.save(new ConfigPreloadData(curItem.getPreloadId(), curItem.getPreloadType(), objectMapper.writeValueAsString(curItem.getPreloadData())));
                 } catch (JsonProcessingException e) {
                     log.error("Cannot convert preload data", e);
+                    throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
                 }
             }
         }
@@ -130,15 +136,38 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPost(@Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPut(@Valid GenericResourceApiPreloadModelInformation graPreloadModelInfo) throws RestApplicationException {
 
-        // Remove any entries already existing for this preloadId/preloadType
-        configPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadListItem.getPreloadId(), preloadListItem.getPreloadType());
+        List<GenericResourceApiPreloadmodelinformationPreloadList> preloadList = graPreloadModelInfo.getPreloadList();
+
+        if (preloadList != null) {
+            Iterator<GenericResourceApiPreloadmodelinformationPreloadList> iter = preloadList.iterator();
+            while (iter.hasNext()) {
+                GenericResourceApiPreloadmodelinformationPreloadList curItem = iter.next();
+
+                try {
+                    configPreloadDataRepository.save(new ConfigPreloadData(curItem.getPreloadId(), curItem.getPreloadType(), objectMapper.writeValueAsString(curItem.getPreloadData())));
+                } catch (JsonProcessingException e) {
+                    log.error("Cannot convert preload data", e);
+                    throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+                }
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPost(@Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) throws RestApplicationException {
 
         try {
             configPreloadDataRepository.save(new ConfigPreloadData(preloadListItem.getPreloadId(), preloadListItem.getPreloadType(), objectMapper.writeValueAsString(preloadListItem.getPreloadData())));
         } catch (JsonProcessingException e) {
             log.error("Cannot convert preload data", e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -150,7 +179,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiPreloadmodelinformationPreloadList> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGet(String preloadId, String preloadType) {
+    public ResponseEntity<GenericResourceApiPreloadmodelinformationPreloadList> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGet(String preloadId, String preloadType) throws RestApplicationException {
         List<ConfigPreloadData> preloadData = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
         if (preloadData != null) {
             if (!preloadData.isEmpty()) {
@@ -162,6 +191,7 @@ public class ConfigApiController implements ConfigApi {
                     preloadDataList.setPreloadData(objectMapper.readValue(preloadDataItem.getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
                 } catch (JsonProcessingException e) {
                     log.error("Cannot convert preload data", e);
+                    throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
                 }
                 return new ResponseEntity<>(preloadDataList, HttpStatus.OK);
             }
@@ -170,12 +200,13 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypePost(String preloadId, String preloadType, @Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) {
-        configPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypePost(String preloadId, String preloadType, @Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) throws RestApplicationException {
         try {
             configPreloadDataRepository.save(new ConfigPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadListItem.getPreloadData())));
         } catch (JsonProcessingException e) {
             log.error("Cannot convert preload data", e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -195,13 +226,10 @@ public class ConfigApiController implements ConfigApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPut(@Valid GenericResourceApiPreloadModelInformation genericResourceApiPreloadModelInformationBodyParam) {
-        return null;
-    }
+
 
     @Override
-    public ResponseEntity<GenericResourceApiPreloaddataPreloadData> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataGet(String preloadId, String preloadType) {
+    public ResponseEntity<GenericResourceApiPreloaddataPreloadData> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataGet(String preloadId, String preloadType) throws RestApplicationException {
         List<ConfigPreloadData> preloadData = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
         if (preloadData != null) {
             if (!preloadData.isEmpty()) {
@@ -210,6 +238,8 @@ public class ConfigApiController implements ConfigApi {
                     return new ResponseEntity<>(objectMapper.readValue(preloadDataItem.getPreloadData(), GenericResourceApiPreloaddataPreloadData.class), HttpStatus.OK);
                 } catch (JsonProcessingException e) {
                     log.error("Cannot convert preload data", e);
+                    throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
                 }
             }
         }
@@ -217,12 +247,14 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataPost(String preloadId, String preloadType, @Valid GenericResourceApiPreloaddataPreloadData preloadData) {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataPost(String preloadId, String preloadType, @Valid GenericResourceApiPreloaddataPreloadData preloadData) throws RestApplicationException {
         configPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
         try {
             configPreloadDataRepository.save(new ConfigPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadData)));
         } catch (JsonProcessingException e) {
             log.error("Cannot convert preload data", e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -234,7 +266,86 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIservicePost(@Valid GenericResourceApiServicemodelinfrastructureService servicesData) {
+    public ResponseEntity<GenericResourceApiServiceModelInfrastructure> configGENERICRESOURCEAPIservicesGet() throws RestApplicationException {
+        GenericResourceApiServiceModelInfrastructure modelInfrastructure = new GenericResourceApiServiceModelInfrastructure();
+
+
+        for (ConfigServices service : configServicesRepository.findAll()) {
+            GenericResourceApiServicemodelinfrastructureService serviceItem = new GenericResourceApiServicemodelinfrastructureService();
+            serviceItem.setServiceInstanceId(service.getSvcInstanceId());
+            try {
+                serviceItem.setServiceData(objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class));
+            } catch (JsonProcessingException e) {
+                log.error("Could not deserialize service data for {}", service.getSvcInstanceId(), e);
+                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+            }
+            serviceItem.setServiceStatus(service.getServiceStatus());
+            modelInfrastructure.addServiceItem(serviceItem);
+        }
+
+
+        return new ResponseEntity<>(modelInfrastructure, HttpStatus.OK);
+
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPost(@Valid GenericResourceApiServiceModelInfrastructure modelInfrastructure) throws RestApplicationException {
+
+        AtomicBoolean caughtError = new AtomicBoolean(false);
+        ConfigServices service = new ConfigServices();
+        for (GenericResourceApiServicemodelinfrastructureService serviceItem : modelInfrastructure.getService()) {
+            String svcInstanceId = serviceItem.getServiceInstanceId();
+            service.setSvcInstanceId(svcInstanceId);
+            try {
+                service.setSvcData(objectMapper.writeValueAsString(svcInstanceId));
+            } catch (JsonProcessingException e) {
+                log.error("Could not serialize service data for {}", service.getSvcInstanceId(), e);
+                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+            }
+            service.setServiceStatus(serviceItem.getServiceStatus());
+
+            // Maintain uniqueness of svcInstanceId by deleting any existing entry before append
+            configServicesRepository.deleteBySvcInstanceId(svcInstanceId);
+            configServicesRepository.save(service);
+
+        }
+
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPut(@Valid GenericResourceApiServiceModelInfrastructure modelInfrastructure) throws RestApplicationException {
+
+        ConfigServices service = new ConfigServices();
+        for (GenericResourceApiServicemodelinfrastructureService serviceItem : modelInfrastructure.getService()) {
+            String svcInstanceId = serviceItem.getServiceInstanceId();
+            service.setSvcInstanceId(svcInstanceId);
+            try {
+                service.setSvcData(objectMapper.writeValueAsString(svcInstanceId));
+            } catch (JsonProcessingException e) {
+                log.error("Could not serialize service data for {}", service.getSvcInstanceId(), e);
+                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+            }
+            service.setServiceStatus(serviceItem.getServiceStatus());
+
+            // Maintain uniqueness of svcInstanceId by deleting any existing entry before append
+            configServicesRepository.deleteBySvcInstanceId(svcInstanceId);
+            configServicesRepository.save(service);
+
+        }
+
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIservicePost(@Valid GenericResourceApiServicemodelinfrastructureService servicesData) throws RestApplicationException {
         String svcInstanceId = servicesData.getServiceInstanceId();
         try {
             String svcData = objectMapper.writeValueAsString(servicesData.getServiceData());
@@ -243,6 +354,8 @@ public class ConfigApiController implements ConfigApi {
             configServicesRepository.save(configService);
         } catch (JsonProcessingException e) {
            log.error("Cannot convert service data", e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -254,72 +367,212 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
+    public ResponseEntity<GenericResourceApiServicemodelinfrastructureService> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGet(String serviceInstanceId) throws RestApplicationException {
+        GenericResourceApiServicemodelinfrastructureService retval = null;
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if (services.isEmpty()) {
+            return new ResponseEntity<> (HttpStatus.NOT_FOUND);
+        } else {
+            ConfigServices service = services.get(0);
+            retval = new GenericResourceApiServicemodelinfrastructureService();
+            retval.setServiceInstanceId(serviceInstanceId);
+            retval.setServiceStatus(service.getServiceStatus());
+            try {
+                retval.setServiceData(objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class));
+            } catch (JsonProcessingException e) {
+                log.error("Could not deserialize service data for service instance id {}", serviceInstanceId, e);
+                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+            }
+        }
+
+
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPost(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService newService) throws RestApplicationException {
+        ConfigServices service = new ConfigServices();
+
+        service.setSvcInstanceId(newService.getServiceInstanceId());
+        service.setServiceStatus(newService.getServiceStatus());
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(newService.getServiceData()));
+            configServicesRepository.save(service);
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize service data for eservice instance id {}", newService.getServiceInstanceId(), e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPut(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService newService) throws RestApplicationException {
+        ConfigServices service = new ConfigServices();
+
+        service.setSvcInstanceId(newService.getServiceInstanceId());
+        service.setServiceStatus(newService.getServiceStatus());
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(newService.getServiceData()));
+            configServicesRepository.save(service);
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize service data for eservice instance id {}", newService.getServiceInstanceId(), e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataDelete(String serviceInstanceId) {
-        return null;
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if (!services.isEmpty()) {
+            ConfigServices service = services.get(0);
+            service.setSvcData(null);
+            configServicesRepository.save(service);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiServicedataServiceData> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataGet(String serviceInstanceId) {
-        return null;
+    public ResponseEntity<GenericResourceApiServicedataServiceData> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataGet(String serviceInstanceId) throws RestApplicationException {
+        GenericResourceApiServicedataServiceData serviceData = null;
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if (services.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            try {
+                serviceData = objectMapper.readValue(services.get(0).getSvcData(), GenericResourceApiServicedataServiceData.class);
+                return new ResponseEntity<>(serviceData, HttpStatus.OK);
+            } catch (JsonProcessingException e) {
+                log.error("Could not parse service data", e);
+                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPost(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData genericResourceApiServicedataServiceDataBodyParam) {
-        return null;
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPost(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData serviceData) throws RestApplicationException {
+       ConfigServices service;
+       List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+       if (services.isEmpty()) {
+           service = new ConfigServices();
+           service.setSvcInstanceId(serviceInstanceId);
+       } else {
+           service = services.get(0);
+       }
+
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(serviceData));
+            configServicesRepository.save(service);
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPut(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData genericResourceApiServicedataServiceDataBodyParam) {
-        return null;
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPut(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData serviceData) throws RestApplicationException {
+        ConfigServices service;
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if (services.isEmpty()) {
+            service = new ConfigServices();
+            service.setSvcInstanceId(serviceInstanceId);
+        } else {
+            service = services.get(0);
+        }
+
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(serviceData));
+            configServicesRepository.save(service);
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+
+            return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusDelete(String serviceInstanceId) {
-        return null;
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if (!services.isEmpty()) {
+            ConfigServices service = services.get(0);
+            service.setServiceStatus(null);
+            configServicesRepository.save(service);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiServicestatusServiceStatus> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusGet(String serviceInstanceId) {
-        return null;
+    public ResponseEntity<GenericResourceApiServicestatusServiceStatus> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusGet(String serviceInstanceId) throws RestApplicationException {
+        GenericResourceApiServicestatusServiceStatus serviceStatus = null;
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if (!services.isEmpty()) {
+            ConfigServices service = services.get(0);
+            serviceStatus = service.getServiceStatus();
+        }
+
+        if (serviceStatus == null) {
+            throw new RestApplicationException("data-missing", "Request could not be completed because the relevant data model content does not exist", HttpStatus.NOT_FOUND.value());
+        } else {
+            return new ResponseEntity<>(serviceStatus, HttpStatus.OK);
+        }
+
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPost(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus genericResourceApiServicestatusServiceStatusBodyParam) {
-        return null;
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPost(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus serviceStatus) {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        ConfigServices service = null;
+        if (services.isEmpty()) {
+            service = services.get(0);
+        } else {
+            service = new ConfigServices();
+            service.setSvcInstanceId(serviceInstanceId);
+        }
+        service.setServiceStatus(serviceStatus);
+        configServicesRepository.save(service);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPut(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus genericResourceApiServicestatusServiceStatusBodyParam) {
-        return null;
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPut(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus serviceStatus) {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        ConfigServices service = null;
+        if (services.isEmpty()) {
+            service = services.get(0);
+        } else {
+            service = new ConfigServices();
+            service.setSvcInstanceId(serviceInstanceId);
+        }
+        service.setServiceStatus(serviceStatus);
+
+        configServicesRepository.deleteBySvcInstanceId(serviceInstanceId);
+        configServicesRepository.save(service);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
-    @Override
-    public ResponseEntity<GenericResourceApiServicemodelinfrastructureService> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGet(String serviceInstanceId) {
-        return null;
-    }
 
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPost(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService genericResourceApiServicemodelinfrastructureServiceBodyParam) {
-        return null;
-    }
 
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPut(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService genericResourceApiServicemodelinfrastructureServiceBodyParam) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<GenericResourceApiServiceModelInfrastructure> configGENERICRESOURCEAPIservicesGet() {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPost(@Valid GenericResourceApiServiceModelInfrastructure genericResourceApiServiceModelInfrastructureBodyParam) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPut(@Valid GenericResourceApiServiceModelInfrastructure genericResourceApiServiceModelInfrastructureBodyParam) {
-        return null;
-    }
 }

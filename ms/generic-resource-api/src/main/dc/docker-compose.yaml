@@ -9,6 +9,9 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=openECOMP1.0
       - MYSQL_ROOT_HOST=%
+      - MYSQL_USER=sdnc
+      - MYSQL_PASSWORD=abc123
+      - MYSQL_DATABASE=sdnctl
     logging:       
       driver:   "json-file"
       options:  
