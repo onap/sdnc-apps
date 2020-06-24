@@ -1,0 +1,221 @@
+{
+  "request-information": {
+    "request-id": "f5554477-51c7-4f8e-9183-f8968f3f86bf",
+    "request-action": "CreateServiceInstance",
+    "source": "MSO"
+  },
+  "service-request-input": {
+    "service-instance-name": "NGINX-INGRESS-1"
+  },
+  "service-information": {
+    "service-id": "service1",
+    "onap-model-information": {
+      "model-name": "service-nginx-ingress-1",
+      "model-invariant-uuid": "0fe6193d-2d65-4b8e-a4ee-a07821566b5e",
+      "model-version": "1.0",
+      "model-uuid": "48223a6a-f5e1-4354-95eb-f5ea014fc9df"
+    },
+    "service-instance-id": "service1",
+    "global-customer-id": "Demonstration",
+    "subscription-service-type": "service-nginx-ingress-1"
+  },
+  "service-topology": {
+    "service-topology-identifier": {
+      "service-instance-id": "service1",
+      "service-instance-name": "NGINX-INGRESS-1",
+      "service-type": "service-nginx-ingress-1",
+      "global-customer-id": "Demonstration"
+    },
+    "onap-model-information": {
+      "model-name": "service-nginx-ingress-1",
+      "model-invariant-uuid": "0fe6193d-2d65-4b8e-a4ee-a07821566b5e",
+      "model-version": "1.0",
+      "model-uuid": "48223a6a-f5e1-4354-95eb-f5ea014fc9df"
+    }
+  },
+  "service-level-oper-status": {
+    "order-status": "Created",
+    "last-rpc-action": "assign",
+    "last-action": "CreateServiceInstance"
+  },
+  "sdnc-request-header": {
+    "svc-action": "assign",
+    "svc-request-id": "6d06a832-69da-4369-9d99-049767a39400"
+  },
+  "vnfs": {
+    "vnf": [
+      {
+        "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
+        "vnf-data": {
+          "vnf-level-oper-status": {
+            "order-status": "Created",
+            "last-rpc-action": "activate",
+            "last-action": "CreateVnfInstance"
+          },
+          "service-information": {
+            "service-id": "service1",
+            "onap-model-information": {
+              "model-name": "service-nginx-ingress-1",
+              "model-invariant-uuid": "0fe6193d-2d65-4b8e-a4ee-a07821566b5e",
+              "model-version": "1.0",
+              "model-uuid": "48223a6a-f5e1-4354-95eb-f5ea014fc9df"
+            },
+            "service-instance-id": "service1",
+            "global-customer-id": "Demonstration",
+            "subscription-service-type": "service-nginx-ingress-1"
+          },
+          "sdnc-request-header": {
+            "svc-action": "activate",
+            "svc-request-id": "acf0c0db-106f-42e4-b77b-191e9d229eb9",
+            "svc-notification-url": "http://so-bpmn-infra.onap:8081/mso/WorkflowMessage/SDNCCallback/b8f92243-85cb-4954-970d-7e0159b9a48b"
+          },
+          "vnf-information": {
+            "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
+            "onap-model-information": {
+              "model-name": "nginx-ingress-1",
+              "model-invariant-uuid": "ebd1565b-a98f-4d77-9b91-6aefd51d040c",
+              "model-version": "1.0",
+              "model-customization-uuid": "69cff101-d1f2-4bf3-9697-57f52ba3c5dd",
+              "model-uuid": "dfeccc32-2459-43bf-bfdd-36567e696090"
+            },
+            "vnf-type": "service-nginx-ingress-1/nginx-ingress-1 0",
+            "vnf-name": "Python_ONAP_SDK_vnf_instance_2aff902a-4714-4d08-942d-d97b3a3b87c2"
+          },
+          "request-information": {
+            "request-id": "c382d6d1-2108-4c39-ab7a-c3e67cdbc749",
+            "request-action": "CreateVnfInstance",
+            "source": "MSO"
+          },
+          "vnf-request-input": {
+            "vnf-name": "Python_ONAP_SDK_vnf_instance_2aff902a-4714-4d08-942d-d97b3a3b87c2",
+            "tenant": "k8s_tenant_1",
+            "cloud-owner": "k8sCloudOwner",
+            "aic-cloud-region": "k8s_region_1"
+          },
+          "vnf-topology": {
+            "onap-model-information": {
+              "model-name": "nginx-ingress-1",
+              "model-invariant-uuid": "ebd1565b-a98f-4d77-9b91-6aefd51d040c",
+              "model-version": "1.0",
+              "model-customization-uuid": "69cff101-d1f2-4bf3-9697-57f52ba3c5dd",
+              "model-uuid": "dfeccc32-2459-43bf-bfdd-36567e696090"
+            },
+            "tenant": "k8s_tenant_1",
+            "aic-clli": "complexMC",
+            "aic-cloud-region": "k8s_region_1",
+            "vnf-topology-identifier-structure": {
+              "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
+              "vnf-type": "service-nginx-ingress-1/nginx-ingress-1 0",
+              "vnf-name": "Python_ONAP_SDK_vnf_instance_2aff902a-4714-4d08-942d-d97b3a3b87c2"
+            },
+            "vnf-resource-assignments": {
+              "availability-zones": {
+                "availability-zone": [
+                  "k8s_availability_zone_1"
+                ]
+              }
+            }
+          },
+          "vf-modules": {
+            "vf-module": [
+              {
+                "vf-module-id": "269bda16-f40c-41a9-baef-e8905ab2b70e",
+                "vf-module-data": {
+                  "service-information": {
+                    "service-id": "service1",
+                    "onap-model-information": {
+                      "model-name": "service-nginx-ingress-1",
+                      "model-invariant-uuid": "0fe6193d-2d65-4b8e-a4ee-a07821566b5e",
+                      "model-version": "1.0",
+                      "model-uuid": "48223a6a-f5e1-4354-95eb-f5ea014fc9df"
+                    },
+                    "service-instance-id": "service1",
+                    "global-customer-id": "Demonstration",
+                    "subscription-service-type": "service-nginx-ingress-1"
+                  },
+                  "vf-module-topology": {
+                    "onap-model-information": {
+                      "model-name": "NginxIngress1..nginx-ingress..module-0",
+                      "model-invariant-uuid": "caa22b8e-e0de-4d2c-9048-9a71d39afd91",
+                      "model-version": "1",
+                      "model-customization-uuid": "d6403fe2-ebe4-4fce-bec2-0218f61b2564",
+                      "model-uuid": "e5d2fe74-9534-4a7c-9a1b-f49ecf1105e3"
+                    },
+                    "vf-module-parameters": {
+                      "param": [
+                        {
+                          "name": "availability_zone_0",
+                          "value": "k8s_availability_zone_1"
+                        },
+                        {
+                          "name": "k8s-rb-profile-name",
+                          "value": "default"
+                        }
+                      ]
+                    },
+                    "tenant": "k8s_tenant_1",
+                    "sdnc-generated-cloud-resources": true,
+                    "aic-clli": "complexMC",
+                    "vf-module-topology-identifier": {
+                      "vf-module-type": "NginxIngress1..nginx-ingress..module-0",
+                      "vf-module-id": "269bda16-f40c-41a9-baef-e8905ab2b70e",
+                      "vf-module-name": "Python_ONAP_SDK_vf_module_instance_678cc889-0c89-40f3-9f5b-1f475d5c4ebb"
+                    },
+                    "aic-cloud-region": "k8s_region_1"
+                  },
+                  "vf-module-request-input": {
+                    "vf-module-name": "Python_ONAP_SDK_vf_module_instance_678cc889-0c89-40f3-9f5b-1f475d5c4ebb",
+                    "tenant": "k8s_tenant_1",
+                    "cloud-owner": "k8sCloudOwner",
+                    "aic-cloud-region": "k8s_region_1"
+                  },
+                  "sdnc-request-header": {
+                    "svc-action": "activate",
+                    "svc-request-id": "bf81d48a-d5f9-42f2-bc49-9277f0e2a836",
+                    "svc-notification-url": "http://so-bpmn-infra.onap:8081/mso/WorkflowMessage/SDNCCallback/64780567-ecf5-41c9-af36-bb06f8ae0e5d"
+                  },
+                  "vnf-information": {
+                    "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
+                    "onap-model-information": {
+                      "model-name": "nginx-ingress-1",
+                      "model-invariant-uuid": "ebd1565b-a98f-4d77-9b91-6aefd51d040c",
+                      "model-version": "1.0",
+                      "model-customization-uuid": "69cff101-d1f2-4bf3-9697-57f52ba3c5dd",
+                      "model-uuid": "dfeccc32-2459-43bf-bfdd-36567e696090"
+                    },
+                    "vnf-type": "service-nginx-ingress-1/nginx-ingress-1 0",
+                    "vnf-name": "Python_ONAP_SDK_vnf_instance_2aff902a-4714-4d08-942d-d97b3a3b87c2"
+                  },
+                  "vf-module-information": {
+                    "onap-model-information": {
+                      "model-name": "NginxIngress1..nginx-ingress..module-0",
+                      "model-invariant-uuid": "caa22b8e-e0de-4d2c-9048-9a71d39afd91",
+                      "model-version": "1",
+                      "model-customization-uuid": "d6403fe2-ebe4-4fce-bec2-0218f61b2564",
+                      "model-uuid": "e5d2fe74-9534-4a7c-9a1b-f49ecf1105e3"
+                    },
+                    "vf-module-id": "269bda16-f40c-41a9-baef-e8905ab2b70e",
+                    "vf-module-type": "NginxIngress1..nginx-ingress..module-0",
+                    "from-preload": true
+                  },
+                  "request-information": {
+                    "request-id": "051f3665-002c-4e3c-b62e-f8c0b48ef12e",
+                    "request-action": "CreateVfModuleInstance",
+                    "source": "MSO"
+                  },
+                  "vf-module-level-oper-status": {
+                    "order-status": "Created",
+                    "last-rpc-action": "activate"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
+
+
+

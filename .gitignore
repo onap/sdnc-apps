@@ -1,4 +1,5 @@
 *.classpath
+*.factorypath
 *.project
 *.checkstyle
 .idea
@@ -7,3 +8,4 @@ target/
 output.log
 debug-logs/
 logs/
+**/derby.log

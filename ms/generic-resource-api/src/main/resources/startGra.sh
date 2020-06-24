@@ -36,8 +36,7 @@ export MYSQL_DB_HOST=${MYSQL_DB_HOST:-dbhost}
 # Wait for database
 #
 echo "Waiting for database"
-until mysqladmin ping -h ${MYSQL_DB_HOST} --silent
-do
+until mysqladmin ping -h ${MYSQL_DB_HOST} --silent; do
   printf "."
   sleep 1
 done
@@ -45,30 +44,26 @@ echo -e "\nDatabase ready"
 
 # Create tablespace and user account
 
-mysql -h ${MYSQL_DB_HOST} -u root -p${MYSQL_ROOT_PASSWORD} mysql <<-END
-CREATE DATABASE ${MYSQL_DB_DATABASE};
-CREATE USER '${MYSQL_DB_USER}'@'localhost' IDENTIFIED BY '${MYSQL_DB_PASSWD}';
-CREATE USER '${MYSQL_DB_USER}'@'%' IDENTIFIED BY '${MYSQL_DB_PASSWD}';
-GRANT ALL PRIVILEGES ON ${MYSQL_DB_DATABASE}.* TO '${MYSQL_DB_USER}'@'localhost' WITH GRANT OPTION;
-GRANT ALL PRIVILEGES ON ${MYSQL_DB_DATABASE}.* TO '${MYSQL_DB_USER}'@'%' WITH GRANT OPTION;
-commit;
-END
+#mysql -h ${MYSQL_DB_HOST} -u root -p${MYSQL_ROOT_PASSWORD} mysql <<-END
+#CREATE DATABASE ${MYSQL_DB_DATABASE};
+#CREATE USER '${MYSQL_DB_USER}'@'localhost' IDENTIFIED BY '${MYSQL_DB_PASSWD}';
+#CREATE USER '${MYSQL_DB_USER}'@'%' IDENTIFIED BY '${MYSQL_DB_PASSWD}';
+#GRANT ALL PRIVILEGES ON ${MYSQL_DB_DATABASE}.* TO '${MYSQL_DB_USER}'@'localhost' WITH GRANT OPTION;
+#GRANT ALL PRIVILEGES ON ${MYSQL_DB_DATABASE}.* TO '${MYSQL_DB_USER}'@'%' WITH GRANT OPTION;
+#commit;
+#END
 
 # Initialize schema
 #mysql -h ${MYSQL_DB_HOST} -u ${MYSQL_DB_USER} -p${MYSQL_DB_PASSWD} ${MYSQL_DB_DATABASE} < ${SDNC_HOME}/config/schema.sql
 
-if [ ! -f ${SDNC_CERT_DIR}/${TRUSTSTORE} ]
-then
-    echo "${SDNC_CERT_DIR}/${TRUSTSTORE} not found ... cannot install ONAP CA certs"
-elif [ -z "$TRUSTSTORE_PASSWORD" ]
-then
-    echo "TRUSTSTORE_PASSWORD unset - cannot install ONAP CA certs"
+if [ ! -f ${SDNC_CERT_DIR}/${TRUSTSTORE} ]; then
+  echo "${SDNC_CERT_DIR}/${TRUSTSTORE} not found ... cannot install ONAP CA certs"
+elif [ -z "$TRUSTSTORE_PASSWORD" ]; then
+  echo "TRUSTSTORE_PASSWORD unset - cannot install ONAP CA certs"
 else
-    sudo keytool -importkeystore -srckeystore ${SDNC_CERT_DIR}/${TRUSTSTORE} -srcstorepass ${TRUSTSTORE_PASSWORD} -destkeystore ${JAVA_SECURITY_DIR}/cacerts  -deststorepass ${CACERT_PASSWORD}
-    echo -e "\nCerts ready"
+  sudo keytool -importkeystore -srckeystore ${SDNC_CERT_DIR}/${TRUSTSTORE} -srcstorepass ${TRUSTSTORE_PASSWORD} -destkeystore ${JAVA_SECURITY_DIR}/cacerts -deststorepass ${CACERT_PASSWORD}
+  echo -e "\nCerts ready"
 fi
-
 
 cd $SDNC_HOME
 java -DserviceLogicDirectory=${SVCLOGIC_DIR} -DLOG_PATH=${LOG_PATH} -jar ${SDNC_HOME}/lib/${GRA_JAR}
-

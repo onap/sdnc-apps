@@ -4,10 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRequestStatusEnumeration;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicestatusServiceStatus;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity(name="OPERATIONAL_GRA_SERVICES")
 @Table(name="OPERATIONAL_GRA_SERVICES")
@@ -16,7 +13,9 @@ public class OperationalServices {
     String svcInstanceId;
 
     @Lob
+    @Column(columnDefinition = "clob")
     String svcData;
+
     // Service status fields
     String serviceStatusResponseCode;
 

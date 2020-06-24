@@ -1,0 +1,10 @@
+{
+  "final-indicator": "Y",
+  "rpc-action": "activate",
+  "rpc-name": "vf-module-topology-operation",
+  "response-code": "200",
+  "response-timestamp": "2020-06-24T13:06:24.525Z",
+  "response-message": "",
+  "action": "CreateVfModuleInstance",
+  "request-status": "synccomplete"
+}

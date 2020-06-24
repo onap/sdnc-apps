@@ -5,10 +5,7 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRequestStatusEn
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceStatus;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicestatusServiceStatus;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity(name="CONFIG_GRA_SERVICES")
 @Table(name="CONFIG_GRA_SERVICES")
@@ -17,6 +14,7 @@ public class ConfigServices {
     String svcInstanceId;
 
     @Lob
+    @Column(columnDefinition = "clob")
     String svcData;
 
     // Service status fields
@@ -142,6 +140,16 @@ public class ConfigServices {
     }
 
     public GenericResourceApiServicestatusServiceStatus getServiceStatus() {
+
+        if ((serviceStatusAction == null) &&
+                (serviceStatusFinalIndicator == null) &&
+                (serviceStatusRequestStatus == null) &&
+                (serviceStatusResponseCode == null) &&
+                (serviceStatusResponseMessage == null) &&
+                (serviceStatusResponseTimestamp == null)) {
+            return null;
+        }
+
         GenericResourceApiServicestatusServiceStatus serviceStatus = new GenericResourceApiServicestatusServiceStatus();
         serviceStatus.setAction(serviceStatusAction);
         serviceStatus.setFinalIndicator(serviceStatusFinalIndicator);
@@ -154,11 +162,20 @@ public class ConfigServices {
     }
 
     public void setServiceStatus(GenericResourceApiServicestatusServiceStatus serviceStatus) {
-        this.serviceStatusAction = serviceStatus.getAction();
-        this.serviceStatusFinalIndicator = serviceStatus.getFinalIndicator();
-        this.serviceStatusRequestStatus = serviceStatus.getRequestStatus().toString();
-        this.serviceStatusResponseCode = serviceStatus.getResponseCode();
-        this.serviceStatusResponseMessage = serviceStatus.getResponseMessage();
-        this.serviceStatusResponseTimestamp = serviceStatus.getResponseTimestamp();
+        if (serviceStatus == null) {
+            this.serviceStatusAction = null;
+            this.serviceStatusFinalIndicator = null;
+            this.serviceStatusRequestStatus = null;
+            this.serviceStatusResponseCode = null;
+            this.serviceStatusResponseMessage = null;
+            this.serviceStatusResponseTimestamp = null;
+        } else {
+            this.serviceStatusAction = serviceStatus.getAction();
+            this.serviceStatusFinalIndicator = serviceStatus.getFinalIndicator();
+            this.serviceStatusRequestStatus = serviceStatus.getRequestStatus().toString();
+            this.serviceStatusResponseCode = serviceStatus.getResponseCode();
+            this.serviceStatusResponseMessage = serviceStatus.getResponseMessage();
+            this.serviceStatusResponseTimestamp = serviceStatus.getResponseTimestamp();
+        }
     }
 }
