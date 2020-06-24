@@ -1,0 +1,84 @@
+{
+    "preload-list": [
+        {
+            "preload-id": "preload1",
+            "preload-type": "network",
+            "preload-data": {
+                "preload-network-topology-information": {
+                    "host-routes": [
+                        {
+                            "next-hop": "10.1.12.1",
+                            "route-prefix": "12"
+                        }
+                    ],
+                    "is-external-network": true,
+                    "is-provider-network": true,
+                    "is-shared-network": true,
+                    "network-policy": [
+                        {
+                            "network-policy-fqdn": "policy-sdnc.onap.org",
+                            "network-policy-id": "123"
+                        }
+                    ],
+                    "network-topology-identifier-structure": {
+                        "eipam-v4-address-plan": "plan9",
+                        "eipam-v6-address-plan": "plan9v6",
+                        "is-trunked": true,
+                        "network-id": "preload1",
+                        "network-instance-group-id": "abc123",
+                        "network-name": "syfy",
+                        "network-role": "secret",
+                        "network-technology": "soupcan",
+                        "network-type": "fake",
+                        "related-networks": {
+                            "related-network": [
+                                {
+                                    "network-id": "skynet",
+                                    "network-role": "master",
+                                    "vlan-tags": {
+                                        "is-private": true,
+                                        "lower-tag-id": 0,
+                                        "upper-tag-id": 0,
+                                        "vlan-interface": "le0"
+                                    }
+                                }
+                            ]
+                        },
+                        "segmentation-id": "seg1"
+                    },
+                    "physical-network-name": "skynet",
+                    "route-table-reference": [
+                        {
+                            "route-table-reference-fqdn": "sky.net",
+                            "route-table-reference-id": "ref1"
+                        }
+                    ],
+                    "subnets": [
+                        {
+                            "addr-from-start": "Y",
+                            "cidr-mask": "255.255.0.0",
+                            "dhcp-enabled": "Y",
+                            "dhcp-end-address": "10.1.2.254",
+                            "dhcp-start-address": "10.1.2.1",
+                            "gateway-address": "10.1.2.255",
+                            "ip-version": "ipv4",
+                            "start-address": "10.1.2.1",
+                            "subnet-name": "subnet1",
+                            "subnet-role": "puppies",
+                            "subnet-sequence": 0
+                        }
+                    ],
+                    "vpn-bindings": [
+                        {
+                            "aic-zone": "zone1",
+                            "global-route-target": "string",
+                            "route-target-role": "string",
+                            "vpn-binding-id": "string",
+                            "vpn-name": "string"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
