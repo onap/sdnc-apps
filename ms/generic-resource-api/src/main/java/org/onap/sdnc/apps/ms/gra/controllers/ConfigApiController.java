@@ -43,6 +43,7 @@ import javax.validation.Valid;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 @ComponentScan(basePackages = {"org.onap.sdnc.apps.ms.gra.*"})
@@ -115,9 +116,6 @@ public class ConfigApiController implements ConfigApi {
             while (iter.hasNext()) {
                 GenericResourceApiPreloadmodelinformationPreloadList curItem = iter.next();
 
-                // Remove any entries already existing for this preloadId/preloadType
-               configPreloadDataRepository.deleteByPreloadIdAndPreloadType(curItem.getPreloadId(), curItem.getPreloadType());
-
                 try {
                     configPreloadDataRepository.save(new ConfigPreloadData(curItem.getPreloadId(), curItem.getPreloadType(), objectMapper.writeValueAsString(curItem.getPreloadData())));
                 } catch (JsonProcessingException e) {
@@ -130,10 +128,29 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPost(@Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPut(@Valid GenericResourceApiPreloadModelInformation graPreloadModelInfo) {
 
-        // Remove any entries already existing for this preloadId/preloadType
-        configPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadListItem.getPreloadId(), preloadListItem.getPreloadType());
+        List<GenericResourceApiPreloadmodelinformationPreloadList> preloadList = graPreloadModelInfo.getPreloadList();
+
+        if (preloadList != null) {
+            Iterator<GenericResourceApiPreloadmodelinformationPreloadList> iter = preloadList.iterator();
+            while (iter.hasNext()) {
+                GenericResourceApiPreloadmodelinformationPreloadList curItem = iter.next();
+
+                try {
+                    configPreloadDataRepository.save(new ConfigPreloadData(curItem.getPreloadId(), curItem.getPreloadType(), objectMapper.writeValueAsString(curItem.getPreloadData())));
+                } catch (JsonProcessingException e) {
+                    log.error("Cannot convert preload data", e);
+                }
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPost(@Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) {
 
         try {
             configPreloadDataRepository.save(new ConfigPreloadData(preloadListItem.getPreloadId(), preloadListItem.getPreloadType(), objectMapper.writeValueAsString(preloadListItem.getPreloadData())));
@@ -171,7 +188,6 @@ public class ConfigApiController implements ConfigApi {
 
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypePost(String preloadId, String preloadType, @Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) {
-        configPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
         try {
             configPreloadDataRepository.save(new ConfigPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadListItem.getPreloadData())));
         } catch (JsonProcessingException e) {
@@ -195,10 +211,7 @@ public class ConfigApiController implements ConfigApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPut(@Valid GenericResourceApiPreloadModelInformation genericResourceApiPreloadModelInformationBodyParam) {
-        return null;
-    }
+
 
     @Override
     public ResponseEntity<GenericResourceApiPreloaddataPreloadData> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataGet(String preloadId, String preloadType) {
@@ -234,6 +247,89 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
+    public ResponseEntity<GenericResourceApiServiceModelInfrastructure> configGENERICRESOURCEAPIservicesGet() {
+        GenericResourceApiServiceModelInfrastructure modelInfrastructure = new GenericResourceApiServiceModelInfrastructure();
+
+        AtomicBoolean caughtError = new AtomicBoolean(false);
+        configServicesRepository.findAll().forEach(service ->
+        {
+            GenericResourceApiServicemodelinfrastructureService serviceItem = new GenericResourceApiServicemodelinfrastructureService();
+            serviceItem.setServiceInstanceId(service.getSvcInstanceId());
+            try {
+                serviceItem.setServiceData(objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class));
+            } catch (JsonProcessingException e) {
+                log.error("Could not deserialize service data for {}", service.getSvcInstanceId(), e);
+                caughtError.set(true);
+            }
+            serviceItem.setServiceStatus(service.getServiceStatus());
+            modelInfrastructure.addServiceItem(serviceItem);
+        });
+
+        if (caughtError.get()) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(modelInfrastructure, HttpStatus.OK);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPost(@Valid GenericResourceApiServiceModelInfrastructure modelInfrastructure) {
+
+        AtomicBoolean caughtError = new AtomicBoolean(false);
+        ConfigServices service = new ConfigServices();
+        modelInfrastructure.getService().forEach( serviceItem -> {
+            String svcInstanceId = serviceItem.getServiceInstanceId();
+            service.setSvcInstanceId(svcInstanceId);
+            try {
+                service.setSvcData(objectMapper.writeValueAsString(svcInstanceId));
+            } catch (JsonProcessingException e) {
+                log.error("Could not serialize service data for {}", service.getSvcInstanceId(), e);
+                caughtError.set(true);
+            }
+            service.setServiceStatus(serviceItem.getServiceStatus());
+
+            // Maintain uniqueness of svcInstanceId by deleting any existing entry before append
+            configServicesRepository.deleteBySvcInstanceId(svcInstanceId);
+            configServicesRepository.save(service);
+
+        });
+
+        if (caughtError.get()) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPut(@Valid GenericResourceApiServiceModelInfrastructure modelInfrastructure) {
+        AtomicBoolean caughtError = new AtomicBoolean(false);
+        ConfigServices service = new ConfigServices();
+        modelInfrastructure.getService().forEach( serviceItem -> {
+            String svcInstanceId = serviceItem.getServiceInstanceId();
+            service.setSvcInstanceId(svcInstanceId);
+            try {
+                service.setSvcData(objectMapper.writeValueAsString(svcInstanceId));
+            } catch (JsonProcessingException e) {
+                log.error("Could not serialize service data for {}", service.getSvcInstanceId(), e);
+                caughtError.set(true);
+            }
+            service.setServiceStatus(serviceItem.getServiceStatus());
+
+            // Maintain uniqueness of svcInstanceId by deleting any existing entry before append
+            configServicesRepository.deleteBySvcInstanceId(svcInstanceId);
+            configServicesRepository.save(service);
+
+        });
+
+        if (caughtError.get()) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIservicePost(@Valid GenericResourceApiServicemodelinfrastructureService servicesData) {
         String svcInstanceId = servicesData.getServiceInstanceId();
         try {
@@ -254,72 +350,218 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
+    public ResponseEntity<GenericResourceApiServicemodelinfrastructureService> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGet(String serviceInstanceId) {
+        GenericResourceApiServicemodelinfrastructureService retval = null;
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if (services.isEmpty()) {
+            return new ResponseEntity<> (HttpStatus.NOT_FOUND);
+        } else {
+            ConfigServices service = services.get(0);
+            retval = new GenericResourceApiServicemodelinfrastructureService();
+            retval.setServiceInstanceId(serviceInstanceId);
+            retval.setServiceStatus(service.getServiceStatus());
+            try {
+                retval.setServiceData(objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class));
+            } catch (JsonProcessingException e) {
+                log.error("Could not deserialize service data for service instance id {}", serviceInstanceId, e);
+                retval = null;
+            }
+        }
+
+        if (retval == null) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPost(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService newService) {
+        ConfigServices service = new ConfigServices();
+
+        service.setSvcInstanceId(newService.getServiceInstanceId());
+        service.setServiceStatus(newService.getServiceStatus());
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(newService.getServiceData()));
+            configServicesRepository.save(service);
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize service data for eservice instance id {}", newService.getServiceInstanceId(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPut(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService newService) {
+        ConfigServices service = new ConfigServices();
+
+        service.setSvcInstanceId(newService.getServiceInstanceId());
+        service.setServiceStatus(newService.getServiceStatus());
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(newService.getServiceData()));
+            configServicesRepository.save(service);
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize service data for eservice instance id {}", newService.getServiceInstanceId(), e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataDelete(String serviceInstanceId) {
-        return null;
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if (!services.isEmpty()) {
+            ConfigServices service = services.get(0);
+            service.setSvcData(null);
+            configServicesRepository.save(service);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<GenericResourceApiServicedataServiceData> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataGet(String serviceInstanceId) {
-        return null;
+        GenericResourceApiServicedataServiceData serviceData = null;
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if (services.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            try {
+                serviceData = objectMapper.readValue(services.get(0).getSvcData(), GenericResourceApiServicedataServiceData.class);
+                return new ResponseEntity<>(serviceData, HttpStatus.OK);
+            } catch (JsonProcessingException e) {
+                log.error("Could not parse service data", e);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPost(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData genericResourceApiServicedataServiceDataBodyParam) {
-        return null;
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPost(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData serviceData) {
+       ConfigServices service;
+       AtomicBoolean caughtError = new AtomicBoolean(false);
+       List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+       if (services.isEmpty()) {
+           service = new ConfigServices();
+           service.setSvcInstanceId(serviceInstanceId);
+       } else {
+           service = services.get(0);
+       }
+
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(serviceData));
+            configServicesRepository.save(service);
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            caughtError.set(true);
+        }
+
+        if (caughtError.get()) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPut(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData genericResourceApiServicedataServiceDataBodyParam) {
-        return null;
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPut(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData serviceData) {
+        ConfigServices service;
+        AtomicBoolean caughtError = new AtomicBoolean(false);
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if (services.isEmpty()) {
+            service = new ConfigServices();
+            service.setSvcInstanceId(serviceInstanceId);
+        } else {
+            service = services.get(0);
+        }
+
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(serviceData));
+            configServicesRepository.save(service);
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            caughtError.set(true);
+        }
+
+        if (caughtError.get()) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
     }
 
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusDelete(String serviceInstanceId) {
-        return null;
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if (!services.isEmpty()) {
+            ConfigServices service = services.get(0);
+            service.setServiceStatus(null);
+            configServicesRepository.save(service);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @Override
     public ResponseEntity<GenericResourceApiServicestatusServiceStatus> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusGet(String serviceInstanceId) {
-        return null;
+        GenericResourceApiServicestatusServiceStatus serviceStatus = null;
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if (!services.isEmpty()) {
+            ConfigServices service = services.get(0);
+            serviceStatus = service.getServiceStatus();
+        }
+
+        if (serviceStatus == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(serviceStatus, HttpStatus.OK);
+        }
+
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPost(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus genericResourceApiServicestatusServiceStatusBodyParam) {
-        return null;
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPost(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus serviceStatus) {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        ConfigServices service = null;
+        if (services.isEmpty()) {
+            service = services.get(0);
+        } else {
+            service = new ConfigServices();
+            service.setSvcInstanceId(serviceInstanceId);
+        }
+        service.setServiceStatus(serviceStatus);
+        configServicesRepository.save(service);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPut(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus genericResourceApiServicestatusServiceStatusBodyParam) {
-        return null;
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPut(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus serviceStatus) {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        ConfigServices service = null;
+        if (services.isEmpty()) {
+            service = services.get(0);
+        } else {
+            service = new ConfigServices();
+            service.setSvcInstanceId(serviceInstanceId);
+        }
+        service.setServiceStatus(serviceStatus);
+
+        configServicesRepository.deleteBySvcInstanceId(serviceInstanceId);
+        configServicesRepository.save(service);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
-    @Override
-    public ResponseEntity<GenericResourceApiServicemodelinfrastructureService> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGet(String serviceInstanceId) {
-        return null;
-    }
 
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPost(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService genericResourceApiServicemodelinfrastructureServiceBodyParam) {
-        return null;
-    }
 
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPut(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService genericResourceApiServicemodelinfrastructureServiceBodyParam) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<GenericResourceApiServiceModelInfrastructure> configGENERICRESOURCEAPIservicesGet() {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPost(@Valid GenericResourceApiServiceModelInfrastructure genericResourceApiServiceModelInfrastructureBodyParam) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPut(@Valid GenericResourceApiServiceModelInfrastructure genericResourceApiServiceModelInfrastructureBodyParam) {
-        return null;
-    }
 }
