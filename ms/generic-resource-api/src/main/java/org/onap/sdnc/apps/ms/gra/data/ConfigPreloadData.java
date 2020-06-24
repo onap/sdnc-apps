@@ -39,6 +39,7 @@ public class ConfigPreloadData {
     private String preloadType;
 
     @Lob
+    @Column(length=10000)
     private String preloadData;
 
     public ConfigPreloadData() {

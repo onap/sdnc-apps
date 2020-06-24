@@ -34,7 +34,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication(scanBasePackages= { "org.onap.sdnc.apps.ms.gra.*" })
+@SpringBootApplication(scanBasePackages= { "org.onap.sdnc.apps.ms.gra.*", "org.onap.ccsdk.apps.services"})
 @EnableSwagger2
 public class GenericResourceMsApp {
 
