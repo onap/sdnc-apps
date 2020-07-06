@@ -9,3 +9,6 @@ output.log
 debug-logs/
 logs/
 **/derby.log
+ms/generic-resource-api/src/main/resources/GENERIC-RESOURCE-API*xml
+ms/generic-resource-api/src/main/resources/SUBNET-API*xml
+ms/generic-resource-apo/src/main/resources/graph.versions
