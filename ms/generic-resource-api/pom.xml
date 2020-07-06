@@ -179,6 +179,53 @@
                             </artifactItems>
                         </configuration>
                     </execution>
+                    <!-- DGs are needed for unit tests as well -->
+                    <execution>
+                        <id>unpack dgs</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc</outputDirectory>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.onap.sdnc.oam</groupId>
+                                    <artifactId>platform-logic-installer</artifactId>
+                                    <version>${sdnc.oam.version}</version>
+                                    <type>zip</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Workaround : for some reason, BeforeClass is not triggered in junit on Jenkins -->
+            <!-- So cannot override default value of serviceLogicDirectory property             -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-dockerfile</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <outputDirectory>${basedir}/src/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/target/docker-stage/opt/onap/sdnc/svclogic/graphs/generic-resource-api</directory>
+                                    <includes>
+                                        <include>*.xml</include>
+                                        <include>graph.versions</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -221,6 +268,25 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>addSource</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/target/generated-sources/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -250,24 +316,6 @@
                                     <useRepositoryLayout>false</useRepositoryLayout>
                                     <addParentPoms>false</addParentPoms>
                                     <copyPom>false</copyPom>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>unpack dgs</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc</outputDirectory>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.onap.sdnc.oam</groupId>
-                                            <artifactId>platform-logic-installer</artifactId>
-                                            <version>${sdnc.oam.version}</version>
-                                            <type>zip</type>
-                                        </artifactItem>
-                                    </artifactItems>
                                 </configuration>
                             </execution>
                         </executions>
