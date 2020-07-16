@@ -57,6 +57,10 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.onap.aaf.cadi</groupId>
             <artifactId>aaf-cadi-shiro</artifactId>
             <version>${aaf-shiro-bundle.version}</version>
