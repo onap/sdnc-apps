@@ -147,7 +147,10 @@ public class OperationalServices {
     public void setServiceStatus(GenericResourceApiServicestatusServiceStatus serviceStatus) {
         this.serviceStatusAction = serviceStatus.getAction();
         this.serviceStatusFinalIndicator = serviceStatus.getFinalIndicator();
-        this.serviceStatusRequestStatus = serviceStatus.getRequestStatus().toString();
+        if (serviceStatus.getRequestStatus() != null) {
+            this.serviceStatusRequestStatus = serviceStatus.getRequestStatus().toString();
+        }
+
         this.serviceStatusResponseCode = serviceStatus.getResponseCode();
         this.serviceStatusResponseMessage = serviceStatus.getResponseMessage();
         this.serviceStatusResponseTimestamp = serviceStatus.getResponseTimestamp();

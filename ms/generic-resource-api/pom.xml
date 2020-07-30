@@ -115,6 +115,11 @@
             <version>${ccsdk.sli.core.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.onap.ccsdk.sli.adaptors</groupId>
+            <artifactId>sql-resource-provider</artifactId>
+            <version>${ccsdk.sli.adaptors.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.onap.ccsdk.sli.plugins</groupId>
             <artifactId>restapi-call-node-provider</artifactId>
             <version>${ccsdk.sli.plugins.version}</version>
@@ -124,6 +129,7 @@
             <artifactId>properties-node-provider</artifactId>
             <version>${ccsdk.sli.plugins.version}</version>
         </dependency>
+
         <!-- this jersey jar is needed for rest api call node to function properly -->
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
@@ -200,34 +206,6 @@
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Workaround : for some reason, BeforeClass is not triggered in junit on Jenkins -->
-            <!-- So cannot override default value of serviceLogicDirectory property             -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>copy-dockerfile</id>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <outputDirectory>${basedir}/src/main/resources</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/target/docker-stage/opt/onap/sdnc/svclogic/graphs/generic-resource-api</directory>
-                                    <includes>
-                                        <include>*.xml</include>
-                                        <include>graph.versions</include>
-                                    </includes>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
                         </configuration>
                     </execution>
                 </executions>

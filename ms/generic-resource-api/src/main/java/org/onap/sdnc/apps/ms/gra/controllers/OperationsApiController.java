@@ -25,14 +25,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonParser;
+
+import org.onap.ccsdk.apps.services.RestException;
 import org.onap.ccsdk.apps.services.SvcLogicFactory;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceBase;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
+import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.OperationalPreloadDataRepository;
+import org.onap.sdnc.apps.ms.gra.data.OperationalServices;
+import org.onap.sdnc.apps.ms.gra.data.OperationalServicesRepository;
 import org.onap.sdnc.apps.ms.gra.swagger.OperationsApi;
 import org.onap.sdnc.apps.ms.gra.swagger.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +51,14 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
 @Controller
-@ComponentScan(basePackages = {"org.onap.sdnc.apps.ms.gra.*"})
+@ComponentScan(basePackages = { "org.onap.sdnc.apps.ms.gra.*", "org.onap.ccsdk.apps.services" })
 @EntityScan("org.onap.sdnc.apps.ms.gra.*")
 @Import(value = SvcLogicFactory.class)
 public class OperationsApiController implements OperationsApi {
@@ -71,6 +79,28 @@ public class OperationsApiController implements OperationsApi {
     @Autowired
     private OperationalPreloadDataRepository operationalPreloadDataRepository;
 
+    @Autowired
+    private ConfigServicesRepository configServicesRepository;
+
+    @Autowired
+    private OperationalServicesRepository operationalServicesRepository;
+
+    private static class Iso8601Util {
+
+        private static TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+        private Iso8601Util() {
+        }
+
+        static {
+            dateFormat.setTimeZone(timeZone);
+        }
+
+        private static String now() {
+            return dateFormat.format(new Date());
+        }
+    }
 
     @org.springframework.beans.factory.annotation.Autowired
     public OperationsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
@@ -91,7 +121,8 @@ public class OperationsApiController implements OperationsApi {
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiPreloadNetworkTopologyOperation> operationsGENERICRESOURCEAPIpreloadNetworkTopologyOperationPost(@Valid GenericResourceApiPreloadnetworktopologyoperationInputBodyparam graInput) {
+    public ResponseEntity<GenericResourceApiPreloadNetworkTopologyOperation> operationsGENERICRESOURCEAPIpreloadNetworkTopologyOperationPost(
+            @Valid GenericResourceApiPreloadnetworktopologyoperationInputBodyparam graInput) {
         final String svcOperation = "preload-network-topology-operation";
         GenericResourceApiPreloadNetworkTopologyOperation retval = new GenericResourceApiPreloadNetworkTopologyOperation();
         GenericResourceApiPreloadTopologyResponseBody resp = new GenericResourceApiPreloadTopologyResponseBody();
@@ -100,18 +131,17 @@ public class OperationsApiController implements OperationsApi {
         if (hasInvalidPreloadNetwork(graInput)) {
             log.debug("exiting {} because of null or empty preload-network-topology-information", svcOperation);
 
-
             resp.setResponseCode("403");
             resp.setResponseMessage("invalid input, null or empty preload-network-topology-information");
             resp.setAckFinalIndicator("Y");
-
 
             retval.setOutput(resp);
 
             return new ResponseEntity<>(retval, HttpStatus.FORBIDDEN);
         }
 
-        String preloadId = graInput.getInput().getPreloadNetworkTopologyInformation().getNetworkTopologyIdentifierStructure().getNetworkId();
+        String preloadId = graInput.getInput().getPreloadNetworkTopologyInformation()
+                .getNetworkTopologyIdentifierStructure().getNetworkId();
         String preloadType = "network";
 
         resp.setSvcRequestId(graInput.getInput().getSdncRequestHeader().getSvcRequestId());
@@ -120,10 +150,9 @@ public class OperationsApiController implements OperationsApi {
 
         GenericResourceApiPreloaddataPreloadData preloadData = null;
 
-
         // Add input to SvcLogicContext
         try {
-            ctxIn.mergeJson(svcOperation+"-input", objectMapper.writeValueAsString(graInput.getInput()));
+            ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(graInput.getInput()));
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to parse error on input preload data", svcOperation);
             resp.setResponseCode("500");
@@ -132,7 +161,6 @@ public class OperationsApiController implements OperationsApi {
             retval.setOutput(resp);
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
 
         // Add config tree data to SvcLogicContext
         try {
@@ -147,7 +175,6 @@ public class OperationsApiController implements OperationsApi {
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-
         // Add operational tree data to SvcLogicContext
         try {
             preloadData = getOperationalPreloadData(preloadId, preloadType);
@@ -160,7 +187,6 @@ public class OperationsApiController implements OperationsApi {
             retval.setOutput(resp);
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
 
         // Call DG
         try {
@@ -177,7 +203,8 @@ public class OperationsApiController implements OperationsApi {
                 // If DG returns success, update database
                 String ctxJson = ctxOut.toJsonString("preload-data");
                 log.info("DG preload-data is {}", ctxJson);
-                GenericResourceApiPreloaddataPreloadData preloadToLoad = objectMapper.readValue(ctxJson, GenericResourceApiPreloaddataPreloadData.class);
+                GenericResourceApiPreloaddataPreloadData preloadToLoad = objectMapper.readValue(ctxJson,
+                        GenericResourceApiPreloaddataPreloadData.class);
                 saveConfigPreloadData(preloadId, preloadType, preloadToLoad);
                 saveOperationalPreloadData(preloadId, preloadType, preloadToLoad);
             }
@@ -204,13 +231,13 @@ public class OperationsApiController implements OperationsApi {
             resp.setResponseMessage(e.getMessage());
         }
 
-
         retval.setOutput(resp);
         return (new ResponseEntity<>(retval, HttpStatus.valueOf(Integer.parseInt(resp.getResponseCode()))));
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiPreloadVfModuleTopologyOperation> operationsGENERICRESOURCEAPIpreloadVfModuleTopologyOperationPost(@Valid GenericResourceApiPreloadvfmoduletopologyoperationInputBodyparam graInput) {
+    public ResponseEntity<GenericResourceApiPreloadVfModuleTopologyOperation> operationsGENERICRESOURCEAPIpreloadVfModuleTopologyOperationPost(
+            @Valid GenericResourceApiPreloadvfmoduletopologyoperationInputBodyparam graInput) {
         final String svcOperation = "preload-vf-module-topology-operation";
         GenericResourceApiPreloadVfModuleTopologyOperation retval = new GenericResourceApiPreloadVfModuleTopologyOperation();
         GenericResourceApiPreloadTopologyResponseBody resp = new GenericResourceApiPreloadTopologyResponseBody();
@@ -219,18 +246,17 @@ public class OperationsApiController implements OperationsApi {
         if (hasInvalidPreloadNetwork(graInput)) {
             log.debug("exiting {} because of null or empty preload-network-topology-information", svcOperation);
 
-
             resp.setResponseCode("403");
             resp.setResponseMessage("invalid input, null or empty preload-network-topology-information");
             resp.setAckFinalIndicator("Y");
-
 
             retval.setOutput(resp);
 
             return new ResponseEntity<>(retval, HttpStatus.FORBIDDEN);
         }
 
-        String preloadId = graInput.getInput().getPreloadVfModuleTopologyInformation().getVfModuleTopology().getVfModuleTopologyIdentifier().getVfModuleName();
+        String preloadId = graInput.getInput().getPreloadVfModuleTopologyInformation().getVfModuleTopology()
+                .getVfModuleTopologyIdentifier().getVfModuleName();
         String preloadType = "vf-module";
 
         resp.setSvcRequestId(graInput.getInput().getSdncRequestHeader().getSvcRequestId());
@@ -239,10 +265,9 @@ public class OperationsApiController implements OperationsApi {
 
         GenericResourceApiPreloaddataPreloadData preloadData = null;
 
-
         // Add input to SvcLogicContext
         try {
-            ctxIn.mergeJson(svcOperation+"-input", objectMapper.writeValueAsString(graInput.getInput()));
+            ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(graInput.getInput()));
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to parse error on input preload data", svcOperation);
             resp.setResponseCode("500");
@@ -251,7 +276,6 @@ public class OperationsApiController implements OperationsApi {
             retval.setOutput(resp);
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
 
         // Add config tree data to SvcLogicContext
         try {
@@ -266,7 +290,6 @@ public class OperationsApiController implements OperationsApi {
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-
         // Add operational tree data to SvcLogicContext
         try {
             preloadData = getOperationalPreloadData(preloadId, preloadType);
@@ -279,7 +302,6 @@ public class OperationsApiController implements OperationsApi {
             retval.setOutput(resp);
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
 
         // Call DG
         try {
@@ -295,7 +317,8 @@ public class OperationsApiController implements OperationsApi {
             if ("200".equals(resp.getResponseCode())) {
                 // If DG returns success, update database
                 String ctxJson = ctxOut.toJsonString("preload-data");
-                GenericResourceApiPreloaddataPreloadData preloadToLoad = objectMapper.readValue(ctxJson, GenericResourceApiPreloaddataPreloadData.class);
+                GenericResourceApiPreloaddataPreloadData preloadToLoad = objectMapper.readValue(ctxJson,
+                        GenericResourceApiPreloaddataPreloadData.class);
                 saveConfigPreloadData(preloadId, preloadType, preloadToLoad);
                 saveOperationalPreloadData(preloadId, preloadType, preloadToLoad);
             }
@@ -318,55 +341,211 @@ public class OperationsApiController implements OperationsApi {
             resp.setResponseMessage(e.getMessage());
         }
 
-
         retval.setOutput(resp);
         return (new ResponseEntity<>(retval, HttpStatus.valueOf(Integer.parseInt(resp.getResponseCode()))));
     }
 
-    private boolean hasInvalidPreloadNetwork(GenericResourceApiPreloadnetworktopologyoperationInputBodyparam preloadData) {
-        return ((preloadData == null) ||
-                (preloadData.getInput() == null) ||
-                (preloadData.getInput().getPreloadNetworkTopologyInformation() == null));
-    }
-    private boolean hasInvalidPreloadNetwork(GenericResourceApiPreloadvfmoduletopologyoperationInputBodyparam preloadData) {
-        return ((preloadData == null) ||
-                (preloadData.getInput() == null) ||
-                (preloadData.getInput().getPreloadVfModuleTopologyInformation() == null));
+    private boolean hasInvalidPreloadNetwork(
+            GenericResourceApiPreloadnetworktopologyoperationInputBodyparam preloadData) {
+        return ((preloadData == null) || (preloadData.getInput() == null)
+                || (preloadData.getInput().getPreloadNetworkTopologyInformation() == null));
     }
 
-    private GenericResourceApiPreloaddataPreloadData getConfigPreloadData(String preloadId, String preloadType) throws JsonProcessingException {
+    private boolean hasInvalidPreloadNetwork(
+            GenericResourceApiPreloadvfmoduletopologyoperationInputBodyparam preloadData) {
+        return ((preloadData == null) || (preloadData.getInput() == null)
+                || (preloadData.getInput().getPreloadVfModuleTopologyInformation() == null));
+    }
 
-        List<ConfigPreloadData> configPreloadData = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
+    private boolean hasInvalidServiceId(GenericResourceApiServiceOperationInformation input) {
+
+        return input == null || input.getServiceInformation() == null
+                || input.getServiceInformation().getServiceInstanceId() == null
+                || input.getServiceInformation().getServiceInstanceId().length() == 0;
+    }
+
+    private GenericResourceApiPreloaddataPreloadData getConfigPreloadData(String preloadId, String preloadType)
+            throws JsonProcessingException {
+
+        List<ConfigPreloadData> configPreloadData = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId,
+                preloadType);
 
         if (configPreloadData.isEmpty()) {
-            return(null);
+            return (null);
         } else {
-            return(objectMapper.readValue(configPreloadData.get(0).getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
+            return (objectMapper.readValue(configPreloadData.get(0).getPreloadData(),
+                    GenericResourceApiPreloaddataPreloadData.class));
         }
     }
 
-    private GenericResourceApiPreloaddataPreloadData getOperationalPreloadData(String preloadId, String preloadType) throws JsonProcessingException {
+    private GenericResourceApiPreloaddataPreloadData getOperationalPreloadData(String preloadId, String preloadType)
+            throws JsonProcessingException {
 
-        List<OperationalPreloadData> configPreloadData = operationalPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
+        List<OperationalPreloadData> configPreloadData = operationalPreloadDataRepository
+                .findByPreloadIdAndPreloadType(preloadId, preloadType);
 
         if (configPreloadData.isEmpty()) {
-            return(null);
+            return (null);
         } else {
-            return(objectMapper.readValue(configPreloadData.get(0).getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
+            return (objectMapper.readValue(configPreloadData.get(0).getPreloadData(),
+                    GenericResourceApiPreloaddataPreloadData.class));
         }
     }
 
-    private void saveConfigPreloadData(String preloadId, String preloadType, GenericResourceApiPreloaddataPreloadData preloadData) throws JsonProcessingException {
+    private void saveConfigPreloadData(String preloadId, String preloadType,
+            GenericResourceApiPreloaddataPreloadData preloadData) throws JsonProcessingException {
 
         configPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
-        configPreloadDataRepository.save(new ConfigPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadData)));
+        configPreloadDataRepository
+                .save(new ConfigPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadData)));
 
     }
 
-    private void saveOperationalPreloadData(String preloadId, String preloadType, GenericResourceApiPreloaddataPreloadData preloadData) throws JsonProcessingException {
+    private void saveOperationalPreloadData(String preloadId, String preloadType,
+            GenericResourceApiPreloaddataPreloadData preloadData) throws JsonProcessingException {
 
         operationalPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
-        operationalPreloadDataRepository.save(new OperationalPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadData)));
+        operationalPreloadDataRepository
+                .save(new OperationalPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadData)));
+
+    }
+
+    private GenericResourceApiServicedataServiceData getConfigServiceData(String svcInstanceId) throws JsonProcessingException {
+
+        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
+
+        if (configServices.isEmpty()) {
+            return (null);
+        } else {
+            return (objectMapper.readValue(configServices.get(0).getSvcData(),
+                    GenericResourceApiServicedataServiceData.class));
+        }
+    }
+
+
+    @Override
+    public ResponseEntity<GenericResourceApiNetworkTopologyOperation> operationsGENERICRESOURCEAPInetworkTopologyOperationPost(
+            @Valid GenericResourceApiNetworkOperationInformationBodyparam genericResourceApiNetworkOperationInformationBodyParam)
+            throws RestException {
+        // TODO Auto-generated method stub
+        return OperationsApi.super.operationsGENERICRESOURCEAPInetworkTopologyOperationPost(
+                genericResourceApiNetworkOperationInformationBodyParam);
+    }
+
+    @Override
+    public ResponseEntity<GenericResourceApiServiceTopologyOperation> operationsGENERICRESOURCEAPIserviceTopologyOperationPost(
+            @Valid GenericResourceApiServiceOperationInformationBodyparam input) throws RestException {
+        final String svcOperation = "service-topology-operation";
+        GenericResourceApiServiceTopologyOperation retval = new GenericResourceApiServiceTopologyOperation();
+        GenericResourceApiServicetopologyoperationOutput resp = new GenericResourceApiServicetopologyoperationOutput();
+
+        log.info(CALLED_STR, svcOperation);
+
+        // Verify input contains service instance id
+        if (hasInvalidServiceId(input.getInput())) {
+            log.debug("exiting {} because of null or empty service-instance-id", svcOperation);
+
+            resp.setResponseCode("404");
+            resp.setResponseMessage("null or empty service-instance-id");
+            resp.setAckFinalIndicator("Y");
+
+            retval.setOutput(resp);
+
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        String svcInstanceId = input.getInput().getServiceInformation().getServiceInstanceId();
+
+        SvcLogicContext ctxIn = new SvcLogicContext();
+
+        // Add input to SvcLogicContext
+        try {
+            ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
+        } catch (JsonProcessingException e) {
+            log.error("exiting {} due to parse error on input data", svcOperation);
+            resp.setResponseCode("500");
+            resp.setResponseMessage("internal error");
+            resp.setAckFinalIndicator("Y");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Add config tree data to SvcLogicContext
+        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
+        ConfigServices configService = null;
+        if (configServices != null && !configServices.isEmpty()) {
+            configService = configServices.get(0);
+            ctxIn.mergeJson("service-data", configService.getSvcData());
+        } else {
+            configService = new ConfigServices(svcInstanceId, null);
+        }
+
+        // Add operational tree data to SvcLogicContext
+        List<OperationalServices> operServices = operationalServicesRepository.findBySvcInstanceId(svcInstanceId);
+        OperationalServices operService = null;
+        boolean saveOperationalData = false;
+
+        if (operServices != null && !operServices.isEmpty()) {
+            operService = operServices.get(0);
+            ctxIn.mergeJson("operational-data", operService.getSvcData());
+        } else {
+            operService = new OperationalServices(svcInstanceId, null, null);
+        }
+
+        // Update service status info in config entry from input
+        configService.setServiceStatusAction(input.getInput().getRequestInformation().getRequestAction().toString());
+        configService.setServiceStatusRpcAction(input.getInput().getSdncRequestHeader().getSvcAction().toString());
+        configService.setServiceStatusRpcName(svcOperation);
+
+
+        // Call DG
+        try {
+            // Any of these can throw a nullpointer exception
+            // execute should only throw a SvcLogicException
+            SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
+            Properties respProps = ctxOut.toProperties();
+
+            resp.setAckFinalIndicator(respProps.getProperty("ack-final-indicator", "Y"));
+            resp.setResponseCode(respProps.getProperty("error-code", "200"));
+            resp.setResponseMessage(respProps.getProperty("error-message", "SUCCESS"));
+            configService.setServiceStatusRequestStatus(GenericResourceApiRequestStatusEnumeration.SYNCCOMPLETE.toString());
+
+            if ("200".equals(resp.getResponseCode())) {
+                // If DG returns success, update svcData in config and operational trees
+                // and remember to save operational data.
+                String ctxJson = ctxOut.toJsonString("service-data");
+                configService.setSvcData(ctxJson);
+                operService.setSvcData(ctxJson);
+                saveOperationalData = true;
+            }
+
+        } catch (NullPointerException npe) {
+            resp.setAckFinalIndicator("true");
+            resp.setResponseCode("500");
+            resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+        } catch (SvcLogicException e) {
+            resp.setAckFinalIndicator("true");
+            resp.setResponseCode("500");
+            resp.setResponseMessage(e.getMessage());
+        }
+
+        // Update status in config services entry
+        
+        configService.setServiceStatusFinalIndicator(resp.getAckFinalIndicator());
+        configService.setServiceStatusResponseCode(resp.getResponseCode());
+        configService.setServiceStatusResponseMessage(resp.getResponseMessage());
+        configService.setServiceStatusResponseTimestamp(Iso8601Util.now());
+
+        // Update config tree
+        configServicesRepository.save(configService);
+
+        // If necessary, sync status to operation service entry and save
+        if (saveOperationalData) {
+            operService.setServiceStatus(configService.getServiceStatus());
+            operationalServicesRepository.save(operService);
+        }
+        retval.setOutput(resp);
+        return (new ResponseEntity<>(retval, HttpStatus.OK));
 
     }
 

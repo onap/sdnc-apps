@@ -1,0 +1,53 @@
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "CreateServiceInstance",
+        "request-id": "req123",
+        "source": "curl"
+      },
+      "sdnc-request-header": {
+        "svc-action": "assign",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svcreq123"
+      },
+      "service-information": {
+        "global-customer-id": "cust123",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vBNG_0202",
+          "model-uuid": "00e50cbd-ef0f-4b28-821e-f2b583752dd3",
+          "model-version": "1920"
+        },
+        "service-id": "service1",
+        "service-instance-id": "service1",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-input-parameters": {
+          "param": [
+            {
+              "name": "test-param",
+              "resource-resolution-data": {
+                "capability-name": "no-op",
+                "payload": "hello-world",
+                "resource-key": [
+                  {
+                    "name": "key",
+                    "value": "value"
+                  }
+                ],
+                "status": "pending"
+              },
+              "value": "hello-world"
+            }
+          ]
+        },
+        "service-instance-name": "service-instance-2"
+      }
+    }
+  }

@@ -1,0 +1,215 @@
+@baseUrl = http://localhost:8080
+@CONFIG_PRELOAD_URL = /config/GENERIC-RESOURCE-API:preload-information/
+@CONFIG_PRELOAD_LIST_URL = /config/GENERIC-RESOURCE-API:preload-information/GENERIC-RESOURCE-API:preload-list/
+
+### GET top level no content-type : bad-media-type
+
+GET {{baseUrl}}/restconf{{CONFIG_PRELOAD_URL}} HTTP/1.1
+Accept: application/json
+### GET top level json format
+
+GET {{baseUrl}}/restconf{{CONFIG_PRELOAD_URL}} HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+### GET top level xmlformat : 500 error
+
+GET {{baseUrl}}/restconf{{CONFIG_PRELOAD_URL}} HTTP/1.1
+Content-Type: application/xml
+Accept: application/xml
+
+### just one entry
+
+GET {{baseUrl}}/restconf{{CONFIG_PRELOAD_LIST_URL}}/preload1/network/ HTTP/1.1
+content-type: application/json
+Accept: application/json
+
+### request XML format : 500 error
+
+GET {{baseUrl}}/restconf{{CONFIG_PRELOAD_LIST_URL}}/preload1/network/ HTTP/1.1
+Content-Type: application/xml
+Accept: application/xml
+
+
+### delete all info
+
+DELETE {{baseUrl}}/restconf{{CONFIG_PRELOAD_URL}} HTTP/1.1
+content-type: application/json
+
+### delete specific entry : 500 error
+
+DELETE {{baseUrl}}/restconf{{CONFIG_PRELOAD_LIST_URL}}/preload1/network/ HTTP/1.1
+content-type: application/json
+
+
+### add a new record preload1/network
+
+POST {{baseUrl}}/restconf{{CONFIG_PRELOAD_LIST_URL}}/preload1/network/ HTTP/1.1
+content-type: application/json
+
+{
+  "preload-id": "preload1",
+  "preload-type": "network",
+  "preload-data": {
+    "preload-network-topology-information": {
+      "host-routes": [
+        {
+          "next-hop": "10.1.12.1",
+          "route-prefix": "12"
+        }
+      ],
+      "is-external-network": false,
+      "is-provider-network": false,
+      "is-shared-network": false,
+      "network-policy": [
+        {
+          "network-policy-fqdn": "policy-sdnc.onap.org",
+          "network-policy-id": "123"
+        }
+      ],
+      "network-topology-identifier-structure": {
+        "eipam-v4-address-plan": "plan9",
+        "eipam-v6-address-plan": "plan9v6",
+        "is-trunked": true,
+        "network-id": "preload1",
+        "network-instance-group-id": "abc123",
+        "network-name": "syfy",
+        "network-role": "secret",
+        "network-technology": "soupcan",
+        "network-type": "fake",
+        "related-networks": {
+          "related-network": [
+            {
+              "network-id": "skynet",
+              "network-role": "master",
+              "vlan-tags": {
+                "is-private": true,
+                "lower-tag-id": 0,
+                "upper-tag-id": 0,
+                "vlan-interface": "le0"
+              }
+            }
+          ]
+        },
+        "segmentation-id": "seg1"
+      },
+      "physical-network-name": "skynet",
+      "route-table-reference": [
+        {
+          "route-table-reference-fqdn": "sky.net",
+          "route-table-reference-id": "ref1"
+        }
+      ],
+      "subnets": [
+        {
+          "addr-from-start": "Y",
+          "cidr-mask": "255.255.0.0",
+          "dhcp-enabled": "Y",
+          "dhcp-end-address": "10.1.2.254",
+          "dhcp-start-address": "10.1.2.1",
+          "gateway-address": "10.1.2.255",
+          "ip-version": "ipv4",
+          "start-address": "10.1.2.1",
+          "subnet-name": "subnet1",
+          "subnet-role": "puppies",
+          "subnet-sequence": 0
+        }
+      ],
+      "vpn-bindings": [
+        {
+          "aic-zone": "zone1",
+          "global-route-target": "string",
+          "route-target-role": "string",
+          "vpn-binding-id": "string",
+          "vpn-name": "string"
+        }
+      ]
+    }
+  }
+}
+
+### 
+POST http://localhost:8080/restconf/config/GENERIC-RESOURCE-API:preload-information/GENERIC-RESOURCE-API:preload-list/preload1/network/
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<preload-list>
+   <preload-data>
+      <preload-network-topology-information>
+         <host-routes>
+            <element>
+               <next-hop>10.1.12.1</next-hop>
+               <route-prefix>12</route-prefix>
+            </element>
+         </host-routes>
+         <is-external-network>false</is-external-network>
+         <is-provider-network>false</is-provider-network>
+         <is-shared-network>false</is-shared-network>
+         <network-policy>
+            <element>
+               <network-policy-fqdn>policy-sdnc.onap.org</network-policy-fqdn>
+               <network-policy-id>123</network-policy-id>
+            </element>
+         </network-policy>
+         <network-topology-identifier-structure>
+            <eipam-v4-address-plan>plan9</eipam-v4-address-plan>
+            <eipam-v6-address-plan>plan9v6</eipam-v6-address-plan>
+            <is-trunked>true</is-trunked>
+            <network-id>preload1</network-id>
+            <network-instance-group-id>abc123</network-instance-group-id>
+            <network-name>syfy</network-name>
+            <network-role>secret</network-role>
+            <network-technology>soupcan</network-technology>
+            <network-type>fake</network-type>
+            <related-networks>
+               <related-network>
+                  <element>
+                     <network-id>skynet</network-id>
+                     <network-role>master</network-role>
+                     <vlan-tags>
+                        <is-private>true</is-private>
+                        <lower-tag-id>0</lower-tag-id>
+                        <upper-tag-id>0</upper-tag-id>
+                        <vlan-interface>le0</vlan-interface>
+                     </vlan-tags>
+                  </element>
+               </related-network>
+            </related-networks>
+            <segmentation-id>seg1</segmentation-id>
+         </network-topology-identifier-structure>
+         <physical-network-name>skynet</physical-network-name>
+         <route-table-reference>
+            <element>
+               <route-table-reference-fqdn>sky.net</route-table-reference-fqdn>
+               <route-table-reference-id>ref1</route-table-reference-id>
+            </element>
+         </route-table-reference>
+         <subnets>
+            <element>
+               <addr-from-start>Y</addr-from-start>
+               <cidr-mask>255.255.0.0</cidr-mask>
+               <dhcp-enabled>Y</dhcp-enabled>
+               <dhcp-end-address>10.1.2.254</dhcp-end-address>
+               <dhcp-start-address>10.1.2.1</dhcp-start-address>
+               <gateway-address>10.1.2.255</gateway-address>
+               <ip-version>ipv4</ip-version>
+               <start-address>10.1.2.1</start-address>
+               <subnet-name>subnet1</subnet-name>
+               <subnet-role>puppies</subnet-role>
+               <subnet-sequence>0</subnet-sequence>
+            </element>
+         </subnets>
+         <vpn-bindings>
+            <element>
+               <aic-zone>zone1</aic-zone>
+               <global-route-target>string</global-route-target>
+               <route-target-role>string</route-target-role>
+               <vpn-binding-id>string</vpn-binding-id>
+               <vpn-name>string</vpn-name>
+            </element>
+         </vpn-bindings>
+      </preload-network-topology-information>
+   </preload-data>
+   <preload-id>preload1</preload-id>
+   <preload-type>network</preload-type>
+</preload-list>

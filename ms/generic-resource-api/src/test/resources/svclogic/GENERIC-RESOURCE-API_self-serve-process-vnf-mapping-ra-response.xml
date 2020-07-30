@@ -1,0 +1,100 @@
+<service-logic
+    xmlns='http://www.onap.org/sdnc/svclogic'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='${project.version}'>
+    <method rpc='self-serve-process-vnf-mapping-ra-response' mode='sync'>
+        <block atomic="true">
+            <switch test='`$jsonContextPrefix.resolution-summary_length`'>
+                <outcome value=''>
+                    <return status='failure'>
+                        <parameter name='ack-final' value='Y'/>
+                        <parameter name="error-code" value="500" />
+                        <parameter name="error-message" value="resolution-summary is null" />
+                    </return>
+                </outcome>
+            </switch>
+            <set>
+                <parameter name='CONSTANT' value='success'/>
+            </set>
+            <for silentFailure='true'  index='vdns-index' start='0' end='`$jsonContextPrefix.resolution-summary_length`' >
+                <block atomic="true">
+                    <set>
+                        <parameter name='tmp.mso.param.found' value='false' />
+                    </set>
+                    <switch test='`$prehighnum &gt; 0`'>
+                        <outcome value='true'>
+                            <for silentFailure='true' index='param-index' start='0' end='`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param_length`' >
+                                <switch test='`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$param-index].name == $jsonContextPrefix.resolution-summary[$vdns-index].name`'>
+                                    <outcome value='true'>
+                                        <block>
+                                            <set>
+                                                <parameter name='`service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$param-index].value`' 
+	value='`$jsonContextPrefix.resolution-summary[$vdns-index].value`'/>
+                                            </set>
+                                            <set>
+                                                <parameter name='tmp.mso.param.found' value='true' />
+                                            </set>
+                                        </block>
+                                    </outcome>
+                                </switch>
+                            </for>
+                        </outcome>
+                    </switch>
+                    <switch test='`$tmp.mso.param.found`'>
+                        <outcome value='false'>
+                            <block atomic='true'>
+                                <set>
+                                    <parameter name='`service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$highnum].name`' 
+	value='`$jsonContextPrefix.resolution-summary[$vdns-index].name`'/>
+                                </set>
+                                <switch test="`$jsonContextPrefix.resolution-summary[$vdns-index].status == 'success' and
+		$jsonContextPrefix.resolution-summary[$vdns-index].value == ''`">
+                                    <outcome value='true'>
+                                        <set>
+                                            <parameter name='`service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$highnum].value`' 
+	value='`$CONSTANT`'/>
+                                        </set>
+                                    </outcome>
+                                    <outcome value='false'>
+                                        <set>
+                                            <parameter name='`service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$highnum].value`' 
+	value='`$jsonContextPrefix.resolution-summary[$vdns-index].value`'/>
+                                        </set>
+                                    </outcome>
+                                </switch>
+                                <for silentFailure='true'  index='kid-index' start='0' end='`$jsonContextPrefix.resolution-summary[$vdns-index].key-identifiers_length`' >
+                                    <set>
+                                        <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$highnum].resource-resolution-data.resource-key[$kid-index].name' 
+	value='`$jsonContextPrefix.resolution-summary[$vdns-index].key-identifiers[$kid-index].name`'/>
+                                        <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$highnum].resource-resolution-data.resource-key[$kid-index].value' 
+	value='`$jsonContextPrefix.resolution-summary[$vdns-index].key-identifiers[$kid-index].value`'/>
+                                    </set>
+                                </for>
+                                <set>
+                                    <parameter name='`service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$highnum].resource-resolution-data.capability-name`' 
+	value='`$jsonContextPrefix.resolution-summary[$vdns-index].dictionary-source`'/>
+                                    <parameter name='`service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$highnum].resource-resolution-data.status`' 
+	value='`$jsonContextPrefix.resolution-summary[$vdns-index].status`'/>
+                                </set>
+                                <set>
+                                    <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param[$highnum].resource-resolution-data.resource-key_length' 
+	value='`$jsonContextPrefix.resolution-summary[$vdns-index].key-identifiers_length`' />
+                                </set>
+                                <set>
+                                    <parameter name='highnum' value='`$highnum + 1`' />
+                                </set>
+                            </block>
+                        </outcome>
+                    </switch>
+                </block>
+            </for>
+            <set>
+                <parameter name='`service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.param_length`' 
+	value='`$highnum`'/>
+            </set>
+            <record plugin="org.onap.ccsdk.sli.core.sli.recording.Slf4jRecorder">
+                <parameter name="logger" value="message-log"/>
+                <parameter name="field1" value="DONE: self-serve-process-vnf-mapping-ra-response"/>
+            </record>
+        </block>
+    </method>
+</service-logic>

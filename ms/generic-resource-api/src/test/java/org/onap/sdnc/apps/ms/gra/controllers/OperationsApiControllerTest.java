@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.onap.sdnc.apps.ms.gra.core.GenericResourceMsApp;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
+import org.onap.sdnc.apps.ms.gra.data.OperationalServicesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,7 @@ public class OperationsApiControllerTest {
 
     private final static String PRELOAD_NETWORK_URL = "/operations/GENERIC-RESOURCE-API:preload-network-topology-operation/";
     private final static String PRELOAD_VFMODULE_URL = "/operations/GENERIC-RESOURCE-API:preload-vf-module-topology-operation/";
+    private final static String SERVICE_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:service-topology-operation/";
 
 
     @Autowired
@@ -38,11 +40,19 @@ public class OperationsApiControllerTest {
     @Autowired
     ConfigPreloadDataRepository configPreloadDataRepository;
 
+    @Autowired
+    ConfigServicesRepository configServicesRepository;
+
+    @Autowired
+    OperationalServicesRepository operationalServicesRepository;
+
     @BeforeClass
     public static void setUp() throws Exception {
-        System.out.println("OperationsApiControllerTest: Setting serviceLogicProperties and serviceLogicDirectory");
+        System.out.println("OperationsApiControllerTest: Setting serviceLogicProperties, serviceLogicDirectory and sdnc.config.dir");
         System.setProperty("serviceLogicProperties", "src/test/resources/svclogic.properties");
-        System.setProperty("serviceLogicDirectory", "target/docker-stage/opt/onap/sdnc/svclogic/graphs/generic-resource-api");
+        System.setProperty("serviceLogicDirectory", "src/test/resources/svclogic");
+        System.setProperty("sdnc.config.dir", "src/test/resources");
+   
     }
 
 
@@ -86,6 +96,31 @@ public class OperationsApiControllerTest {
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertEquals(1, configPreloadDataRepository.count());
+    }
+
+    @Test
+    public void operationsGENERICRESOURCEAPIserviceTopologyOperationAssignPost() throws Exception {
+
+        // Remove any existing service data
+        configServicesRepository.deleteAll();
+        operationalServicesRepository.deleteAll();
+
+        // Add invalid content
+        String content = readFileContent("src/test/resources/preload1-rpc-vfmodule.json");
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(SERVICE_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals(0, configServicesRepository.count());
+        assertEquals(0, operationalServicesRepository.count());
+
+        // Add valid content
+        content = readFileContent("src/test/resources/service-assign-rpc.json");
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(SERVICE_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+        assertEquals(1, operationalServicesRepository.count());
+
     }
 
     private String readFileContent(String path) throws IOException {

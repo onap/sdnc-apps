@@ -1,0 +1,27 @@
+<service-logic
+    xmlns='http://www.onap.org/sdnc/svclogic'
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='${project.version}'>
+    <method rpc='vnf-topology-operation-assign' mode='sync'>
+        <block>
+            <execute plugin='org.onap.ccsdk.sli.plugins.prop.PropertiesNode' method='readProperties' >
+                <parameter name='fileName' value='%SDNC_CONFIG_DIR%/generic-resource-api-dg.properties' />
+                <parameter name='contextPrefix' value='prop' />
+            </execute>
+            <switch test='`length($vnf-topology-operation-input.sdnc-request-header.svc-notification-url) == 0`'>
+                <outcome value='true'>
+                    <call module='GENERIC-RESOURCE-API' rpc='vnf-topology-operation-assign-sync' mode='sync' ></call>
+                </outcome>
+                <outcome value='false'>
+                    <switch test='$vnf-topology-operation-input.sdnc-request-header.svc-notification-url) == $prop.so.ignore-url'>
+                        <outcome value='true'>
+                            <call module='GENERIC-RESOURCE-API' rpc='vnf-topology-operation-assign-sync' mode='sync' ></call>
+                        </outcome>
+                        <outcome value='false'>
+                            <call module='GENERIC-RESOURCE-API' rpc='vnf-topology-operation-assign-async' mode='sync' ></call>
+                        </outcome>
+                    </switch>
+                </outcome>
+            </switch>
+        </block>
+    </method>
+</service-logic>
