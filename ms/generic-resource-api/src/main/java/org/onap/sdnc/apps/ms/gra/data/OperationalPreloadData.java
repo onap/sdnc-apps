@@ -39,7 +39,7 @@ public class OperationalPreloadData {
     private String preloadType;
 
     @Lob
-    @Column(columnDefinition = "clob")
+    @Column(length=10000)
     private String preloadData;
 
     public OperationalPreloadData() {

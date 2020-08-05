@@ -1,5 +1,4 @@
 
-
 --
 -- Table structure for table `ACCESS_LOG`
 --
@@ -2762,3 +2761,29 @@ CREATE TABLE IF NOT EXISTS `VNF_RELATED_NETWORK_ROLE` (
   PRIMARY KEY (`vnf_customization_uuid`,`network_role`,`related_network_role`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE CONFIG_GRA_SERVICES (
+  svcInstanceId varchar(255) not null,
+  serviceStatusAction varchar(255),
+  serviceStatusFinalIndicator varchar(255),
+  serviceStatusRequestStatus varchar(255),
+  serviceStatusResponseCode varchar(255),
+  serviceStatusResponseMessage varchar(255),
+  serviceStatusResponseTimestamp varchar(255),
+  serviceStatusRpcAction varchar(255),
+  serviceStatusRpcName varchar(255),
+  svcData longtext, primary key (svcInstanceId)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+
+CREATE TABLE OPERATIONAL_GRA_SERVICES (
+  svcInstanceId varchar(255) not null,
+  serviceStatusAction varchar(255),
+  serviceStatusFinalIndicator varchar(255),
+  serviceStatusRequestStatus varchar(255),
+  serviceStatusResponseCode varchar(255),
+  serviceStatusResponseMessage varchar(255),
+  serviceStatusResponseTimestamp varchar(255),
+  serviceStatusRpcAction varchar(255),
+  serviceStatusRpcName varchar(255),
+  svcData longtext,
+  primary key (svcInstanceId)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;

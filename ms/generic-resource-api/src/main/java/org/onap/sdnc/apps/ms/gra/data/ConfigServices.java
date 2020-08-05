@@ -11,10 +11,11 @@ import javax.persistence.*;
 @Table(name="CONFIG_GRA_SERVICES")
 public class ConfigServices {
     @Id
+    @Length(max = 100)
+    @Column(length = 100)
     String svcInstanceId;
 
     @Lob
-    @Column(columnDefinition = "clob")
     String svcData;
 
     // Service status fields

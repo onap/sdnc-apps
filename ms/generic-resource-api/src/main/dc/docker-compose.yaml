@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   db:
-    image: mariadb:10.3
+    image: mariadb:10.5
     container_name: gra_db_container
     ports:
       - "13306:3306"

@@ -10,10 +10,11 @@ import javax.persistence.*;
 @Table(name="OPERATIONAL_GRA_SERVICES")
 public class OperationalServices {
     @Id
+    @Length(max = 100)
+    @Column(length = 100)
     String svcInstanceId;
 
     @Lob
-    @Column(columnDefinition = "clob")
     String svcData;
 
     // Service status fields
