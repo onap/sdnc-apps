@@ -47,7 +47,11 @@ public class ConfigApiServicesControllerTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        System.out.println("ConfigApiServicesControllerTest: Setting serviceLogicProperties, serviceLogicDirectory and sdnc.config.dir");
         System.setProperty("serviceLogicProperties", "src/test/resources/svclogic.properties");
+        System.setProperty("serviceLogicDirectory", "src/test/resources/svclogic");
+        System.setProperty("sdnc.config.dir", "src/test/resources");
+   
     }
 
 
