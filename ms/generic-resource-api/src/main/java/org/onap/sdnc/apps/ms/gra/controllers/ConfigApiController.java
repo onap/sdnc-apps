@@ -403,6 +403,7 @@ public class ConfigApiController implements ConfigApi {
         for (ConfigServices service : configServicesRepository.findAll()) {
             GenericResourceApiServicemodelinfrastructureService serviceItem = new GenericResourceApiServicemodelinfrastructureService();
             serviceItem.setServiceInstanceId(service.getSvcInstanceId());
+            if (service.getSvcData() != null) {
             try {
                 serviceItem.setServiceData(objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class));
             } catch (JsonProcessingException e) {
@@ -410,6 +411,7 @@ public class ConfigApiController implements ConfigApi {
                 throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
 
             }
+        }
             serviceItem.setServiceStatus(service.getServiceStatus());
             modelInfrastructure.addServiceItem(serviceItem);
         }

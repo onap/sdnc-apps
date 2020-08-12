@@ -28,26 +28,7 @@
         "subscription-service-type": "test"
       },
       "service-request-input": {
-        "service-input-parameters": {
-          "param": [
-            {
-              "name": "test-param",
-              "resource-resolution-data": {
-                "capability-name": "no-op",
-                "payload": "hello-world",
-                "resource-key": [
-                  {
-                    "name": "key",
-                    "value": "value"
-                  }
-                ],
-                "status": "pending"
-              },
-              "value": "hello-world"
-            }
-          ]
-        },
-        "service-instance-name": "service-instance-2"
+        "service-instance-name": "service-instance-1"
       }
     }
   }

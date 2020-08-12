@@ -5,8 +5,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.sdnc.apps.ms.gra.core.GenericResourceMsApp;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalServicesRepository;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceModelInfrastructure;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicemodelinfrastructureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +24,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -32,6 +37,7 @@ public class OperationsApiControllerTest {
     private final static String PRELOAD_NETWORK_URL = "/operations/GENERIC-RESOURCE-API:preload-network-topology-operation/";
     private final static String PRELOAD_VFMODULE_URL = "/operations/GENERIC-RESOURCE-API:preload-vf-module-topology-operation/";
     private final static String SERVICE_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:service-topology-operation/";
+    private final static String NETWORK_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:network-topology-operation/";
 
 
     @Autowired
@@ -121,6 +127,45 @@ public class OperationsApiControllerTest {
         assertEquals(1, configServicesRepository.count());
         assertEquals(1, operationalServicesRepository.count());
 
+    }
+
+    @Test
+    public void operationsGENERICRESOURCEAPInetworkTopologyOperationAssignPost() throws Exception {
+
+        // Remove any existing service data
+        configServicesRepository.deleteAll();
+        operationalServicesRepository.deleteAll();
+
+        // Load services data
+        loadServicesData("src/test/resources/service1.json");
+
+        // Add invalid content
+        String content = readFileContent("src/test/resources/preload1-rpc-vfmodule.json");
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(NETWORK_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        // Add valid content
+        content = readFileContent("src/test/resources/network-assign-rpc.json");
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(NETWORK_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+    }
+
+
+    private void loadServicesData(String path) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String content = readFileContent(path);
+        GenericResourceApiServiceModelInfrastructure services = objectMapper.readValue(content, GenericResourceApiServiceModelInfrastructure.class);
+
+        for (GenericResourceApiServicemodelinfrastructureService service : services.getService()) {
+            ConfigServices newService = new ConfigServices();
+            newService.setSvcInstanceId(service.getServiceInstanceId());
+            newService.setSvcData(objectMapper.writeValueAsString(service.getServiceData()));
+            newService.setServiceStatus(service.getServiceStatus());
+            configServicesRepository.save(newService);
+        }
     }
 
     private String readFileContent(String path) throws IOException {

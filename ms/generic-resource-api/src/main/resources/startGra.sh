@@ -54,7 +54,16 @@ echo -e "\nDatabase ready"
 #END
 
 # Initialize schema
-#mysql -h ${MYSQL_DB_HOST} -u ${MYSQL_DB_USER} -p${MYSQL_DB_PASSWD} ${MYSQL_DB_DATABASE} < ${SDNC_HOME}/config/schema.sql
+if [ -f ${SDNC_CONFIG_DIR}/schema-mysql.sql ]
+then 
+  mysql -h ${MYSQL_DB_HOST} -u ${MYSQL_DB_USER} -p${MYSQL_DB_PASSWD} ${MYSQL_DB_DATABASE} < ${SDNC_CONFIG_DIR}/schema-mysql.sql
+fi
+
+# Load data
+if [ -f ${SDNC_CONFIG_DIR}/data-mysql.sql ]
+then 
+  mysql -h ${MYSQL_DB_HOST} -u ${MYSQL_DB_USER} -p${MYSQL_DB_PASSWD} ${MYSQL_DB_DATABASE} < ${SDNC_CONFIG_DIR}/data-mysql.sql
+fi
 
 if [ ! -f ${SDNC_CERT_DIR}/${TRUSTSTORE} ]; then
   echo "${SDNC_CERT_DIR}/${TRUSTSTORE} not found ... cannot install ONAP CA certs"
