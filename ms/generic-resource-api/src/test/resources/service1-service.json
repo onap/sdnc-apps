@@ -1,0 +1,69 @@
+{
+    "service": [
+        {
+            "service-instance-id": "service1",
+            "service-data": {
+                "request-information": {
+                    "notification-url": "http://dev.null",
+                    "request-id": "req123",
+                    "order-number": "123",
+                    "request-action": "CreateServiceInstance",
+                    "order-version": "version1",
+                    "source": "curl"
+                },
+                "service-request-input": {
+                    "service-instance-name": "service-instance-1"
+                },
+                "service-information": {
+                    "service-id": "service1",
+                    "onap-model-information": {
+                        "model-invariant-uuid": "12341234",
+                        "model-name": "vBNG_0202",
+                        "model-version": "1920",
+                        "model-customization-uuid": "12341234",
+                        "model-uuid": "00e50cbd-ef0f-4b28-821e-f2b583752dd3"
+                    },
+                    "global-customer-id": "cust123",
+                    "subscription-service-type": "test",
+                    "service-instance-id": "service1",
+                    "subscriber-name": "test"
+                },
+                "service-topology": {
+                    "service-topology-identifier": {
+                        "service-instance-id": "service1",
+                        "service-instance-name": "service-instance-1",
+                        "service-type": "test",
+                        "global-customer-id": "cust123"
+                    },
+                    "onap-model-information": {
+                        "model-invariant-uuid": "12341234",
+                        "model-name": "vBNG_0202",
+                        "model-version": "1920",
+                        "model-customization-uuid": "12341234",
+                        "model-uuid": "00e50cbd-ef0f-4b28-821e-f2b583752dd3"
+                    }
+                },
+                "service-level-oper-status": {
+                    "order-status": "Created",
+                    "last-rpc-action": "assign",
+                    "last-action": "CreateServiceInstance"
+                },
+                "sdnc-request-header": {
+                    "svc-action": "assign",
+                    "svc-notification-url": "http://dev.null",
+                    "svc-request-id": "svcreq123"
+                }
+            },
+            "service-status": {
+                "final-indicator": "Y",
+                "rpc-action": "assign",
+                "rpc-name": "service-topology-operation",
+                "response-code": "200",
+                "response-timestamp": "2020-08-17T12:29:24.031Z",
+                "response-message": "",
+                "action": "CreateServiceInstance",
+                "request-status": "synccomplete"
+            }
+        }
+    ]
+}
