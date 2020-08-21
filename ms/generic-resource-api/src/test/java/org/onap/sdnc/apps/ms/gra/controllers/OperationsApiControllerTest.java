@@ -38,6 +38,7 @@ public class OperationsApiControllerTest {
     private final static String PRELOAD_VFMODULE_URL = "/operations/GENERIC-RESOURCE-API:preload-vf-module-topology-operation/";
     private final static String SERVICE_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:service-topology-operation/";
     private final static String NETWORK_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:network-topology-operation/";
+    private final static String VNF_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:vnf-topology-operation/";
 
 
     @Autowired
@@ -148,6 +149,30 @@ public class OperationsApiControllerTest {
         // Add valid content
         content = readFileContent("src/test/resources/network-assign-rpc.json");
         mvcResult = mvc.perform(MockMvcRequestBuilders.post(NETWORK_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+    }
+
+    @Test
+    public void operationsGENERICRESOURCEAPIvnfTopologyOperationAssignPost() throws Exception {
+
+        // Remove any existing service data
+        configServicesRepository.deleteAll();
+        operationalServicesRepository.deleteAll();
+
+        // Load services data
+        loadServicesData("src/test/resources/service1.json");
+
+        // Add invalid content
+        String content = readFileContent("src/test/resources/preload1-rpc-vfmodule.json");
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(VNF_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        // Add valid content
+        content = readFileContent("src/test/resources/vnf-assign-rpc.json");
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(VNF_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
