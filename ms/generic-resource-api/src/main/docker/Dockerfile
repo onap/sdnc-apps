@@ -2,9 +2,8 @@
 ## START OF STAGE0 ##
 FROM @base.image.name@:@ccsdk.docker.version@ AS stage0
 
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV LOG_PATH /var/log/onap/sdnc
-
+USER root
 
 # copy deliverables to opt
 COPY opt /opt
@@ -17,13 +16,14 @@ FROM @base.image.name@:@ccsdk.docker.version@
 MAINTAINER SDNC Team (onap-sdnc@lists.onap.org)
 
 ENV PROJECT_VERSION @project.version@
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV SDNC_HOME /opt/onap/sdnc
 ENV SDNC_CONFIG_DIR /opt/onap/sdnc/config
 ENV GRA_JAR @sdnc.gra.jar@
 ENV SVCLOGIC_PROPERTIES /opt/onap/sdnc/config/svclogic.properties
 ENV SVCLOGIC_DIR /opt/onap/sdnc/svclogic/graphs
 ENV LOG_PATH /var/log/onap/sdnc
+
+USER root
 
 # Install sudo and IP utilities
 RUN apk update && apk --no-cache add sudo iputils openssl
