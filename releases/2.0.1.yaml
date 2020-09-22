@@ -1,0 +1,5 @@
+---
+distribution_type: 'maven'
+version: '2.0.1'
+project: 'sdnc-apps'
+log_dir: 'sdnc-apps-maven-stage-master/301/'
