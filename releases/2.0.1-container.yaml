@@ -1,0 +1,9 @@
+---
+distribution_type: 'container'
+container_release_tag: '2.0.1'
+project: 'sdnc-apps'
+log_dir: 'sdnc-apps-maven-docker-stage-master/409/'
+ref: fa02f313699683aff20bd99ee2416a64a850a81f
+containers:
+    - name: 'sdnc-gra-image'
+      version: '2.0.1-STAGING-20200922T164502Z'
