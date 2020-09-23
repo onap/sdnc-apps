@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Dan Timoney <dtimoney@att.com>
+Code-Review+2: David Stilwell <stilwelld@att.com>
+Submitted-by: Dan Timoney <dtimoney@att.com>
+Submitted-at: Wed, 23 Sep 2020 20:30:52 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/sdnc/apps/+/113079
+Project: sdnc/apps
+Branch: refs/heads/guilin
