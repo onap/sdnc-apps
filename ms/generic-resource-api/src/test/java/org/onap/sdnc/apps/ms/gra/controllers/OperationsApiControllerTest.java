@@ -3,7 +3,7 @@ package org.onap.sdnc.apps.ms.gra.controllers;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.sdnc.apps.ms.gra.core.GenericResourceMsApp;
+import org.onap.sdnc.apps.ms.gra.GenericResourceMsApp;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
@@ -126,7 +126,7 @@ public class OperationsApiControllerTest {
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
-        assertEquals(1, operationalServicesRepository.count());
+        assertEquals(0, operationalServicesRepository.count());
 
     }
 

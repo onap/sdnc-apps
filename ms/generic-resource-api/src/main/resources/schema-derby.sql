@@ -1,7 +1,7 @@
 
-CREATE SCHEMA sdnctl;
+CREATE SCHEMA gra;
 
-SET SCHEMA sdnctl;
+SET SCHEMA gra;
 
 --
 -- Table structure for table ACCESS_LOG

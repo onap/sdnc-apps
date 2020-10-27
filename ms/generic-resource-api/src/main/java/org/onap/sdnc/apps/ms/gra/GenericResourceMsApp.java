@@ -18,7 +18,7 @@
  * ============LICENSE_END=========================================================
  */
 
-package org.onap.sdnc.apps.ms.gra.core;
+package org.onap.sdnc.apps.ms.gra;
 
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.text.PropertiesRealm;
@@ -29,13 +29,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.onap.ccsdk.apps.ms.sliboot.controllers.RestconfApiController;
+
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication(scanBasePackages= { "org.onap.sdnc.apps.ms.gra.*", "org.onap.ccsdk.apps.services"})
+@SpringBootApplication(scanBasePackages={ "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.services"})
+@EnableJpaRepositories(basePackages={"org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot"})
+@EntityScan(basePackages={"org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot"})
+@EnableTransactionManagement
+@Import(RestconfApiController.class)
 @EnableSwagger2
+
 public class GenericResourceMsApp {
 
     private static final Logger log = LoggerFactory.getLogger(GenericResourceMsApp.class);

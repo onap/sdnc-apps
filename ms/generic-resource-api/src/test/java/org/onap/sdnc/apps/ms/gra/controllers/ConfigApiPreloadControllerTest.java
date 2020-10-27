@@ -3,7 +3,7 @@ package org.onap.sdnc.apps.ms.gra.controllers;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.sdnc.apps.ms.gra.core.GenericResourceMsApp;
+import org.onap.sdnc.apps.ms.gra.GenericResourceMsApp;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;

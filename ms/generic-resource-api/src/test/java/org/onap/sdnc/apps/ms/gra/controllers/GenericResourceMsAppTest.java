@@ -6,7 +6,7 @@ import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.sdnc.apps.ms.gra.core.GenericResourceMsApp;
+import org.onap.sdnc.apps.ms.gra.GenericResourceMsApp;
 
 import java.util.Map;
 
