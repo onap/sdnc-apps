@@ -427,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `COUNTRY_ASN_MAPPING` (
 -- Table structure for table `CUSTOMER2CONNECTION_MAPPING`
 --
 
-CREATE TABLE `CUSTOMER2CONNECTION_MAPPING` (
+CREATE TABLE IF NOT EXISTS `CUSTOMER2CONNECTION_MAPPING` (
   `customer2connection_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_instance_id` varchar(80) NOT NULL,
   `instance_type` varchar(20) NOT NULL,
@@ -1243,7 +1243,6 @@ CREATE TABLE IF NOT EXISTS `SERVICE_MODEL` (
   PRIMARY KEY (`service_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 --
 -- Table structure for table `NETWORK_MODEL`
 --
@@ -1279,8 +1278,7 @@ CREATE TABLE IF NOT EXISTS `NETWORK_MODEL` (
   `eipam_v6_address_plan` varchar(255) DEFAULT NULL,
   `version` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customization_uuid`),
-  KEY `FK_NETWORK_MODEL` (`service_uuid`),
-  CONSTRAINT `FK_NETWORK_MODEL` FOREIGN KEY (`service_uuid`) REFERENCES `SERVICE_MODEL` (`service_uuid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `FK_NETWORK_MODEL` (`service_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -2053,6 +2051,7 @@ CREATE TABLE IF NOT EXISTS `VFC_MODEL` (
 -- Table structure for table `VFC_TO_NETWORK_ROLE_MAPPING`
 --
 
+
 CREATE TABLE IF NOT EXISTS `VFC_TO_NETWORK_ROLE_MAPPING` (
   `seq` int(11) NOT NULL AUTO_INCREMENT,
   `vfc_customization_uuid` varchar(255) NOT NULL,
@@ -2076,7 +2075,7 @@ CREATE TABLE IF NOT EXISTS `VFC_TO_NETWORK_ROLE_MAPPING` (
   `subinterface_indicator` char(1) DEFAULT NULL,
   PRIMARY KEY (`seq`),
   KEY `IX1_VFC_TO_NETWORK_ROLE_MAPPING` (`vfc_customization_uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1791 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2063 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `VF_MODEL`
@@ -2098,6 +2097,9 @@ CREATE TABLE IF NOT EXISTS `VF_MODEL` (
   `nf_role` varchar(255) DEFAULT NULL,
   `vendor` varchar(255) DEFAULT NULL,
   `vendor_version` varchar(255) DEFAULT NULL,
+  `sdnc_model_name` varchar(255) DEFAULT NULL,
+  `sdnc_model_version` varchar(255) DEFAULT NULL,
+  `sdnc_artifact_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customization_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -2114,6 +2116,8 @@ CREATE TABLE IF NOT EXISTS `VF_MODULE_MODEL` (
   `vf_module_type` varchar(255) DEFAULT NULL,
   `availability_zone_count` int(11) DEFAULT NULL,
   `ecomp_generated_vm_assignments` char(1) DEFAULT NULL,
+  `vf_customization_uuid` varchar(255) DEFAULT NULL,
+  `vf_module_label` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customization_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -2129,7 +2133,7 @@ CREATE TABLE IF NOT EXISTS `VF_MODULE_TO_VFC_MAPPING` (
   `vm_count` int(11) NOT NULL,
   PRIMARY KEY (`seq`),
   KEY `IX1_VF_MODULE_TO_VFC_MAPPING` (`vf_module_customization_uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1591 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1711 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `VF_TO_NETWORK_ROLE_MAPPING`

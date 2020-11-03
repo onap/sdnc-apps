@@ -173,7 +173,6 @@ CREATE TABLE ALLOCATION_ITEM (
 --
 -- Table structure for table ALLOTTED_RESOURCE_MODEL
 --
-
 CREATE TABLE ALLOTTED_RESOURCE_MODEL (
   customization_uuid varchar(255) NOT NULL,
   model_yaml blob,
@@ -188,7 +187,7 @@ CREATE TABLE ALLOTTED_RESOURCE_MODEL (
   service_dependency varchar(255) DEFAULT NULL,
   allotted_resource_type varchar(255) DEFAULT NULL,
   PRIMARY KEY (customization_uuid)
-) ;
+);
 
 --
 -- Table structure for table ALTS_CREDENTIALS
@@ -1183,7 +1182,7 @@ CREATE TABLE  NETWORK_INSTANCE_NAME_INDEX (
 -- Table structure for table SERVICE_MODEL
 --
 
-CREATE TABLE  SERVICE_MODEL (
+CREATE TABLE SERVICE_MODEL (
   service_uuid varchar(255) NOT NULL,
   model_yaml blob,
   invariant_uuid varchar(255) DEFAULT NULL,
@@ -1197,17 +1196,16 @@ CREATE TABLE  SERVICE_MODEL (
   filename varchar(100) DEFAULT NULL,
   naming_policy varchar(255) DEFAULT NULL,
   PRIMARY KEY (service_uuid)
-) ;
+);
 
 
 --
 -- Table structure for table NETWORK_MODEL
 --
-
-CREATE TABLE  NETWORK_MODEL (
+CREATE TABLE NETWORK_MODEL (
   customization_uuid varchar(255) NOT NULL,
   service_uuid varchar(255) NOT NULL,
-  model_yaml clob,
+  model_yaml blob,
   invariant_uuid varchar(255) DEFAULT NULL,
   uuid varchar(255) DEFAULT NULL,
   network_type varchar(255) DEFAULT NULL,
@@ -1235,7 +1233,7 @@ CREATE TABLE  NETWORK_MODEL (
   eipam_v6_address_plan varchar(255) DEFAULT NULL,
   version varchar(255) DEFAULT NULL,
   PRIMARY KEY (customization_uuid)
-) ;
+);
 
 --
 -- Table structure for table NETWORK_PROFILE
@@ -1948,9 +1946,9 @@ CREATE TABLE  VENDOR_CODE (
 -- Table structure for table VFC_MODEL
 --
 
-CREATE TABLE  VFC_MODEL (
+CREATE TABLE VFC_MODEL (
   customization_uuid varchar(255) NOT NULL,
-  model_yaml clob,
+  model_yaml blob,
   invariant_uuid varchar(255) DEFAULT NULL,
   uuid varchar(255) DEFAULT NULL,
   version varchar(255) DEFAULT NULL,
@@ -1964,8 +1962,8 @@ CREATE TABLE  VFC_MODEL (
   vm_flavor_name varchar(255) DEFAULT NULL,
   high_availability varchar(255) DEFAULT NULL,
   nfc_naming varchar(255) DEFAULT NULL,
-  min_instances int DEFAULT NULL,
-  max_instances int DEFAULT NULL,
+  min_instances int(11) DEFAULT NULL,
+  max_instances int(11) DEFAULT NULL,
   PRIMARY KEY (customization_uuid)
 ) ;
 
@@ -1973,21 +1971,21 @@ CREATE TABLE  VFC_MODEL (
 -- Table structure for table VFC_TO_NETWORK_ROLE_MAPPING
 --
 
-CREATE TABLE  VFC_TO_NETWORK_ROLE_MAPPING (
+CREATE TABLE VFC_TO_NETWORK_ROLE_MAPPING (
   seq int NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
   vfc_customization_uuid varchar(255) NOT NULL,
   network_role varchar(255) NOT NULL,
   vm_type varchar(255) DEFAULT NULL,
   network_role_tag varchar(255) DEFAULT NULL,
-  ipv4_count int NOT NULL,
-  ipv6_count int NOT NULL,
+  ipv4_count int(11) NOT NULL,
+  ipv6_count int(11) NOT NULL,
   ipv4_use_dhcp char(1) DEFAULT NULL,
   ipv6_use_dhcp char(1) DEFAULT NULL,
   ipv4_ip_version char(1) DEFAULT NULL,
   ipv6_ip_version char(1) DEFAULT NULL,
   extcp_subnetpool_id varchar(512) DEFAULT NULL,
-  ipv4_floating_count int DEFAULT NULL,
-  ipv6_floating_count int DEFAULT NULL,
+  ipv4_floating_count int(11) DEFAULT NULL,
+  ipv6_floating_count int(11) DEFAULT NULL,
   ipv4_address_plan_name varchar(512) DEFAULT NULL,
   ipv6_address_plan_name varchar(512) DEFAULT NULL,
   ipv4_vrf_name varchar(512) DEFAULT NULL,
@@ -2001,38 +1999,43 @@ CREATE TABLE  VFC_TO_NETWORK_ROLE_MAPPING (
 -- Table structure for table VF_MODEL
 --
 
-CREATE TABLE  VF_MODEL (
+CREATE TABLE VF_MODEL (
   customization_uuid varchar(255) NOT NULL,
-  model_yaml clob,
+  model_yaml blob,
   invariant_uuid varchar(255) DEFAULT NULL,
   uuid varchar(255) DEFAULT NULL,
   version varchar(255) DEFAULT NULL,
   name varchar(255) DEFAULT NULL,
   naming_policy varchar(255) DEFAULT NULL,
   ecomp_generated_naming char(1) DEFAULT NULL,
-  avail_zone_max_count int DEFAULT NULL,
+  avail_zone_max_count int(11) DEFAULT NULL,
   nf_function varchar(255) DEFAULT NULL,
   nf_code varchar(255) DEFAULT NULL,
   nf_type varchar(255) DEFAULT NULL,
   nf_role varchar(255) DEFAULT NULL,
   vendor varchar(255) DEFAULT NULL,
   vendor_version varchar(255) DEFAULT NULL,
+  sdnc_model_name varchar(255) DEFAULT NULL,
+  sdnc_model_version varchar(255) DEFAULT NULL,
+  sdnc_artifact_name varchar(255) DEFAULT NULL,
   PRIMARY KEY (customization_uuid)
-) ;
+);
 
 --
 -- Table structure for table VF_MODULE_MODEL
 --
 
-CREATE TABLE  VF_MODULE_MODEL (
+CREATE TABLE VF_MODULE_MODEL (
   customization_uuid varchar(255) NOT NULL,
-  model_yaml clob,
+  model_yaml longblob,
   invariant_uuid varchar(255) DEFAULT NULL,
   uuid varchar(255) DEFAULT NULL,
   version varchar(255) DEFAULT NULL,
   vf_module_type varchar(255) DEFAULT NULL,
-  availability_zone_count int DEFAULT NULL,
+  availability_zone_count int(11) DEFAULT NULL,
   ecomp_generated_vm_assignments char(1) DEFAULT NULL,
+  vf_customization_uuid varchar(255) DEFAULT NULL,
+  vf_module_label varchar(255) DEFAULT NULL,
   PRIMARY KEY (customization_uuid)
 ) ;
 
@@ -2040,14 +2043,14 @@ CREATE TABLE  VF_MODULE_MODEL (
 -- Table structure for table VF_MODULE_TO_VFC_MAPPING
 --
 
-CREATE TABLE  VF_MODULE_TO_VFC_MAPPING (
+CREATE TABLE VF_MODULE_TO_VFC_MAPPING (
   seq int NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),
   vf_module_customization_uuid varchar(255) NOT NULL,
   vfc_customization_uuid varchar(255) NOT NULL,
   vm_type varchar(255) NOT NULL,
-  vm_count int NOT NULL,
-  PRIMARY KEY (seq)
-) ;
+  vm_count int(11) NOT NULL,
+  PRIMARY KEY (seq),
+);
 
 --
 -- Table structure for table VF_TO_NETWORK_ROLE_MAPPING
