@@ -80,7 +80,7 @@ public class OperationalApiController implements OperationalApi {
 
 
     @Override
-    public ResponseEntity<GenericResourceApiPreloadmodelinformationPreloadList> operationalGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGet(String preloadId, String preloadType) {
+    public ResponseEntity<GenericResourceApiPreloadmodelinformationPreloadList> operationalGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypeGet(String preloadId, String preloadType) {
         List<OperationalPreloadData> preloadData = operationalPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
         if (preloadData != null) {
             if (!preloadData.isEmpty()) {
@@ -101,7 +101,7 @@ public class OperationalApiController implements OperationalApi {
 
 
     @Override
-    public ResponseEntity<GenericResourceApiPreloaddataPreloadData> operationalGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataGet(String preloadId, String preloadType) {
+    public ResponseEntity<GenericResourceApiPreloaddataPreloadData> operationalGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypePreloadDataGet(String preloadId, String preloadType) {
         List<OperationalPreloadData> preloadData = operationalPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
         if (preloadData != null) {
             if (!preloadData.isEmpty()) {
@@ -146,7 +146,7 @@ public class OperationalApiController implements OperationalApi {
 
 
     @Override
-    public ResponseEntity<GenericResourceApiServicemodelinfrastructureService> operationalGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGet(String serviceInstanceId) {
+    public ResponseEntity<GenericResourceApiServicemodelinfrastructureService> operationalGENERICRESOURCEAPIservicesServiceServiceInstanceIdGet(String serviceInstanceId) {
         GenericResourceApiServicemodelinfrastructureService retval = null;
 
         List<OperationalServices> services = operationalServicesRepository.findBySvcInstanceId(serviceInstanceId);
@@ -175,7 +175,7 @@ public class OperationalApiController implements OperationalApi {
 
 
     @Override
-    public ResponseEntity<GenericResourceApiServicedataServiceData> operationalGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataGet(String serviceInstanceId) {
+    public ResponseEntity<GenericResourceApiServicedataServiceData> operationalGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataGet(String serviceInstanceId) {
         GenericResourceApiServicedataServiceData serviceData = null;
 
         List<OperationalServices> services = operationalServicesRepository.findBySvcInstanceId(serviceInstanceId);
@@ -193,7 +193,7 @@ public class OperationalApiController implements OperationalApi {
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiServicestatusServiceStatus> operationalGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusGet(String serviceInstanceId) {
+    public ResponseEntity<GenericResourceApiServicestatusServiceStatus> operationalGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceStatusGet(String serviceInstanceId) {
         GenericResourceApiServicestatusServiceStatus serviceStatus = null;
         List<OperationalServices> services = operationalServicesRepository.findBySvcInstanceId(serviceInstanceId);
 

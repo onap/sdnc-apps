@@ -1,5 +1,13 @@
 package org.onap.sdnc.apps.ms.gra.controllers;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,8 +16,7 @@ import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalServicesRepository;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceModelInfrastructure;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicemodelinfrastructureService;
+import org.onap.sdnc.apps.ms.gra.swagger.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,14 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes={GenericResourceMsApp.class})

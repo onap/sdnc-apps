@@ -1,16 +1,22 @@
 package org.onap.sdnc.apps.ms.gra.controllers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.sdnc.apps.ms.gra.GenericResourceMsApp;
-import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadData;
-import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceModelInfrastructure;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicemodelinfrastructureService;
+import org.onap.sdnc.apps.ms.gra.swagger.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,15 +27,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes={GenericResourceMsApp.class})
 @AutoConfigureMockMvc
@@ -37,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ConfigApiServicesControllerTest {
 
     private final static String CONFIG_SERVICES_URL = "/config/GENERIC-RESOURCE-API:services/";
-    private final static String CONFIG_SERVICES_SERVICE_URL = "/config/GENERIC-RESOURCE-API:services/GENERIC-RESOURCE-API:service/";
+    private final static String CONFIG_SERVICES_SERVICE_URL = "/config/GENERIC-RESOURCE-API:services/service/";
 
     @Autowired
     private MockMvc mvc;
@@ -241,7 +238,7 @@ public class ConfigApiServicesControllerTest {
         configServicesRepository.deleteAll();
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -251,7 +248,7 @@ public class ConfigApiServicesControllerTest {
         assertEquals(1, configServicesRepository.count());
 
         // Test with data
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
@@ -271,13 +268,13 @@ public class ConfigApiServicesControllerTest {
         loadServicesData("src/test/resources/service1.json");
         assert(configServicesRepository.count() > 0);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         // Test with no data
         configServicesRepository.deleteAll();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -290,7 +287,7 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-servicedata.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -300,7 +297,7 @@ public class ConfigApiServicesControllerTest {
         service.setSvcInstanceId("service1");
         configServicesRepository.save(service);
         assertEquals(1, configServicesRepository.count());
-        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
@@ -309,7 +306,7 @@ public class ConfigApiServicesControllerTest {
         assertNotEquals(null, updatedService.get(0).getSvcData());
 
         // Test with existing data - should return 409
-        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(409, mvcResult.getResponse().getStatus());
 
@@ -325,7 +322,7 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-servicedata.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -334,7 +331,7 @@ public class ConfigApiServicesControllerTest {
         ConfigServices service = new ConfigServices();
         service.setSvcInstanceId("service1");
         configServicesRepository.save(service);
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
@@ -343,7 +340,7 @@ public class ConfigApiServicesControllerTest {
         assertNotEquals(null, updatedService.get(0).getSvcData());
 
         // Test with existing data - should return 204
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
 
@@ -357,7 +354,7 @@ public class ConfigApiServicesControllerTest {
         configServicesRepository.deleteAll();
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -367,7 +364,7 @@ public class ConfigApiServicesControllerTest {
         assertEquals(1, configServicesRepository.count());
 
         // Test with data
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
@@ -385,13 +382,13 @@ public class ConfigApiServicesControllerTest {
         loadServicesData("src/test/resources/service1.json");
         assert(configServicesRepository.count() > 0);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         // Test with no data
         configServicesRepository.deleteAll();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -404,7 +401,7 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-servicestatus.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -413,7 +410,7 @@ public class ConfigApiServicesControllerTest {
         ConfigServices service = new ConfigServices();
         service.setSvcInstanceId("service1");
         configServicesRepository.save(service);
-        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
@@ -422,7 +419,7 @@ public class ConfigApiServicesControllerTest {
         assertNotEquals(null, updatedService.get(0).getServiceStatus());
 
         // Test with existing data - should return 409
-        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(409, mvcResult.getResponse().getStatus());
 
@@ -438,7 +435,7 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-servicestatus.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -447,7 +444,7 @@ public class ConfigApiServicesControllerTest {
         ConfigServices service = new ConfigServices();
         service.setSvcInstanceId("service1");
         configServicesRepository.save(service);
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
@@ -456,7 +453,7 @@ public class ConfigApiServicesControllerTest {
         assertNotEquals(null, updatedService.get(0).getServiceStatus());
 
         // Test with existing data - should return 204
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/GENERIC-RESOURCE-API:service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
 

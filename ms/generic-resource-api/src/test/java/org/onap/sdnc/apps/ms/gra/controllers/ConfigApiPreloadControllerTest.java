@@ -1,12 +1,17 @@
 package org.onap.sdnc.apps.ms.gra.controllers;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.sdnc.apps.ms.gra.GenericResourceMsApp;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
-import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,13 +22,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes={GenericResourceMsApp.class})
 @AutoConfigureMockMvc
@@ -31,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ConfigApiPreloadControllerTest {
 
     private final static String CONFIG_PRELOAD_URL = "/config/GENERIC-RESOURCE-API:preload-information/";
-    private final static String CONFIG_PRELOAD_LIST_URL = "/config/GENERIC-RESOURCE-API:preload-information/GENERIC-RESOURCE-API:preload-list/";
+    private final static String CONFIG_PRELOAD_LIST_URL = "/config/GENERIC-RESOURCE-API:preload-information/preload-list/";
 
 
     @Autowired
@@ -254,7 +252,7 @@ public class ConfigApiPreloadControllerTest {
         // Test with data
         loadData(CONFIG_PRELOAD_URL, "src/test/resources/preload1-net-model-info.json");
         assert(configPreloadDataRepository.count() > 0);
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configPreloadDataRepository.count());
@@ -262,7 +260,7 @@ public class ConfigApiPreloadControllerTest {
         // Test without data
         configPreloadDataRepository.deleteAll();
         assertEquals(0, configPreloadDataRepository.count());
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configPreloadDataRepository.count());
@@ -278,13 +276,13 @@ public class ConfigApiPreloadControllerTest {
         loadData(CONFIG_PRELOAD_URL, "src/test/resources/preload1-net-model-info.json");
         assert(configPreloadDataRepository.count() > 0);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         // Test with no data
         configPreloadDataRepository.deleteAll();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -298,7 +296,7 @@ public class ConfigApiPreloadControllerTest {
 
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configPreloadDataRepository.count());
@@ -321,7 +319,7 @@ public class ConfigApiPreloadControllerTest {
         configPreloadDataRepository.save(preloadData);
 
         // Test with bad file content
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(badContent))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(badContent))
                 .andReturn();
         assertEquals(400, mvcResult.getResponse().getStatus());
         assertEquals(1, configPreloadDataRepository.count());
@@ -344,7 +342,7 @@ public class ConfigApiPreloadControllerTest {
 
 
         // Test with no existing preload data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
                 .andReturn();
 
         assertEquals(201, mvcResult.getResponse().getStatus());
@@ -365,7 +363,7 @@ public class ConfigApiPreloadControllerTest {
 
 
         // Test with existing preload dat
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
                 .andReturn();
         assertEquals(409, mvcResult.getResponse().getStatus());
         assertEquals(1, configPreloadDataRepository.count());
@@ -381,7 +379,7 @@ public class ConfigApiPreloadControllerTest {
 
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configPreloadDataRepository.count());
@@ -402,7 +400,7 @@ public class ConfigApiPreloadControllerTest {
         configPreloadDataRepository.save(preloadData);
 
         // Test with bad file content
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(badContent))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(badContent))
                 .andReturn();
         assertEquals(400, mvcResult.getResponse().getStatus());
         assertEquals(1, configPreloadDataRepository.count());
@@ -425,7 +423,7 @@ public class ConfigApiPreloadControllerTest {
 
 
         // Test with no existing preload data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
                 .andReturn();
 
         assertEquals(201, mvcResult.getResponse().getStatus());
@@ -446,7 +444,7 @@ public class ConfigApiPreloadControllerTest {
 
 
         // Test with existing preload dat
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PRELOAD_LIST_URL+"preload1/network/GENERIC-RESOURCE-API:preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/").contentType(MediaType.APPLICATION_JSON).content(goodContent))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configPreloadDataRepository.count());

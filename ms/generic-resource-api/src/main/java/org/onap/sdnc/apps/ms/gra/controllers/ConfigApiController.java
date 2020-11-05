@@ -187,20 +187,20 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPost(@Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) throws RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPreloadListPost(@Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) throws RestProtocolException {
 
         throw new RestProtocolException("data-missing", "Missing key for list \"preload-list\"", HttpStatus.NOT_FOUND.value());
     }
 
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeDelete(String preloadId, String preloadType) {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypeDelete(String preloadId, String preloadType) {
         configPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiPreloadmodelinformationPreloadList> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGet(String preloadId, String preloadType) throws RestApplicationException {
+    public ResponseEntity<GenericResourceApiPreloadmodelinformationPreloadList> configGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypeGet(String preloadId, String preloadType) throws RestApplicationException {
         List<ConfigPreloadData> preloadData = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
         if (preloadData != null) {
             if (!preloadData.isEmpty()) {
@@ -221,7 +221,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypePost(String preloadId, String preloadType, @Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypePost(String preloadId, String preloadType, @Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) throws RestApplicationException, RestProtocolException {
         List<ConfigPreloadData> preloadDataItems = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
 
         if ((preloadDataItems != null) && !preloadDataItems.isEmpty()) {
@@ -241,7 +241,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypePut(String preloadId, String preloadType, @Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypePut(String preloadId, String preloadType, @Valid GenericResourceApiPreloadmodelinformationPreloadList preloadListItem) throws RestApplicationException, RestProtocolException {
         List<ConfigPreloadData> preloadDataItems = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
         boolean dataExists = false;
         if ((preloadDataItems != null) && !preloadDataItems.isEmpty()) {
@@ -279,7 +279,7 @@ public class ConfigApiController implements ConfigApi {
 
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataDelete(String preloadId, String preloadType) throws RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypePreloadDataDelete(String preloadId, String preloadType) throws RestProtocolException {
         List<ConfigPreloadData> preloadData = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
 
         if ((preloadData == null) || preloadData.isEmpty()) {
@@ -300,7 +300,7 @@ public class ConfigApiController implements ConfigApi {
 
 
     @Override
-    public ResponseEntity<GenericResourceApiPreloaddataPreloadData> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataGet(String preloadId, String preloadType) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<GenericResourceApiPreloaddataPreloadData> configGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypePreloadDataGet(String preloadId, String preloadType) throws RestApplicationException, RestProtocolException {
         List<ConfigPreloadData> preloadData = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
 
         if ((preloadData == null) || preloadData.isEmpty()) {
@@ -321,7 +321,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataPost(String preloadId, String preloadType, @Valid GenericResourceApiPreloaddataPreloadData preloadData) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypePreloadDataPost(String preloadId, String preloadType, @Valid GenericResourceApiPreloaddataPreloadData preloadData) throws RestApplicationException, RestProtocolException {
         List<ConfigPreloadData> preloadDataEntries = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
 
         List<ConfigPreloadData> preloadDataItems = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
@@ -353,7 +353,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypeGENERICRESOURCEAPIpreloadDataPut(String preloadId, String preloadType, @Valid GenericResourceApiPreloaddataPreloadData preloadData) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypePreloadDataPut(String preloadId, String preloadType, @Valid GenericResourceApiPreloaddataPreloadData preloadData) throws RestApplicationException, RestProtocolException {
         boolean dataExists = false;
         List<ConfigPreloadData> preloadDataItems = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
         if ((preloadDataItems == null) || (preloadDataItems.isEmpty())) {
@@ -491,7 +491,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIservicePost(@Valid GenericResourceApiServicemodelinfrastructureService servicesData) throws RestApplicationException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServicePost(@Valid GenericResourceApiServicemodelinfrastructureService servicesData) throws RestApplicationException {
         String svcInstanceId = servicesData.getServiceInstanceId();
         try {
             String svcData = objectMapper.writeValueAsString(servicesData.getServiceData());
@@ -507,13 +507,13 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdDelete(String serviceInstanceId) {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdDelete(String serviceInstanceId) {
         configServicesRepository.deleteBySvcInstanceId(serviceInstanceId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiServicemodelinfrastructureService> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGet(String serviceInstanceId) throws RestApplicationException {
+    public ResponseEntity<GenericResourceApiServicemodelinfrastructureService> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdGet(String serviceInstanceId) throws RestApplicationException {
         GenericResourceApiServicemodelinfrastructureService retval = null;
 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
@@ -540,7 +540,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPost(String svcInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService newService) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdPost(String svcInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService newService) throws RestApplicationException, RestProtocolException {
 
         List<ConfigServices> existingService = configServicesRepository.findBySvcInstanceId(svcInstanceId);
         if ((existingService != null) && !existingService.isEmpty()) {
@@ -563,7 +563,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdPut(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService newService) throws RestApplicationException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdPut(String serviceInstanceId, @Valid GenericResourceApiServicemodelinfrastructureService newService) throws RestApplicationException {
 
         boolean dataExists = false;
 
@@ -598,7 +598,7 @@ public class ConfigApiController implements ConfigApi {
 
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataDelete(String serviceInstanceId) throws RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataDelete(String serviceInstanceId) throws RestProtocolException {
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
 
         if ((services == null) || (services.isEmpty())) {
@@ -616,7 +616,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiServicedataServiceData> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataGet(String serviceInstanceId) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<GenericResourceApiServicedataServiceData> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataGet(String serviceInstanceId) throws RestApplicationException, RestProtocolException {
         GenericResourceApiServicedataServiceData serviceData = null;
 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
@@ -635,7 +635,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPost(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData serviceData) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataPost(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData serviceData) throws RestApplicationException, RestProtocolException {
         ConfigServices service;
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         if ((services == null) || (services.isEmpty())) {
@@ -669,7 +669,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataPut(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData serviceData) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataPut(String serviceInstanceId, @Valid GenericResourceApiServicedataServiceData serviceData) throws RestApplicationException, RestProtocolException {
         ConfigServices service;
         boolean dataExists = false;
 
@@ -705,7 +705,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusDelete(String serviceInstanceId) throws RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceStatusDelete(String serviceInstanceId) throws RestProtocolException {
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
 
         if ((services == null) || (services.isEmpty())) {
@@ -724,7 +724,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiServicestatusServiceStatus> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusGet(String serviceInstanceId) throws RestApplicationException, RestProtocolException {
+    public ResponseEntity<GenericResourceApiServicestatusServiceStatus> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceStatusGet(String serviceInstanceId) throws RestApplicationException, RestProtocolException {
         GenericResourceApiServicestatusServiceStatus serviceStatus = null;
 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
@@ -737,7 +737,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPost(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus serviceStatus) throws RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceStatusPost(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus serviceStatus) throws RestProtocolException {
         ConfigServices service;
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         if ((services == null) || (services.isEmpty())) {
@@ -766,7 +766,7 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusPut(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus serviceStatus) throws RestProtocolException {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceStatusPut(String serviceInstanceId, @Valid GenericResourceApiServicestatusServiceStatus serviceStatus) throws RestProtocolException {
         ConfigServices service;
         boolean dataExists = false;
 
