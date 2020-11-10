@@ -312,7 +312,7 @@
                                 <goals>
                                     <goal>copy-dependencies</goal>
                                 </goals>
-                                <phase>verify</phase>
+                                <phase>process-resources</phase>
                                 <configuration>
                                     <excludeTransitive>true</excludeTransitive>
                                     <outputDirectory>${project.build.directory}/docker-stage/opt/onap/sdnc/lib</outputDirectory>
@@ -394,7 +394,7 @@
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals><!-- here the phase you need -->
-                                <phase>verify</phase>
+                                <phase>package</phase>
                                 <configuration>
                                     <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc/lib</outputDirectory>
                                     <resources>
