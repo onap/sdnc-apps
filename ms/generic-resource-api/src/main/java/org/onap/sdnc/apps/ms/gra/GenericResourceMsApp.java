@@ -25,6 +25,7 @@ import org.apache.shiro.realm.text.PropertiesRealm;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.onap.aaf.cadi.shiro.AAFRealm;
+import org.onap.ccsdk.apps.ms.sliboot.controllers.RestconfApiController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -34,13 +35,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.onap.ccsdk.apps.ms.sliboot.controllers.RestconfApiController;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication(scanBasePackages={ "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.services"})
-@EnableJpaRepositories(basePackages={"org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot"})
-@EntityScan(basePackages={"org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot"})
+@SpringBootApplication(scanBasePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.services", "org.onap.ccsdk.apps.filters" })
+@EnableJpaRepositories(basePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot" })
+@EntityScan(basePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot" })
 @EnableTransactionManagement
 @Import(RestconfApiController.class)
 @EnableSwagger2
