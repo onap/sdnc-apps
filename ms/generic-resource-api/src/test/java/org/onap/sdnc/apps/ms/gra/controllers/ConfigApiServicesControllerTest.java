@@ -2,10 +2,12 @@ package org.onap.sdnc.apps.ms.gra.controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -461,6 +463,192 @@ public class ConfigApiServicesControllerTest {
         configServicesRepository.deleteAll();
     }
 
+    @Test
+    public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdDelete() throws Exception {
+        // Clean up data
+        configServicesRepository.deleteAll();
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+                                      .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+        assertEquals(0, configServicesRepository.count());
+
+        // Load data
+        loadVnfData("src/test/resources/vnf-data.json");
+        assertEquals(1, configServicesRepository.count());
+
+        // Test with data
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+                            .andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+
+        configServicesRepository.deleteAll();
+        loadVnfData("src/test/resources/vnf-data.json");
+        assertEquals(1, configServicesRepository.count());
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c/").contentType(MediaType.APPLICATION_JSON).content(""))
+                            .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+
+        configServicesRepository.deleteAll();
+        createBadVnfData(true, true);
+        assertEquals(1, configServicesRepository.count());
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+                            .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+
+        configServicesRepository.deleteAll();
+        createBadVnfData(false, false);
+        assertEquals(1, configServicesRepository.count());
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+                            .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+
+        configServicesRepository.deleteAll();
+        createBadVnfData(false, true);
+        assertEquals(1, configServicesRepository.count());
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+                            .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdGet() throws Exception {
+        // Clean up data
+        configServicesRepository.deleteAll();
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+                                      .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+        assertEquals(0, configServicesRepository.count());
+
+        // Load data
+        loadVnfData("src/test/resources/vnf-data.json");
+        assertEquals(1, configServicesRepository.count());
+
+        // Test with data
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+                            .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        configServicesRepository.deleteAll();
+        createBadVnfData(false, false);
+        assertEquals(1, configServicesRepository.count());
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+                            .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdPut() throws Exception {
+        // Clean up data
+        configServicesRepository.deleteAll();
+        assertEquals(0, configServicesRepository.count());
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-data.json")))
+                                      .andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-data.json")))
+                            .andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyGet() throws Exception {
+        // Clean up data
+        configServicesRepository.deleteAll();
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+                                      .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+        assertEquals(0, configServicesRepository.count());
+
+        // Load data
+        loadVnfData("src/test/resources/vnf-data.json");
+        assertEquals(1, configServicesRepository.count());
+
+        // Test with data
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+                            .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        configServicesRepository.deleteAll();
+        createBadVnfData(false, false);
+        assertEquals(1, configServicesRepository.count());
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+                            .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfLevelOperStatusPut() throws Exception {
+        // Clean up data
+        configServicesRepository.deleteAll();
+        assertEquals(0, configServicesRepository.count());
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-level-oper-status/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-level-oper-status.json")))
+                                      .andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-level-oper-status/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-level-oper-status.json")))
+                            .andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyOnapModelInformationPut() throws Exception {
+        // Clean up data
+        configServicesRepository.deleteAll();
+        assertEquals(0, configServicesRepository.count());
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/onap-model-information/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-onap-model-info.json")))
+                                      .andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/onap-model-information/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-onap-model-info.json")))
+                            .andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyVnfResourceAssignmentsVnfNetworksPut() throws Exception {
+        // Clean up data
+        configServicesRepository.deleteAll();
+        assertEquals(0, configServicesRepository.count());
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-vnf-networks.json")))
+                                      .andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-vnf-networks.json")))
+                            .andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyVnfResourceAssignmentsVnfNetworksVnfNetworkNetworkRolePut() throws Exception {
+        // Clean up data
+        configServicesRepository.deleteAll();
+        assertEquals(0, configServicesRepository.count());
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/vnf-network/test-network-role/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-vnf-networks-network-role.json")))
+                                      .andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/vnf-network/test-network-role/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-vnf-networks-network-role.json")))
+                            .andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+    }
+
     private String readFileContent(String path) throws IOException {
         String content = new String(Files.readAllBytes(Paths.get(path)));
         return content;
@@ -483,6 +671,38 @@ public class ConfigApiServicesControllerTest {
             newService.setServiceStatus(service.getServiceStatus());
             configServicesRepository.save(newService);
         }
+    }
+
+    private void loadVnfData(String path) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String content = readFileContent(path);
+        GenericResourceApiServicedataServiceData svcData = new GenericResourceApiServicedataServiceData();
+        GenericResourceApiServicedataServicedataVnfsVnf vnfData = objectMapper.readValue(content, GenericResourceApiServicedataServicedataVnfsVnf.class);
+        svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
+        svcData.getVnfs().setVnf(new ArrayList<>());
+        svcData.getVnfs().addVnfItem(vnfData);
+        ConfigServices newService = new ConfigServices();
+        newService.setSvcData(objectMapper.writeValueAsString(svcData));
+        newService.setSvcInstanceId("test-siid");
+        configServicesRepository.save(newService);
+    }
+
+    private void createBadVnfData(boolean useNullSvc, boolean useNullVnfs) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ConfigServices newService = new ConfigServices();
+        GenericResourceApiServicedataServiceData svcData = useNullSvc ? null : new GenericResourceApiServicedataServiceData();
+        GenericResourceApiServicedataServicedataVnfs vnfs = useNullVnfs ? null : new GenericResourceApiServicedataServicedataVnfs();
+
+        // Overrides useNullSvc
+        if(!useNullVnfs) {
+            svcData = new GenericResourceApiServicedataServiceData();
+            vnfs.setVnf(new ArrayList<>());
+            svcData.setVnfs(vnfs);
+        }
+
+        newService.setSvcInstanceId("test-siid");
+        newService.setSvcData(objectMapper.writeValueAsString(svcData));
+        configServicesRepository.save(newService);
     }
 
 }
