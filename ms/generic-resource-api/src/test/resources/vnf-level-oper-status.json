@@ -1,0 +1,11 @@
+{
+  "vnf-level-oper-status": {
+    "create-timestamp": "string",
+    "last-action": "CreateNetworkInstance",
+    "last-order-status": "Active",
+    "last-rpc-action": "assign",
+    "last-svc-request-id": "9c06a7c6-be3a-4530-bdd8-c65b58f123a5",
+    "modify-timestamp": "string",
+    "order-status": "Active"
+  }
+}

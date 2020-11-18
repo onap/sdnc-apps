@@ -44,11 +44,14 @@ import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @ComponentScan(basePackages = {"org.onap.sdnc.apps.ms.gra.*"})
@@ -797,4 +800,706 @@ public class ConfigApiController implements ConfigApi {
         }
     }
 
+    /**
+     * Deletes VNF data from the Config table specified Service Instance.
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId the VNF ID of the VNF to delete
+     * @return HttpStatus.NO_CONTENT (204) on successful delete
+     *         <p>
+     *         HttpStatus.BAD_REQUEST (400) if unmarshalling Service Data from
+     *         the database fails, there is no VNF data for {@code vnfId}, or
+     *         writing Service Data back to the database fails.
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does
+     *         not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdDelete(String serviceInstanceId, String vnfId) throws RestException {
+        log.info("DELETE | VNF Data for ({})", vnfId);
+
+        /* The logic may need to be moved inside of this check or this check
+         * may need to be removed.
+         */
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            log.info("Something with header.");
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.", HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        GenericResourceApiServicedataServiceData svcData;
+        try {
+            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch(JsonProcessingException e) {
+            // Or throw the data not found error?
+            log.error("Could not map service data for ({})", serviceInstanceId);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if(svcData == null) {
+            // Or throw the data not found error?
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataVnfs vnfs = svcData.getVnfs();
+        if(vnfs == null) {
+            // Or throw the data not found error?
+            log.info("VNF List not found for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "VNFs not found.", HttpStatus.NOT_FOUND.value());
+        }
+
+        Stream<GenericResourceApiServicedataServicedataVnfsVnf> vnfStream = svcData.getVnfs().getVnf().stream();
+        if(vnfStream.noneMatch(targetVnf -> targetVnf.getVnfId().equals(vnfId))) {
+            // Data was not found
+            log.error("Did not find VNF ({}) in data.", vnfId);
+            throw new RestProtocolException("data-missing", "VNF ID not found.", HttpStatus.NOT_FOUND.value());
+        }
+        // Recreate the stream per Sonar?
+        vnfStream = svcData.getVnfs().getVnf().stream();
+        svcData.getVnfs().setVnf(vnfStream.filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId)).collect(Collectors.toList()));
+
+        // Map and save the new data
+        try {
+            data.setSvcData(objectMapper.writeValueAsString(svcData));
+            configServicesRepository.save(data);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch(JsonProcessingException e) {
+            log.error("Error mapping object to JSON", e);
+            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            throw new RestProtocolException("internal-service-error", "Failed to save data.", HttpStatus.BAD_REQUEST.value());
+        }
+    }
+
+    /**
+     * Extracts VNF data from the Config table specified Service Instance.
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/
+     * @param serviceInstanceId the Service Instance ID to lookup data for
+     * @param vnfId the VNF ID of the VNF to return
+     * @return HttpStatus.OK (200) if the data is found.
+     * @throws RestException if the data does not exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiServicedataServicedataVnfsVnf> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdGet(String serviceInstanceId, String vnfId) throws RestException {
+        log.info("GET | VNF Data for ({})", vnfId);
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if(getAcceptHeader().get().contains("application/json")) {
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf = getVnfObject(services.get(0), vnfId);
+        if(vnf.isPresent()) {
+            return new ResponseEntity<>(vnf.get(), HttpStatus.OK);
+        } else {
+            log.info("No information found for {}", vnfId);
+            throw new RestApplicationException("data-missing", "Request could not be completed because the relevant data model content does not exist", HttpStatus.NOT_FOUND.value());
+        }
+    }
+
+    /**
+     * Creates or updates VNF data in the Config table for a specified Service
+     * Instance. If it is a new Service Instance or a new VNF, creates all
+     * necessary parent data containers, then performs the updates.
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId the VNF ID of the VNF to delete
+     * @param genericResourceApiServicedataServicedataVnfsVnfBodyParam the playload
+     * @return HttpStatus.CREATED (201) on successful create
+     *         <p>
+     *         HttpStatus.NO_CONTENT (204) on successful update
+     *         <p>
+     *         HttpStatus.BAD_REQUEST (400) if {@code vnfId} does not match
+     *         what is specified in the
+     *         {@code genericResourceApiServicedataServicedataVnfsVnfBodyParam}
+     *         , or if updating the database fails.
+     * @throws RestException
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdPut(String serviceInstanceId, String vnfId, GenericResourceApiServicedataServicedataVnfsVnf genericResourceApiServicedataServicedataVnfsVnfBodyParam) throws RestException {
+        log.info("PUT | VNF Data for ({})", vnfId);
+        if(!vnfId.equals(genericResourceApiServicedataServicedataVnfsVnfBodyParam.getVnfId())) {
+            throw new RestProtocolException("bad-attribute", "vnf-id mismatch", HttpStatus.BAD_REQUEST.value());
+        }
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            log.info("Something with header");
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
+            data = new ConfigServices();
+            data.setSvcInstanceId(serviceInstanceId);
+        } else {
+            data = services.get(0);
+        }
+
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch(JsonProcessingException e) {
+            log.error("Could not map service data for ({})", serviceInstanceId);
+        }
+        if(svcData == null) {
+            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
+            svcData = new GenericResourceApiServicedataServiceData();
+        }
+        if(svcData.getVnfs() == null) {
+            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
+            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
+            svcData.getVnfs().setVnf(new ArrayList<>());
+        }
+
+        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
+        HttpStatus responseStatus = HttpStatus.NO_CONTENT;
+        if(svcData.getVnfs().getVnf().isEmpty()) {
+            log.info("Creating VNF data for ({})", vnfId);
+            vnflist.addVnfItem(genericResourceApiServicedataServicedataVnfsVnfBodyParam);
+            responseStatus = HttpStatus.CREATED;
+        } else {
+            log.info("Updating VNF data for ({})", vnfId);
+            // Filter out all of the other vnf objects into a new VNF List
+            // Replace if a delete method exists
+            svcData.getVnfs()
+                    .getVnf()
+                    .stream()
+                    .filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
+                    .forEach(vnflist::addVnfItem);
+            vnflist.addVnfItem(genericResourceApiServicedataServicedataVnfsVnfBodyParam);
+        }
+        svcData.setVnfs(vnflist);
+        // Map and save the new data
+        try {
+            data.setSvcData(objectMapper.writeValueAsString(svcData));
+            configServicesRepository.save(data);
+            return new ResponseEntity<>(responseStatus);
+        } catch(JsonProcessingException e) {
+            log.error("Error mapping object to JSON", e);
+            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Extracts VNF Topology data from the Config table specified Service
+     * Instance and VNF ID.
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/
+     * @param serviceInstanceId the Service Instance ID to lookup data for
+     * @param vnfId the VNF ID of the VNF to extract topology data from.
+     * @return HttpStatus.OK (200) if the data is found.
+     * @throws RestException if the data does not exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiVnftopologyVnfTopology> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyGet(String serviceInstanceId, String vnfId) throws RestException {
+        log.info("GET | VNF Topology for ({})", vnfId);
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf = getVnfObject(services.get(0), vnfId);
+        // Drill down to find the data
+        if(vnf.isPresent()
+                   && vnf.get().getVnfData() != null
+                   && vnf.get().getVnfData().getVnfTopology() != null) {
+            return new ResponseEntity<>(vnf.get().getVnfData().getVnfTopology(), HttpStatus.OK);
+        } else {
+            log.info("No information found for {}", vnfId);
+            throw new RestApplicationException("data-missing", "Request could not be completed because the relevant data model content does not exist", HttpStatus.NOT_FOUND.value());
+        }
+    }
+
+    /**
+     * Creates or updates VNF Level Operation Status data in the Config table
+     * for a specified Service Instance. If it is a new Service Instance or a
+     * new VNF, creates all necessary parent data containers, then performs the
+     * updates.
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-level-oper-status/
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId the VNF ID of the VNF to delete
+     * @param genericResourceApiOperStatusDataBodyParam the payload
+     * @return HttpStatus.CREATED (201) on successful create.
+     *         <p>
+     *         HttpStatus.NO_CONTENT (204) on successful update.
+     *         <p>
+     *         HttpStatus.BAD_REQUEST (400) if updating the database fails.
+     * @throws RestException
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfLevelOperStatusPut(String serviceInstanceId, String vnfId, GenericResourceApiOperStatusData genericResourceApiOperStatusDataBodyParam) throws RestException {
+        log.info("PUT | VNF Level Oper Status ({})", vnfId);
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
+            data = new ConfigServices();
+            data.setSvcInstanceId(serviceInstanceId);
+        } else {
+            data = services.get(0);
+        }
+
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch(JsonProcessingException e) {
+            log.error("Could not map service data for ({})", serviceInstanceId);
+        }
+        if(svcData == null) {
+            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
+            svcData = new GenericResourceApiServicedataServiceData();
+        }
+        if(svcData.getVnfs() == null) {
+            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
+            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
+            svcData.getVnfs().setVnf(new ArrayList<>());
+        }
+
+        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
+        HttpStatus responseStatus = HttpStatus.NO_CONTENT;
+        if(svcData.getVnfs().getVnf().isEmpty()) {
+            log.info("Creating VNF data for ({})", vnfId);
+            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            vnf.setVnfId(vnfId);
+            vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
+            vnf.getVnfData().setVnfLevelOperStatus(genericResourceApiOperStatusDataBodyParam);
+            vnflist.addVnfItem(vnf);
+            responseStatus = HttpStatus.CREATED;
+        } else {
+            log.info("Updating VNF data for ({})", vnfId);
+            // Filter out all of the other vnf objects into a new VNF List
+            // Replace if a delete method exists
+            svcData.getVnfs()
+                    .getVnf()
+                    .stream()
+                    .filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
+                    .forEach(vnflist::addVnfItem);
+            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            // If the vnf exists, set it up with new data
+            Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnfOptional = getVnfObject(data, vnfId);
+            if(vnfOptional.isPresent()) {
+                vnf = vnfOptional.get();
+            }
+            if(vnf.getVnfData() == null) {
+                vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
+                responseStatus = HttpStatus.CREATED;
+            }
+
+            vnf.getVnfData().setVnfLevelOperStatus(genericResourceApiOperStatusDataBodyParam);
+            vnflist.addVnfItem(vnf);
+        }
+
+        svcData.setVnfs(vnflist);
+        // Map and save the new data
+        try {
+            data.setSvcData(objectMapper.writeValueAsString(svcData));
+            configServicesRepository.save(data);
+            return new ResponseEntity<>(responseStatus);
+        } catch(JsonProcessingException e) {
+            log.error("Error mapping object to JSON", e);
+            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Creates or updates VNF Onap Model Information data in the Config table
+     * for a specified Service Instance. If it is a new Service Instance or a
+     * new VNF, creates all necessary parent data containers, then performs the
+     * updates.
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/onap-model-information/
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId the VNF ID of the VNF to delete
+     * @param genericResourceApiOnapmodelinformationOnapModelInformationBodyParam the payload
+     * @return HttpStatus.CREATED (201) on successful create.
+     *         <p>
+     *         HttpStatus.NO_CONTENT (204) on successful update.
+     *         <p>
+     *         HttpStatus.BAD_REQUEST (400) if updating the database fails.
+     * @throws RestException
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyOnapModelInformationPut(String serviceInstanceId, String vnfId, GenericResourceApiOnapmodelinformationOnapModelInformation genericResourceApiOnapmodelinformationOnapModelInformationBodyParam) throws RestException {
+        log.info("PUT | VNF Topology Onap Model Information ({})", vnfId);
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
+            data = new ConfigServices();
+            data.setSvcInstanceId(serviceInstanceId);
+        } else {
+            data = services.get(0);
+        }
+
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch(JsonProcessingException e) {
+            log.error("Could not map service data for ({})", serviceInstanceId);
+        }
+        if(svcData == null) {
+            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
+            svcData = new GenericResourceApiServicedataServiceData();
+        }
+        if(svcData.getVnfs() == null) {
+            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
+            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
+            svcData.getVnfs().setVnf(new ArrayList<>());
+        }
+
+        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
+        HttpStatus responseStatus = HttpStatus.NO_CONTENT;
+        if(svcData.getVnfs().getVnf().isEmpty()) {
+            log.info("Creating VNF data for ({})", vnfId);
+            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            vnf.setVnfId(vnfId);
+            vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
+            vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
+            vnf.getVnfData().getVnfTopology().setOnapModelInformation(genericResourceApiOnapmodelinformationOnapModelInformationBodyParam);
+            vnflist.addVnfItem(vnf);
+            responseStatus = HttpStatus.CREATED;
+        } else {
+            log.info("Updating VNF data for ({})", vnfId);
+            // Filter out all of the other vnf objects into a new VNF List
+            // Replace if a delete method exists
+            svcData.getVnfs()
+                    .getVnf()
+                    .stream()
+                    .filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
+                    .forEach(vnflist::addVnfItem);
+            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            // If the vnf exists, set it up with new data
+            Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnfOptional = getVnfObject(data, vnfId);
+            if(vnfOptional.isPresent()) {
+                vnf = vnfOptional.get();
+            }
+            if(vnf.getVnfData() == null) {
+                vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
+            }
+            if(vnf.getVnfData().getVnfTopology() == null) {
+                vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
+                responseStatus = HttpStatus.CREATED;
+            }
+
+            vnf.getVnfData().getVnfTopology().setOnapModelInformation(genericResourceApiOnapmodelinformationOnapModelInformationBodyParam);
+            vnflist.addVnfItem(vnf);
+        }
+
+        svcData.setVnfs(vnflist);
+        // Map and save the new data
+        try {
+            data.setSvcData(objectMapper.writeValueAsString(svcData));
+            configServicesRepository.save(data);
+            return new ResponseEntity<>(responseStatus);
+        } catch(JsonProcessingException e) {
+            log.error("Error mapping object to JSON", e);
+            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Creates or updates VNF Network data in the Config table for a specified
+     * Service Instance. If it is a new Service Instance or a new VNF, creates
+     * all necessary parent data containers, then performs the updates.
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId the VNF ID of the VNF to delete
+     * @param genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam the payload
+     * @return HttpStatus.CREATED (201) on successful create.
+     *         <p>
+     *         HttpStatus.NO_CONTENT (204) on successful update.
+     *         <p>
+     *         HttpStatus.BAD_REQUEST (400) if updating the database fails.
+     * @throws RestException
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyVnfResourceAssignmentsVnfNetworksPut(String serviceInstanceId, String vnfId, GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam) throws RestException {
+        log.info("PUT | VNF Topology VNF Resource Assignments VNF Networks ({})", vnfId);
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
+            data = new ConfigServices();
+            data.setSvcInstanceId(serviceInstanceId);
+        } else {
+            data = services.get(0);
+        }
+
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch(JsonProcessingException e) {
+            log.error("Could not map service data for ({})", serviceInstanceId);
+        }
+        if(svcData == null) {
+            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
+            svcData = new GenericResourceApiServicedataServiceData();
+        }
+        if(svcData.getVnfs() == null) {
+            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
+            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
+            svcData.getVnfs().setVnf(new ArrayList<>());
+        }
+
+        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
+        HttpStatus responseStatus = HttpStatus.NO_CONTENT;
+        if(svcData.getVnfs().getVnf().isEmpty()) {
+            log.info("Creating VNF data for ({})", vnfId);
+            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            vnf.setVnfId(vnfId);
+            vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
+            vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
+            vnf.getVnfData().getVnfTopology().setVnfResourceAssignments(new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments());
+            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().setVnfNetworks(genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam);
+            vnflist.addVnfItem(vnf);
+            responseStatus = HttpStatus.CREATED;
+        } else {
+            log.info("Updating VNF data for ({})", vnfId);
+            // Filter out all of the other vnf objects into a new VNF List
+            // Replace if a delete method exists
+            svcData.getVnfs()
+                    .getVnf()
+                    .stream()
+                    .filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
+                    .forEach(vnflist::addVnfItem);
+            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            // If the vnf exists, set it up with new data
+            Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnfOptional = getVnfObject(data, vnfId);
+            if(vnfOptional.isPresent()) {
+                vnf = vnfOptional.get();
+            }
+            if(vnf.getVnfData() == null) {
+                vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
+            }
+            if(vnf.getVnfData().getVnfTopology() == null) {
+                vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
+            }
+            if(vnf.getVnfData().getVnfTopology().getVnfResourceAssignments() == null) {
+                vnf.getVnfData().getVnfTopology().setVnfResourceAssignments(new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments());
+                responseStatus = HttpStatus.CREATED;
+            }
+
+            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().setVnfNetworks(genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam);
+            vnflist.addVnfItem(vnf);
+        }
+
+        svcData.setVnfs(vnflist);
+        // Map and save the new data
+        try {
+            data.setSvcData(objectMapper.writeValueAsString(svcData));
+            configServicesRepository.save(data);
+            return new ResponseEntity<>(responseStatus);
+        } catch(JsonProcessingException e) {
+            log.error("Error mapping object to JSON", e);
+            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Creates or updates VNF Network Role data in the Config table for a
+     * specified Service Instance. If it is a new Service Instance or a new
+     * VNF, creates all necessary parent data containers, then performs the
+     * updates.
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/vnf-network/{network-role}/
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId the VNF ID of the VNF to delete
+     * @param genericResourceApiVnfNetworkDataBodyParam the payload
+     * @return HttpStatus.CREATED (201) on successful create.
+     *         <p>
+     *         HttpStatus.NO_CONTENT (204) on successful update.
+     *         <p>
+     *         HttpStatus.BAD_REQUEST (400) if updating the database fails.
+     * @throws RestException
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyVnfResourceAssignmentsVnfNetworksVnfNetworkNetworkRolePut(String serviceInstanceId, String vnfId, String networkRole, GenericResourceApiVnfNetworkData genericResourceApiVnfNetworkDataBodyParam) throws RestException {
+        log.info("PUT | VNF Network Network Role ({})", vnfId);
+        if(!networkRole.equals(genericResourceApiVnfNetworkDataBodyParam.getNetworkRole())) {
+            throw new RestProtocolException("bad-attribute", "network-role mismatch", HttpStatus.BAD_REQUEST.value());
+        }
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
+            data = new ConfigServices();
+            data.setSvcInstanceId(serviceInstanceId);
+        } else {
+            data = services.get(0);
+        }
+
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch(JsonProcessingException e) {
+            log.error("Could not map service data for ({})", serviceInstanceId);
+        }
+        if(svcData == null) {
+            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
+            svcData = new GenericResourceApiServicedataServiceData();
+        }
+        if(svcData.getVnfs() == null) {
+            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
+            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
+            svcData.getVnfs().setVnf(new ArrayList<>());
+        }
+
+        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
+        HttpStatus responseStatus = HttpStatus.NO_CONTENT;
+        if(svcData.getVnfs().getVnf().isEmpty()) {
+            log.info("Creating VNF data for ({})", vnfId);
+            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            vnf.setVnfId(vnfId);
+            vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
+            vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
+            vnf.getVnfData().getVnfTopology().setVnfResourceAssignments(new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments());
+            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().setVnfNetworks(new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks());
+            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks().setVnfNetwork(new ArrayList<>());
+            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks().addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
+            vnflist.addVnfItem(vnf);
+            responseStatus = HttpStatus.CREATED;
+        } else {
+            log.info("Updating VNF data for ({})", vnfId);
+            // Filter out all of the other vnf objects into a new VNF List
+            // Replace if a delete method exists
+            svcData.getVnfs()
+                    .getVnf()
+                    .stream()
+                    .filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
+                    .forEach(vnflist::addVnfItem);
+            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            // If the vnf exists, set it up with new data
+            Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnfOptional = getVnfObject(data, vnfId);
+            if(vnfOptional.isPresent()) {
+                vnf = vnfOptional.get();
+            }
+            if(vnf.getVnfData() == null) {
+                vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
+            }
+            if(vnf.getVnfData().getVnfTopology() == null) {
+                vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
+            }
+            if(vnf.getVnfData().getVnfTopology().getVnfResourceAssignments() == null) {
+                vnf.getVnfData().getVnfTopology().setVnfResourceAssignments(new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments());
+            }
+            if(vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks() == null) {
+                log.info("Creating new VnfNetworks");
+                vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().setVnfNetworks(new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks());
+            }
+
+            GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks networkList = new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks();
+            if(vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks().getVnfNetwork().isEmpty()) {
+                log.info("First entry into network info.");
+                vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks().addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
+                responseStatus = HttpStatus.CREATED;
+            } else {
+                log.info("Found networks. Filtering.");
+                vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks().getVnfNetwork().stream()
+                        .filter(targetNetwork -> !targetNetwork.getNetworkRole().equals(networkRole))
+                        .forEach(networkList::addVnfNetworkItem);
+                networkList.addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
+
+                if(networkList.getVnfNetwork().size() != vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks().getVnfNetwork().size()) {
+                    log.info("Added a new Item");
+                    responseStatus = HttpStatus.CREATED;
+                }
+                vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().setVnfNetworks(networkList);
+            }
+
+            vnflist.addVnfItem(vnf);
+        }
+
+        svcData.setVnfs(vnflist);
+        // Map and save the new data
+        try {
+            data.setSvcData(objectMapper.writeValueAsString(svcData));
+            configServicesRepository.save(data);
+            return new ResponseEntity<>(responseStatus);
+        } catch(JsonProcessingException e) {
+            log.error("Error mapping object to JSON", e);
+            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Extracts a VNF object from the database,
+     * @param configServices A Config Services option created from a Service
+     *                       Instance ID
+     * @param vnfId the target VNF ID
+     * @return An empty Optional if the Service Data does not exist, an empty
+     *         Optional if the VNF is not found, or an optional containing the
+     *         found VNF.
+     */
+    private Optional<GenericResourceApiServicedataServicedataVnfsVnf> getVnfObject(ConfigServices configServices, String vnfId) {
+        // Map the Marshall the JSON String into a Java Object
+        log.info("Getting VNF Data for ({})", vnfId);
+        GenericResourceApiServicedataServiceData svcData;
+        try {
+            svcData = objectMapper.readValue(configServices.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch(JsonProcessingException e) {
+            log.error("Error", e);
+            return Optional.empty();
+        }
+
+        /*Get a stream of the VNF Objects and return the target if it's found,
+         * assuming that each VNF ID is unique within a Service Instance Object
+         */
+        return svcData.getVnfs().getVnf()
+                       .stream()
+                       .filter(targetVnf -> targetVnf.getVnfId().equals(vnfId))
+                       .findFirst();
+    }
 }
