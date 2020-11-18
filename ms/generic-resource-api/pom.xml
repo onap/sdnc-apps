@@ -34,6 +34,7 @@
         <sdnc.gra.jar>${project.artifactId}-${project.version}.jar</sdnc.gra.jar>
         <docker.push.phase>deploy</docker.push.phase>
         <docker.verbose>true</docker.verbose>
+        <docker.autoCreateCustomNetworks>true</docker.autoCreateCustomNetworks>
     </properties>
 
     <dependencies>
@@ -294,6 +295,33 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                    <forkMode>always</forkMode>
+                    <environmentVariables>
+                        <SDNC_CONFIG_DIR>${basedir}/src/test/resources</SDNC_CONFIG_DIR>
+                        <SVCLOGIC_PROPERTIES>${basedir}/src/test/resources/svclogic.properties</SVCLOGIC_PROPERTIES>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>integration-test</goal>
+                      <goal>verify</goal>
+                    </goals>
+                  </execution>
+                </executions>
+                <configuration>
+                  <skipITs>true</skipITs>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -412,6 +440,24 @@
                         </executions>
                     </plugin>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                          <execution>
+                            <goals>
+                              <goal>integration-test</goal>
+                              <goal>verify</goal>
+                            </goals>
+                          </execution>
+                        </executions>
+                        <configuration>
+                          <skipITs>false</skipITs>
+                          <environmentVariables>
+                            <GRA_PORT>${gra.port}</GRA_PORT>
+                          </environmentVariables>
+                        </configuration>
+                      </plugin>
+                    <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <version>0.28.0</version>
@@ -441,7 +487,77 @@
                                     <goal>build</goal>
                                 </goals>
                             </execution>
-
+                            <execution>
+                                <id>start-it-instance</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <name>mariadb:10.5</name>
+                                            <alias>gradb</alias>
+                                            <run>
+                                                <env>
+                                                    <MYSQL_ROOT_PASSWORD>itsASecret</MYSQL_ROOT_PASSWORD>
+                                                    <MYSQL_USER>sdnc</MYSQL_USER>
+                                                    <MYSQL_PASSWORD>abc123</MYSQL_PASSWORD>
+                                                    <MYSQL_DATABASE>sdnctl</MYSQL_DATABASE>
+                                                </env>
+                                                <network>
+                                                    <mode>custom</mode>
+                                                    <name>gra</name>
+                                                    <alias>dbhost</alias>
+                                                </network>
+                                                <ports>
+                                                    <port>gradb.port:3306</port>
+                                                </ports>
+                                                <log>
+                                                    <enabled>true</enabled>
+                                                </log>
+                                            </run>
+                                        </image>
+                                        <image>
+                                            <name>${image.name}:${project.docker.latesttagtimestamp.version}</name>
+                                            <alias>gra-container</alias>
+                                            <run>
+                                                <env>
+                                                    <MYSQL_USER>sdnc</MYSQL_USER>
+                                                    <MYSQL_PASSWORD>abc123</MYSQL_PASSWORD>
+                                                    <MYSQL_DATABASE>sdnctl</MYSQL_DATABASE>
+                                                    <SDNC_CONFIG_DIR>/opt/onap/sdnc/config</SDNC_CONFIG_DIR>
+                                                </env>
+                                                <dependsOn>
+                                                    <container>gradb</container>
+                                                </dependsOn>
+                                                <network>
+                                                    <mode>custom</mode>
+                                                    <name>gra</name>
+                                                    <alias>gra</alias>
+                                                </network>
+                                                <ports>
+                                                    <port>gra.port:8080</port>
+                                                </ports>
+                                                <wait>
+                                                    <log>Started GenericResourceMsApp</log>
+                                                    <time>120000</time>
+                                                </wait>
+                                                <log>
+                                                    <enabled>true</enabled>
+                                                </log>
+                                            </run>
+                                        </image>
+                                    </images>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-it-instance</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
                             <execution>
                                 <id>push-images</id>
                                 <phase>${docker.push.phase}</phase>
