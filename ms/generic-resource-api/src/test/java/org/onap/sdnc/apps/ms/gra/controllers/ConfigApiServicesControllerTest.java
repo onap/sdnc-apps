@@ -464,6 +464,26 @@ public class ConfigApiServicesControllerTest {
     }
 
     @Test
+    public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataServiceTopologyGet() throws Exception {
+        // Clean up data
+        configServicesRepository.deleteAll();
+
+        // Test with data
+        loadServicesData("src/test/resources/service1.json");
+        assert(configServicesRepository.count() > 0);
+
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/service-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        // Test with no data
+        configServicesRepository.deleteAll();
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/service-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
     public void configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdDelete() throws Exception {
         // Clean up data
         configServicesRepository.deleteAll();

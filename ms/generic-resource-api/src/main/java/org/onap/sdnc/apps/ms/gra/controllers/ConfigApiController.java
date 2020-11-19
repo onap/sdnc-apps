@@ -1502,4 +1502,33 @@ public class ConfigApiController implements ConfigApi {
                        .filter(targetVnf -> targetVnf.getVnfId().equals(vnfId))
                        .findFirst();
     }
+
+    @Override
+    public ResponseEntity<GenericResourceApiServicetopologyServiceTopology> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataServiceTopologyGet(String serviceInstanceId) throws RestApplicationException, RestProtocolException {
+        GenericResourceApiServicetopologyServiceTopology serviceTopology = null;
+        GenericResourceApiServicedataServiceData serviceData = null;
+        
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        try {
+            if ( services.get(0).getSvcData().isEmpty()) {
+                throw new RestProtocolException("data-missing", "No service-data entry found", HttpStatus.NOT_FOUND.value());
+            } else {
+                serviceData = objectMapper.readValue(services.get(0).getSvcData(), GenericResourceApiServicedataServiceData.class);
+                serviceTopology = serviceData.getServiceTopology();
+            }
+            if (serviceTopology == null) {
+                throw new RestProtocolException("data-missing", "No service-topology entry found", HttpStatus.NOT_FOUND.value());
+            }
+            return new ResponseEntity<>(serviceTopology, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+    }
+
 }
