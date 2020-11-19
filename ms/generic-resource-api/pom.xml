@@ -34,6 +34,10 @@
         <sdnc.gra.jar>${project.artifactId}-${project.version}.jar</sdnc.gra.jar>
         <docker.push.phase>deploy</docker.push.phase>
         <docker.verbose>true</docker.verbose>
+        <gratest.mysql.database>gradb</gratest.mysql.database>
+        <gratest.mysql.root.password>itsASecret</gratest.mysql.root.password>
+        <gratest.mysql.user>gra</gratest.mysql.user>
+        <gratest.mysql.password>test123</gratest.mysql.password>
         <docker.autoCreateCustomNetworks>true</docker.autoCreateCustomNetworks>
     </properties>
 
@@ -507,10 +511,10 @@
                                             <alias>gradb</alias>
                                             <run>
                                                 <env>
-                                                    <MYSQL_ROOT_PASSWORD>itsASecret</MYSQL_ROOT_PASSWORD>
-                                                    <MYSQL_USER>sdnc</MYSQL_USER>
-                                                    <MYSQL_PASSWORD>abc123</MYSQL_PASSWORD>
-                                                    <MYSQL_DATABASE>sdnctl</MYSQL_DATABASE>
+                                                    <MYSQL_ROOT_PASSWORD>${gratest.mysql.root.password}</MYSQL_ROOT_PASSWORD>
+                                                    <MYSQL_USER>${gratest.mysql.user}</MYSQL_USER>
+                                                    <MYSQL_PASSWORD>${gratest.mysql.password}</MYSQL_PASSWORD>
+                                                    <MYSQL_DATABASE>${gratest.mysql.database}</MYSQL_DATABASE>
                                                 </env>
                                                 <network>
                                                     <mode>custom</mode>
@@ -530,9 +534,10 @@
                                             <alias>gra-container</alias>
                                             <run>
                                                 <env>
-                                                    <MYSQL_USER>sdnc</MYSQL_USER>
-                                                    <MYSQL_PASSWORD>abc123</MYSQL_PASSWORD>
-                                                    <MYSQL_DATABASE>sdnctl</MYSQL_DATABASE>
+                                                    <MYSQL_USER>${gratest.mysql.user}</MYSQL_USER>
+                                                    <MYSQL_PASSWORD>${gratest.mysql.password}</MYSQL_PASSWORD>
+                                                    <MYSQL_DATABASE>${gratest.mysql.database}</MYSQL_DATABASE>
+                                                    <LOG_LEVEL>TRACE</LOG_LEVEL>
                                                     <SDNC_CONFIG_DIR>/opt/onap/sdnc/config</SDNC_CONFIG_DIR>
                                                 </env>
                                                 <dependsOn>
