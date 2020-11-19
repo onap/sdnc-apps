@@ -7,11 +7,11 @@ services:
     ports:
       - "13306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=openECOMP1.0
+      - MYSQL_ROOT_PASSWORD=itsASecret
       - MYSQL_ROOT_HOST=%
-      - MYSQL_USER=sdnc
-      - MYSQL_PASSWORD=abc123
-      - MYSQL_DATABASE=sdnctl
+      - MYSQL_USER=gra
+      - MYSQL_PASSWORD=test123
+      - MYSQL_DATABASE=gradb
     logging:       
       driver:   "json-file"
       options:  
@@ -31,10 +31,11 @@ services:
       - db:dbhost
     environment:
       - MYSQL_DB_HOST=dbhost
-      - MYSQL_ROOT_PASSWORD=openECOMP1.0
-      - MYSQL_DB_USER=sdnc
-      - MYSQL_DB_PASSWD=abc123
-      - MYSQL_DB_DATABASE=sdnctl
+      - MYSQL_ROOT_PASSWORD=itsASecret
+      - MYSQL_USER=gra
+      - MYSQL_PASSWORD=test123
+      - MYSQL_DATABASE=gradb
+      - LOG_LEVEL=TRACE
       - TRUSTSTORE_PASSWORD=changeit
       - CACERT_PASSWORD=changeit
       - SDNC_CERT_DIR=/opt/onap/sdnc/config
@@ -68,11 +69,11 @@ services:
       - db:sdnctldb01
       - db:sdnctldb02
     environment:
-      - MYSQL_ROOT_PASSWORD=openECOMP1.0
+      - MYSQL_ROOT_PASSWORD=itsASecret
       - SDNC_CONFIG_DIR=/opt/onap/ccsdk/data/properties
-      - MYSQL_USER=sdnc
-      - MYSQL_PASSWORD=abc23
-      - MYSQL_DATABASE=sdnctl
+      - MYSQL_USER=gra
+      - MYSQL_PASSWORD=test123
+      - MYSQL_DATABASE=gradb
     logging:       
       driver:   "json-file"
       options:  

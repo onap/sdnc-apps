@@ -56,13 +56,13 @@ echo -e "\nDatabase ready"
 # Initialize schema
 if [ -f ${SDNC_CONFIG_DIR}/schema-mysql.sql ]
 then 
-  mysql -h ${MYSQL_DB_HOST} -u ${MYSQL_DB_USER} -p${MYSQL_DB_PASSWD} ${MYSQL_DB_DATABASE} < ${SDNC_CONFIG_DIR}/schema-mysql.sql
+  mysql -h ${MYSQL_DB_HOST} -u ${MYSQL_USER} -p${MYSQL_PASSWD} ${MYSQL_DATABASE} < ${SDNC_CONFIG_DIR}/schema-mysql.sql
 fi
 
 # Load data
 if [ -f ${SDNC_CONFIG_DIR}/data-mysql.sql ]
 then 
-  mysql -h ${MYSQL_DB_HOST} -u ${MYSQL_DB_USER} -p${MYSQL_DB_PASSWD} ${MYSQL_DB_DATABASE} < ${SDNC_CONFIG_DIR}/data-mysql.sql
+  mysql -h ${MYSQL_HOST} -u ${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} < ${SDNC_CONFIG_DIR}/data-mysql.sql
 fi
 
 if [ ! -f ${SDNC_CERT_DIR}/${TRUSTSTORE} ]; then
