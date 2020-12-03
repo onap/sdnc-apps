@@ -25,7 +25,7 @@ services:
       - db
     container_name: gra_controller
     ports:
-      - "8080:8080"
+      - "8181:8080"
       - "8443:8443"
     links:
       - db:dbhost

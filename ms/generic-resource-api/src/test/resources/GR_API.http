@@ -1,0 +1,482 @@
+### preload data (network)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:preload-network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "preload-network-topology-information": {
+            "host-routes": [
+                {
+                    "next-hop": "10.1.12.1",
+                    "route-prefix": "12"
+                }
+            ],
+            "is-external-network": true,
+            "is-provider-network": true,
+            "is-shared-network": true,
+            "network-policy": [
+                {
+                    "network-policy-fqdn": "policy-sdnc.onap.org",
+                    "network-policy-id": "123"
+                }
+            ],
+            "network-topology-identifier-structure": {
+                "eipam-v4-address-plan": "plan9",
+                "eipam-v6-address-plan": "plan9v6",
+                "is-trunked": true,
+                "network-id": "vUSP-23804-T-01-wnv1a_int_csdb_net_1",
+                "network-instance-group-id": "abc123",
+                "network-name": "syfy",
+                "network-role": "secret",
+                "network-technology": "soupcan",
+                "network-type": "fake",
+                "related-networks": {
+                    "related-network": [
+                        {
+                            "network-id": "skynet",
+                            "network-role": "master",
+                            "vlan-tags": {
+                                "is-private": true,
+                                "lower-tag-id": 0,
+                                "upper-tag-id": 0,
+                                "vlan-interface": "le0"
+                            }
+                        }
+                    ]
+                },
+                "segmentation-id": "seg1"
+            },
+            "physical-network-name": "skynet",
+            "route-table-reference": [
+                {
+                    "route-table-reference-fqdn": "sky.net",
+                    "route-table-reference-id": "ref1"
+                }
+            ],
+            "subnets": [
+                {
+                    "addr-from-start": "Y",
+                    "cidr-mask": "255.255.0.0",
+                    "dhcp-enabled": "Y",
+                    "dhcp-end-address": "10.1.2.254",
+                    "dhcp-start-address": "10.1.2.1",
+                    "gateway-address": "10.1.2.255",
+                    "ip-version": "ipv4",
+                    "start-address": "10.1.2.1",
+                    "subnet-name": "subnet1",
+                    "subnet-role": "puppies",
+                    "subnet-sequence": 0
+                }
+            ],
+            "vpn-bindings": [
+                {
+                    "aic-zone": "zone1",
+                    "global-route-target": "string",
+                    "route-target-role": "string",
+                    "vpn-binding-id": "string",
+                    "vpn-name": "string"
+                }
+            ]
+        },
+        "request-information": {
+            "notification-url": "http://dev.null.com",
+            "order-number": "123456",
+            "order-version": "2010.06",
+            "request-action": "CreateNetworkInstance",
+            "request-id": "REQ123456",
+            "source": "curl"
+        },
+        "sdnc-request-header": {
+            "svc-action": "reserve",
+            "svc-notification-url": "http://dev.null.com",
+            "svc-request-id": "SVCREQ123456"
+        }
+    }
+}
+
+### service-topology (assign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:service-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "CreateServiceInstance",
+        "request-id": "{{$guid}}",
+        "source": "simulator"
+      },
+      "sdnc-request-header": {
+        "svc-action": "assign",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svc-{{$guid}}"
+      },
+      "service-information": {
+        "global-customer-id": "{{$guid}}",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vBNG_0202",
+          "model-uuid": "00e50cbd-ef0f-4b28-821e-f2b583752dd3",
+          "model-version": "1920"
+        },
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-instance-name": "zrdm61asmsf01_svc"
+      }
+    }
+  }
+
+
+### service-topology (changeassign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:service-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "CreateServiceInstance",
+        "request-id": "{{$guid}}",
+        "source": "simulator"
+      },
+      "sdnc-request-header": {
+        "svc-action": "changeassign",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svc-{{$guid}}"
+      },
+      "service-information": {
+        "global-customer-id": "{{$guid}}",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vcpesvc_vbng_0412a",
+          "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+          "model-version": "1933"
+        },      
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-instance-name": "zrdm61asmsf01_svc"
+      }
+    }
+  }
+
+### service-topology (deactivate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:service-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "DeleteServiceInstance",
+        "request-id": "{{$guid}}",
+        "source": "simulator"
+      },
+      "sdnc-request-header": {
+        "svc-action": "deactivate",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svc-{{$guid}}"
+      },
+      "service-information": {
+        "global-customer-id": "{{$guid}}",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vcpesvc_vbng_0412a",
+          "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+          "model-version": "1933"
+        },      
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-instance-name": "zrdm61asmsf01_svc"
+      }
+    }
+  }
+
+### service-topology (delete)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:service-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "DeleteServiceInstance",
+        "request-id": "{{$guid}}",
+        "source": "simulator"
+      },
+      "sdnc-request-header": {
+        "svc-action": "delete",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svc-{{$guid}}"
+      },
+      "service-information": {
+        "global-customer-id": "{{$guid}}",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vcpesvc_vbng_0412a",
+          "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+          "model-version": "1933"
+        },      
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-instance-name": "zrdm61asmsf01_svc"
+      }
+    }
+  }
+
+
+### network-topology (assign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "network-information": {
+            "onap-model-information": {
+                "model-name": "VcpesvcVbng0412a.bng_mux",
+                "model-version": "1.0",
+                "model-customization-uuid": "b0cf3385-a390-488c-b6a0-d879fb4a4825",
+                "model-uuid": "9b7c1cbe-ddcd-458c-8792-d76391419b72",
+                "model-invariant-uuid": "206d5e6c-4cba-4c14-b942-5d946c881869"
+            },
+            "network-id": "2e723205-7f96-49a9-bd60-24168fbd9f07"
+        },
+        "network-request-input": {
+            "aic-cloud-region": "wnv1a",
+            "cloud-owner": "att-nc",
+            "tenant": "1795554216e946af8a3c788f195eb813",
+            "network-name": "vUSP-23804-T-01-wnv1a_int_csdb_net_1"
+        },
+        "request-information": {
+            "request-action": "CreateNetworkInstance",
+            "source": "simulator",
+            "request-id": "{{$guid}}"
+        },
+        "sdnc-request-header": {
+            "svc-request-id": "svc-{{$guid}}",
+            "svc-action": "assign"
+        },
+        "service-information": {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        }
+    }
+}
+
+
+### network-topology (activate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "network-information": {
+            "onap-model-information": {
+                "model-name": "VcpesvcVbng0412a.bng_mux",
+                "model-version": "1.0",
+                "model-customization-uuid": "b0cf3385-a390-488c-b6a0-d879fb4a4825",
+                "model-uuid": "9b7c1cbe-ddcd-458c-8792-d76391419b72",
+                "model-invariant-uuid": "206d5e6c-4cba-4c14-b942-5d946c881869"
+            },
+            "network-technology": "",
+            "network-id": "2e723205-7f96-49a9-bd60-24168fbd9f07",
+            "network-type": ""
+        },
+        "network-request-input": {
+            "aic-cloud-region": "wnv1a",
+            "cloud-owner": "att-nc",
+            "tenant": "1795554216e946af8a3c788f195eb813",
+            "network-name": "vUSP-23804-T-01-wnv1a_int_ccfx_net_1"
+        },
+        "request-information": {
+            "request-action": "CreateNetworkInstance",
+            "source": "simulator",
+            "request-id": "{{$guid}}"
+        },
+        "sdnc-request-header": {
+            "svc-request-id": "svc-{{$guid}}",
+            "svc-action": "activate"
+        },
+        "service-information": {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        }
+    }
+}
+
+### network-topology (deactivate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "network-information": {
+            "onap-model-information": {
+                "model-name": "VcpesvcVbng0412a.bng_mux",
+                "model-version": "1.0",
+                "model-customization-uuid": "b0cf3385-a390-488c-b6a0-d879fb4a4825",
+                "model-uuid": "9b7c1cbe-ddcd-458c-8792-d76391419b72",
+                "model-invariant-uuid": "206d5e6c-4cba-4c14-b942-5d946c881869"
+            },
+            "network-technology": "",
+            "network-id": "2e723205-7f96-49a9-bd60-24168fbd9f07",
+            "network-type": ""
+        },
+        "network-request-input": {
+            "aic-cloud-region": "wnv1a",
+            "cloud-owner": "att-nc",
+            "tenant": "1795554216e946af8a3c788f195eb813",
+            "network-name": "vUSP-23804-T-01-wnv1a_int_ccfx_net_1"
+        },
+        "request-information": {
+            "request-action": "DeleteNetworkInstance",
+            "source": "simulator",
+            "request-id": "{{$guid}}"
+        },
+        "sdnc-request-header": {
+            "svc-request-id": "svc-{{$guid}}",
+            "svc-action": "deactivate"
+        },
+        "service-information": {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        }
+    }
+}
+
+### network-topology (unassign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "network-information": {
+            "onap-model-information": {
+                "model-name": "VcpesvcVbng0412a.bng_mux",
+                "model-version": "1.0",
+                "model-customization-uuid": "b0cf3385-a390-488c-b6a0-d879fb4a4825",
+                "model-uuid": "9b7c1cbe-ddcd-458c-8792-d76391419b72",
+                "model-invariant-uuid": "206d5e6c-4cba-4c14-b942-5d946c881869"
+            },
+            "network-technology": "",
+            "network-id": "2e723205-7f96-49a9-bd60-24168fbd9f07",
+            "network-type": ""
+        },
+        "network-request-input": {
+            "aic-cloud-region": "wnv1a",
+            "cloud-owner": "att-nc",
+            "tenant": "1795554216e946af8a3c788f195eb813",
+            "network-name": "vUSP-23804-T-01-wnv1a_int_ccfx_net_1"
+        },
+        "request-information": {
+            "request-action": "DeleteNetworkInstance",
+            "source": "simulator",
+            "request-id": "{{$guid}}"
+        },
+        "sdnc-request-header": {
+            "svc-request-id": "svc-{{$guid}}",
+            "svc-action": "unassign"
+        },
+        "service-information": {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        }
+    }
+}
+
+### Healthcheck
+POST {{hostname}}/restconf/operations/SLI-API:healthcheck/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ input: {}}
+
+### get service instance / topology
+GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:services/service/5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca/service-data/service-topology/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### top level get
+GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:services/service/5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json

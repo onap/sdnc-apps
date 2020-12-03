@@ -484,8 +484,12 @@ public class OperationsApiController implements OperationsApi {
         // Add config tree data to SvcLogicContext
         List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
         ConfigServices configService = null;
+        String svcData = null;
         if (configServices != null && !configServices.isEmpty()) {
             configService = configServices.get(0);
+            svcData = configService.getSvcData();
+        }
+        if (svcData != null) {
             ctxIn.mergeJson("service-data", configService.getSvcData());
         } else {
             log.debug("exiting {} because the service-instance does not have any service data in SDN", svcOperation);
