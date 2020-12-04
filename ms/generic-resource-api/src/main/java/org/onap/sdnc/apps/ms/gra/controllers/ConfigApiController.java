@@ -32,6 +32,10 @@ import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurations;
+import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurationsRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResources;
+import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResourcesRepository;
 import org.onap.sdnc.apps.ms.gra.swagger.ConfigApi;
 import org.onap.sdnc.apps.ms.gra.swagger.model.*;
 import org.slf4j.Logger;
@@ -71,6 +75,13 @@ public class ConfigApiController implements ConfigApi {
     private ConfigServicesRepository configServicesRepository;
 
     @Autowired
+    private ConfigPortMirrorConfigurationsRepository configPortMirrorConfigurationsRepository;
+
+    @Autowired
+    private ConfigContrailRouteAllottedResourcesRepository configContrailRouteAllottedResourcesRepository;
+
+
+    @Autowired
     public ConfigApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -93,6 +104,249 @@ public class ConfigApiController implements ConfigApi {
         configPreloadDataRepository.deleteAll();
         return (new ResponseEntity<>(HttpStatus.NO_CONTENT));
     }
+
+    /**
+     * Extracts port-mirror configuration data from CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS for a given, configuration-id
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:port-mirror-configurations/port-mirror-configuration/{configuration-id}/
+     * @param configurationId the configuration ID for a port-mirror
+     * @return HttpStatus.OK (200) if the data is found.
+     * @throws RestException if the data does not exist.
+     */
+    public ResponseEntity<GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration>
+                configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdGet(
+                    String configurationId) throws RestApplicationException {
+        GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration retval = null;
+
+        List<ConfigPortMirrorConfigurations> pmConfigurations = configPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+
+        if (pmConfigurations.isEmpty()) {
+            log.info("No configuration data found with id [{}]",configurationId);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            ConfigPortMirrorConfigurations pmConfiguration = pmConfigurations.get(0);
+            retval = new GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration();
+            retval.setConfigurationId(configurationId);
+            retval.setConfigurationStatus(pmConfiguration.getPortMirrorConfigurationStatus());
+            try {
+                retval.setConfigurationData(objectMapper.readValue(pmConfiguration.getPmcData(), GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData.class));
+            } catch (JsonProcessingException e) {
+                log.error("Could not deserialize service data for service instance id {}", configurationId, e);
+                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+        return new ResponseEntity<>(retval, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdPut(
+            String configurationId, @Valid GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration newConfiguration)
+                throws RestApplicationException {
+
+        boolean dataExists = false;
+
+        String newConfigurationId = newConfiguration.getConfigurationId();
+
+        ConfigPortMirrorConfigurations portMirrorConfiguration = null;
+        List<ConfigPortMirrorConfigurations> existingConfiguration = configPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+        if ((existingConfiguration != null) && !existingConfiguration.isEmpty()) {
+            dataExists = true;
+            portMirrorConfiguration = existingConfiguration.get(0);
+        } else {
+            portMirrorConfiguration = new ConfigPortMirrorConfigurations();
+            portMirrorConfiguration.setConfigureationId(configurationId);
+        }
+
+        try {
+            portMirrorConfiguration.setPmcData(objectMapper.writeValueAsString(newConfiguration.getConfigurationData()));
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize porr-mirror configuration data for {}", portMirrorConfiguration.getConfigureationId(), e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        }
+        portMirrorConfiguration.setPortMirrorConfigurationStatus(newConfiguration.getConfigurationStatus());
+        configPortMirrorConfigurationsRepository.save(portMirrorConfiguration);
+
+        if (dataExists) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+    }
+
+    @Override
+    public ResponseEntity<GenericResourceApiPortmirrorconfigurationtopologyPortMirrorConfigurationTopology>
+            configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdConfigurationDataPortMirrorConfigurationTopologyGet(
+                    String configurationId) throws RestApplicationException, RestProtocolException {
+        @Valid GenericResourceApiPortmirrorconfigurationtopologyPortMirrorConfigurationTopology portMirrorConfigurationTopology = null;
+        GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData portMirrorConfigurationData = null;
+
+        List<ConfigPortMirrorConfigurations> configPortMirrorConfigurations = configPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+        if ((configPortMirrorConfigurations == null) || (configPortMirrorConfigurations.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No port-mirror-configuration entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        try {
+            if ( configPortMirrorConfigurations.get(0).getPmcData().isEmpty()) {
+                throw new RestProtocolException("data-missing", "No configuration-data entry found", HttpStatus.NOT_FOUND.value());
+            } else {
+                portMirrorConfigurationData = objectMapper.readValue(configPortMirrorConfigurations.get(0).getPmcData(), GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData.class);
+                portMirrorConfigurationTopology = portMirrorConfigurationData.getPortMirrorConfigurationTopology();
+            }
+            if (portMirrorConfigurationTopology == null) {
+                throw new RestProtocolException("data-missing", "No service-topology entry found", HttpStatus.NOT_FOUND.value());
+            }
+            return new ResponseEntity<>(portMirrorConfigurationTopology, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+    }
+
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdDelete(String configurationId) {
+        configPortMirrorConfigurationsRepository.deleteByConfigurationId(configurationId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Extracts contrail-route-allotted-resource data from CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}
+     * @param allottedResourceId the allotted-resource-id for a contrail-route
+     * @return HttpStatus.OK (200) if the data is found.
+     * @throws RestException if the data does not exist.
+     */
+    public ResponseEntity<GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource>
+                configGENERICRESOURCEAPIcontrailRouteAllottedResourcesContrailRouteAllottedResourceAllottedResourceIdGet(
+                        String allottedResourceId) throws RestApplicationException {
+        GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource retval = null;
+
+        List<ConfigContrailRouteAllottedResources> allottedResources = configContrailRouteAllottedResourcesRepository.findByAllottedResourceId(allottedResourceId);
+
+        if (allottedResources.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        else {
+            ConfigContrailRouteAllottedResources allottedResource = allottedResources.get(0);
+            retval = new GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource();
+            retval.setAllottedResourceId(allottedResourceId);
+            retval.setAllottedResourceStatus(allottedResource.getAllottedResourceStatus());
+            try {
+                retval.setAllottedResourceData(objectMapper.readValue(allottedResource.getArData(),
+                        GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData.class));
+            } catch (JsonProcessingException e) {
+                log.error("Could not deserialize service data for service instance id {}", allottedResourceId, e);
+                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+        return new ResponseEntity<>(retval, HttpStatus.OK);
+    }
+
+    /**
+     * PUT contrail-route-allotted-resource data from CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}
+     * @param allottedResourceId the allotted-resource-id for a contrail-route
+     * @return HttpStatus.OK (200) if the data is found.
+     * @throws RestException if the data does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIcontrailRouteAllottedResourcesContrailRouteAllottedResourceAllottedResourceIdPut(
+            String allottedResourceId, @Valid GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource newAllottedResource)
+            throws RestApplicationException {
+
+        boolean dataExists = false;
+
+        String newAllottedResourceId = newAllottedResource.getAllottedResourceId();
+
+        ConfigContrailRouteAllottedResources allottedResource = null;
+        List<ConfigContrailRouteAllottedResources> existingAllottedResource =
+                configContrailRouteAllottedResourcesRepository.findByAllottedResourceId(allottedResourceId);
+
+        if ((existingAllottedResource != null) && !existingAllottedResource.isEmpty()) {
+            dataExists = true;
+            allottedResource = existingAllottedResource.get(0);
+        } else {
+            allottedResource = new ConfigContrailRouteAllottedResources();
+            allottedResource.setAllottedResourceId(allottedResourceId);
+        }
+
+        try {
+            allottedResource.setArData(objectMapper.writeValueAsString(newAllottedResource.getAllottedResourceData()));
+        } catch (JsonProcessingException e) {
+            log.error("Could not serialize porr-mirror configuration data for {}", allottedResource.getAllottedResourceId(), e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        }
+        allottedResource.setAllottedResourceStatus(newAllottedResource.getAllottedResourceStatus());
+        configContrailRouteAllottedResourcesRepository.save(allottedResource);
+
+        if (dataExists) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+    }
+
+    /**
+     * Extracts contrail-route-topology data from CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}/allotted-resource-data/contrail-route-topology/
+     * @param allottedResourceId the allotted-resource-id for a contrail-route
+     * @return HttpStatus.OK (200) if the data is found.
+     * @throws RestException if the data does not exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiContrailroutetopologyContrailRouteTopology>
+            configGENERICRESOURCEAPIcontrailRouteAllottedResourcesContrailRouteAllottedResourceAllottedResourceIdAllottedResourceDataContrailRouteTopologyGet(
+                String allottedResourceId) throws RestApplicationException, RestProtocolException {
+        @Valid GenericResourceApiContrailroutetopologyContrailRouteTopology contrailRouteTopology = null;
+        GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData allottedResourceData = null;
+
+        List<ConfigContrailRouteAllottedResources> configContrailRouteAllottedResources =
+                configContrailRouteAllottedResourcesRepository.findByAllottedResourceId(allottedResourceId);
+
+        if ((configContrailRouteAllottedResources == null) || (configContrailRouteAllottedResources.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No port-mirror-configuration entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        try {
+            if ( configContrailRouteAllottedResources.get(0).getArData().isEmpty()) {
+                throw new RestProtocolException("data-missing", "No allotted-resource-data entry found", HttpStatus.NOT_FOUND.value());
+            } else {
+                allottedResourceData = objectMapper.readValue(configContrailRouteAllottedResources.get(0).getArData(),
+                        GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData.class);
+
+                contrailRouteTopology = allottedResourceData.getContrailRouteTopology();
+            }
+            if (contrailRouteTopology == null) {
+                throw new RestProtocolException("data-missing", "No contrail-route-topology entry found", HttpStatus.NOT_FOUND.value());
+            }
+            return new ResponseEntity<>(contrailRouteTopology, HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse port-mirror-configuration data", e);
+            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+    }
+
+
+    /**
+     * DELETE allotted-resource data from CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}
+     * @param allottedResourceId the allotted-resource-id for a contrail-route
+     * @return HttpStatus.NO_CONTENT (204) if the data is found.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIcontrailRouteAllottedResourcesContrailRouteAllottedResourceAllottedResourceIdDelete(
+            String allottedResourceId) {
+        configContrailRouteAllottedResourcesRepository.deleteByAllottedResourceId(allottedResourceId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 
     @Override
     public ResponseEntity<GenericResourceApiPreloadModelInformation> configGENERICRESOURCEAPIpreloadInformationGet()
@@ -1059,29 +1313,44 @@ public class ConfigApiController implements ConfigApi {
     }
 
     /**
+     * Extracts a vf-module object from the database,
+     * @param configServices A Config Services option created from a Service
+     *                       Instance ID
+     * @param vnfId the target VNF ID
+     * @param vfModuleId the target vf-module ID
+     * @return An empty Optional if the Service Data does not exist, an empty
+     *         Optional if the VNF is not found, or an optional containing the
+     *         found VNF.
+     */
+    private Optional<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> getVfModuleObject (
+            ConfigServices configServices, String vnfId, String vfModuleId) {
+        // Map the Marshall the JSON String into a Java Object
+        log.info("Getting vf-module Data for ({})", vfModuleId);
+
+        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf = getVnfObject(configServices, vnfId);
+        GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.get().getVnfData();
+
+        return vnfData.getVfModules().getVfModule()
+                .stream()
+                .filter(vf -> vf.getVfModuleId().equals(vfModuleId))
+                .findFirst();
+    }
+
+    /**
      * Creates or updates VNF data in the Config table for a specified Service
      * Instance. If it is a new Service Instance or a new VNF, creates all necessary
      * parent data containers, then performs the updates.
      * <p>
-     * Maps to
-     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/
-     * 
-     * @param serviceInstanceId                                        the Service
-     *                                                                 Instance ID
-     *                                                                 to perform
-     *                                                                 the delete on
-     * @param vnfId                                                    the VNF ID of
-     *                                                                 the VNF to
-     *                                                                 delete
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId the VNF ID of the VNF to delete
      * @param genericResourceApiServicedataServicedataVnfsVnfBodyParam the playload
      * @return HttpStatus.CREATED (201) on successful create
-     *         <p>
-     *         HttpStatus.NO_CONTENT (204) on successful update
-     *         <p>
-     *         HttpStatus.BAD_REQUEST (400) if {@code vnfId} does not match what is
-     *         specified in the
-     *         {@code genericResourceApiServicedataServicedataVnfsVnfBodyParam} , or
-     *         if updating the database fails.
+     * <p>
+     * HttpStatus.NO_CONTENT (204) on successful update
+     * <p>
+     * HttpStatus.BAD_REQUEST (400) if {@code vnfId} does not match what is specified in the
+     * {@code genericResourceApiServicedataServicedataVnfsVnfBodyParam} , or if updating the database fails.
      * @throws RestException
      */
     @Override
@@ -1422,33 +1691,15 @@ public class ConfigApiController implements ConfigApi {
      * Service Instance. If it is a new Service Instance or a new VNF, creates all
      * necessary parent data containers, then performs the updates.
      * <p>
-     * Maps to
-     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/
-     * 
-     * @param serviceInstanceId                                                                  the
-     *                                                                                           Service
-     *                                                                                           Instance
-     *                                                                                           ID
-     *                                                                                           to
-     *                                                                                           perform
-     *                                                                                           the
-     *                                                                                           delete
-     *                                                                                           on
-     * @param vnfId                                                                              the
-     *                                                                                           VNF
-     *                                                                                           ID
-     *                                                                                           of
-     *                                                                                           the
-     *                                                                                           VNF
-     *                                                                                           to
-     *                                                                                           delete
-     * @param genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam the
-     *                                                                                           payload
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId the VNF ID of the VNF to delete
+     * @param genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam the * payload
      * @return HttpStatus.CREATED (201) on successful create.
-     *         <p>
-     *         HttpStatus.NO_CONTENT (204) on successful update.
-     *         <p>
-     *         HttpStatus.BAD_REQUEST (400) if updating the database fails.
+     * <p>
+     * HttpStatus.NO_CONTENT (204) on successful update.
+     * <p>
+     * HttpStatus.BAD_REQUEST (400) if updating the database fails.
      * @throws RestException
      */
     @Override
@@ -1753,5 +2004,259 @@ public class ConfigApiController implements ConfigApi {
 
     }
 
+    /**
+     * Extracts VF MODULE data from CONFIG_GRA_SERVICES for a given, service-instance-id, vnf-id, and vf-module-id
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vf-modules/vf-module/{vf-module-id}/
+     * @param serviceInstanceId the Service Instance ID to lookup data for
+     * @param vnfId the VNF ID of the VNF to return
+     * @param vfModuleId the vf-moudle ID of a specific VNF to return
+     * @return HttpStatus.OK (200) if the data is found.
+     * @throws RestException if the data does not exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule>
+    configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVfModulesVfModuleVfModuleIdGet(
+            String serviceInstanceId, String vnfId, String vfModuleId) throws RestException {
 
+        log.info("GET | Vf Module Data for ({})", vfModuleId);
+
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if(getAcceptHeader().get().contains("application/json")) {
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        Optional<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> vfModule =
+                getVfModuleObject(services.get(0), vnfId, vfModuleId);
+        if(vfModule.isPresent()) {
+            return new ResponseEntity<>(vfModule.get(), HttpStatus.OK);
+        } else {
+            log.info("No vf-module found for [{}]", vfModuleId);
+            throw new RestApplicationException("data-missing", "Request could not be completed because the relevant data model content does not exist", HttpStatus.NOT_FOUND.value());
+        }
+    }
+
+    /**
+     * PUT VF MODULE data into CONFIG_GRA_SERVICES of a given, service-instance-id, vnf-id
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vf-modules/vf-module/{vf-module-id}/
+     * @param serviceInstanceId the Service Instance ID
+     * @param vnfId the VNF ID as the parent of the specified vf-module-id and child of the specified service-instance
+     * @param vfModuleId the vf-moudle ID as a child of the specified VNF
+     * @return HttpStatus.OK (200) if the data is found.
+     * @throws RestException if the data does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVfModulesVfModuleVfModuleIdPut(
+            String serviceInstanceId, String vnfId, String vfModuleId,
+            GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam)
+            throws RestException {
+        log.info("PUT | vf-module Data of ({}) for vnf ({}) in service({})", vfModuleId, vnfId, serviceInstanceId);
+
+        if(! vfModuleId.equals(genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam.getVfModuleId())) {
+            throw new RestProtocolException("bad-attribute", "vf-module-id mismatch", HttpStatus.BAD_REQUEST.value());
+        }
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            log.info("Something with header");
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+
+        HttpStatus responseStatus = HttpStatus.NO_CONTENT;
+        ConfigServices service;
+        GenericResourceApiServicedataServiceData svcData;
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if((services == null) || (services.isEmpty())) {
+            log.error("service-instance-id ({}) not found in SDN.", serviceInstanceId);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            service = services.get(0);
+        }
+
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch(JsonProcessingException e) {
+            log.error("Error", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        GenericResourceApiServicedataServicedataVnfs vnfs = svcData.getVnfs();
+        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf =
+                vnfs.getVnf()
+                        .stream()
+                        .filter(targetVnf -> targetVnf.getVnfId().equals(vnfId))
+                        .findFirst();
+
+        if(! vnf.isPresent()) {
+            log.error("vnf-id ({}) not found in SDN.", vnfId);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.get().getVnfData();
+        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules existingVfModules = vnfData.getVfModules();
+        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules newVfModules = new GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules();
+
+        if (existingVfModules == null || existingVfModules.getVfModule().isEmpty()) {
+            log.info("No existing vf-module found. Creating the first vf-module for vnf [{}]", vnfId);
+            newVfModules.addVfModuleItem(genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam);
+            responseStatus = HttpStatus.CREATED;
+        }
+        else {
+            ArrayList<String> vfModuleIds = new ArrayList<>();
+            for (GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule vf : existingVfModules.getVfModule()) {
+                vfModuleIds.add(vf.getVfModuleId());
+            }
+            log.info("[{}] vf-module(s) {} found in vnf [{}]", existingVfModules.getVfModule().size(), vfModuleIds, vnfId);
+            if (!vfModuleIds.isEmpty() && vfModuleIds.contains(vfModuleId)) {
+                log.info("Overwriting vf-module [{}] in vnf [{}]",  vfModuleId, vnfId);
+            } else {
+                log.info("Adding vf-module [{}] to vnf [{}]", vfModuleId, vnfId);
+            }
+            existingVfModules.getVfModule()
+                    .stream()
+                    .filter(vf -> ! vf.getVfModuleId().equals(vfModuleId))
+                    .forEach(newVfModules::addVfModuleItem);
+            newVfModules.addVfModuleItem(genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam);
+            responseStatus = HttpStatus.OK;
+        }
+        vnfData.setVfModules(newVfModules);
+        // Map and save the new data
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(svcData));
+            configServicesRepository.save(service);
+            return new ResponseEntity<>(responseStatus);
+        } catch(JsonProcessingException e) {
+            log.error("Error mapping object to JSON", e);
+            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Extracts VF MODULE Topology data from the Config table specified Service
+     * Instance and VNF ID.
+     * <p>
+     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vf-modules/vf-module/{vf-module-id}/vf-module-data/vf-module-topology/
+     * @param serviceInstanceId the Service Instance ID to lookup data for
+     * @param vnfId the VNF ID of the VNF to extract topology data from.
+     * @param vfModuleId the vf-module-idof the vf-module to extract topology data from.
+     * @return HttpStatus.OK (200) if the data is found.
+     * @throws RestException if the data does not exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiVfmoduletopologyVfModuleTopology>
+    configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVfModulesVfModuleVfModuleIdVfModuleDataVfModuleTopologyGet(
+            String serviceInstanceId, String vnfId, String vfModuleId) throws RestException {
+        log.info("GET | vf-module-topology for ({})", vfModuleId);
+        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            if (getAcceptHeader().get().contains("application/json")) {
+
+            }
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        Optional<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> vfModule =
+                getVfModuleObject(services.get(0), vnfId, vfModuleId);
+        if(vfModule.isPresent()
+                && vfModule.get().getVfModuleData() != null
+                && vfModule.get().getVfModuleData().getVfModuleTopology() != null) {
+            return new ResponseEntity<>(vfModule.get().getVfModuleData().getVfModuleTopology(), HttpStatus.OK);
+        } else {
+            log.info("No information found for {}", vfModuleId);
+            throw new RestApplicationException("data-missing", "Request could not be completed because the relevant data model content does not exist", HttpStatus.NOT_FOUND.value());
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVfModulesVfModuleVfModuleIdDelete(
+            String serviceInstanceId, String vnfId, String vfModuleId) throws RestProtocolException {
+
+        log.info("DELETE | vf-module Data for ({})", vfModuleId);
+
+        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
+            log.info("Something with header.");
+        } else {
+            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
+        }
+
+        ConfigServices service;
+        GenericResourceApiServicedataServiceData svcData;
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if((services == null) || (services.isEmpty())) {
+            log.error("service-instance-id ({}) not found in SDN.", serviceInstanceId);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            service = services.get(0);
+        }
+
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch(JsonProcessingException e) {
+            log.error("Error", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        GenericResourceApiServicedataServicedataVnfs vnfs = svcData.getVnfs();
+        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf =
+                vnfs.getVnf()
+                        .stream()
+                        .filter(targetVnf -> targetVnf.getVnfId().equals(vnfId))
+                        .findFirst();
+
+        if(! vnf.isPresent()) {
+            log.error("vnf-id ({}) not found in SDN.", vnfId);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.get().getVnfData();
+        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules existingVfModules = vnfData.getVfModules();
+        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules newVfModules = new GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules();
+
+        if (existingVfModules == null || existingVfModules.getVfModule().isEmpty()) {
+            log.info("No existing vf-module found. Creating the first vf-module for vnf [{}]", vnfId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        ArrayList<String> vfModuleIds = new ArrayList<>();
+        for (GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule vf : existingVfModules.getVfModule()) {
+            vfModuleIds.add(vf.getVfModuleId());
+        }
+        log.info("[{}] vf-module(s) {} found in vnf [{}]", existingVfModules.getVfModule().size(), vfModuleIds, vnfId);
+        if (!vfModuleIds.isEmpty() && vfModuleIds.contains(vfModuleId)) {
+            log.info("Deleting vf-module [{}] from vnf [{}]",  vfModuleId, vnfId);
+        } else {
+            log.info("vf-module [{}] not found in vnf [{}]", vfModuleId, vnfId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        existingVfModules.getVfModule()
+                .stream()
+                .filter(vf -> ! vf.getVfModuleId().equals(vfModuleId))
+                .forEach(newVfModules::addVfModuleItem);
+        vnfData.setVfModules(newVfModules);
+        log.info("vf-module [{}] deleted from vnf [{}]", vfModuleId, vnfId);
+
+        // Map and save the new data
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(svcData));
+            configServicesRepository.save(service);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch(JsonProcessingException e) {
+            log.error("Error mapping object to JSON", e);
+            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }

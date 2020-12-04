@@ -35,10 +35,18 @@ import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResources;
+import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResourcesRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurations;
+import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurationsRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.OperationalPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalServices;
 import org.onap.sdnc.apps.ms.gra.data.OperationalServicesRepository;
+import org.onap.sdnc.apps.ms.gra.data.OperationalContrailRouteAllottedResources;
+import org.onap.sdnc.apps.ms.gra.data.OperationalContrailRouteAllottedResourcesRepository;
+import org.onap.sdnc.apps.ms.gra.data.OperationalPortMirrorConfigurations;
+import org.onap.sdnc.apps.ms.gra.data.OperationalPortMirrorConfigurationsRepository;
 import org.onap.sdnc.apps.ms.gra.swagger.OperationsApi;
 import org.onap.sdnc.apps.ms.gra.swagger.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +78,12 @@ public class OperationsApiController implements OperationsApi {
     private static final String VNF_OBJECT_PATH_PARAM = "vnf-object-path";
     private static final String PNF_OBJECT_PATH_PARAM = "pnf-object-path";
     private static final String VF_MODULE_OBJECT_PATH_PARAM = "vf-module-object-path";
-    private static final String VF_MODULE_ID_PARAM = "vf-module-id";
-
+    private static final String PORT_MIRROR_OBJECT_PATH_PARAM = "port-mirror-object-path";
+    private static final String BACKGROUND_THREAD_STARTED_MESSAGE = "Start background thread";
+    private static final String BACKGROUND_THREAD_INFO = "Background thread: input conf_id is {}";
+    private static final String SKIP_MDSAL_UPDATE_PROP = "skip-mdsal-update";
+    private static final String ADDING_INPUT_DATA_LOG = "Adding INPUT data for {} [{}] input: {}";
+    private static final String ADDING_OPERATIONAL_DATA_LOG = "Adding OPERATIONAL data for {} [{}] operational-data: {}";
 
     private final ObjectMapper objectMapper;
 
@@ -91,6 +103,18 @@ public class OperationsApiController implements OperationsApi {
 
     @Autowired
     private OperationalServicesRepository operationalServicesRepository;
+
+    @Autowired
+    private ConfigContrailRouteAllottedResourcesRepository configContrailRouteAllottedResourcesRepository;
+
+    @Autowired
+    private OperationalContrailRouteAllottedResourcesRepository operationalContrailRouteAllottedResourcesRepository;
+
+    @Autowired
+    private ConfigPortMirrorConfigurationsRepository configPortMirrorConfigurationsRepository;
+
+    @Autowired
+    private OperationalPortMirrorConfigurationsRepository operationalPortMirrorConfigurationsRepository;
 
     private static class Iso8601Util {
 
@@ -383,6 +407,44 @@ public class OperationsApiController implements OperationsApi {
         return input == null || input.getServiceInformation() == null
                 || input.getServiceInformation().getServiceInstanceId() == null
                 || input.getServiceInformation().getServiceInstanceId().length() == 0;
+    }
+
+    private boolean hasInvalidServiceId(GenericResourceApiVfModuleOperationInformation input) {
+
+        return input == null || input.getServiceInformation() == null
+                || input.getServiceInformation().getServiceInstanceId() == null
+                || input.getServiceInformation().getServiceInstanceId().length() == 0;
+    }
+
+    private boolean hasInvalidServiceId(GenericResourceApiPortMirrorTopologyOperationInformation input) {
+
+        return input == null || input.getServiceInformation() == null
+                || input.getServiceInformation().getServiceInstanceId() == null
+                || input.getServiceInformation().getServiceInstanceId().length() == 0;
+    }
+
+    private boolean hasInvalidServiceId(GenericResourceApiVnfgetresourcerequestInput input) {
+
+        return input == null || input.getServiceInformation() == null
+                || input.getServiceInformation().getServiceInstanceId() == null
+                || input.getServiceInformation().getServiceInstanceId().length() == 0;
+    }
+
+    private boolean hasInvalidVnfId(GenericResourceApiVfModuleOperationInformation input) {
+
+        return input == null || input.getVnfInformation() == null
+                || input.getVnfInformation().getVnfId() == null
+                || input.getVnfInformation().getVnfId().length() == 0;
+    }
+
+    private boolean hasInvalidConfigurationId(GenericResourceApiPortMirrorTopologyOperationInformation input) {
+        return input.getConfigurationInformation() == null
+                || input.getConfigurationInformation().getConfigurationId() == null
+                || input.getConfigurationInformation().getConfigurationId().length() == 0;
+    }
+
+    private boolean hasInvalidPolicyUpdateInput(GenericResourceApiPolicyupdatenotifyoperationInput input) {
+        return (input.getPolicyName() == null) || (input.getUpdateType() == null) || (input.getVersionId() == null);
     }
 
     private GenericResourceApiPreloaddataPreloadData getConfigPreloadData(String preloadId, String preloadType)
@@ -857,5 +919,663 @@ public class OperationsApiController implements OperationsApi {
                 return (new ResponseEntity<>(retval, HttpStatus.OK));
     }
 
-    
+    @Override
+    public ResponseEntity<GenericResourceApiVfModuleTopologyOperation> operationsGENERICRESOURCEAPIvfModuleTopologyOperationPost(
+            @Valid GenericResourceApiVfModuleOperationInformationBodyparam input)
+            throws RestException {
+        final String svcOperation = "vf-module-topology-operation";
+        GenericResourceApiVfModuleTopologyOperation retval = new GenericResourceApiVfModuleTopologyOperation();
+        GenericResourceApiVfmoduletopologyoperationOutput resp = new GenericResourceApiVfmoduletopologyoperationOutput();
+
+        log.info(CALLED_STR, svcOperation);
+        // Verify input contains service instance id
+        if (hasInvalidServiceId(input.getInput())) {
+            log.debug("exiting {} because of null or empty service-instance-id", svcOperation);
+
+            resp.setResponseCode("404");
+            resp.setResponseMessage("null or empty service-instance-id");
+            resp.setAckFinalIndicator("Y");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        // Verify input contains vnf-id
+        if (hasInvalidVnfId(input.getInput())) {
+            log.debug("exiting {} because of null or empty vnf-id", svcOperation);
+
+            resp.setResponseCode("404");
+            resp.setResponseMessage("null or empty vnf-id");
+            resp.setAckFinalIndicator("Y");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        String svcInstanceId = input.getInput().getServiceInformation().getServiceInstanceId();
+        String vnfId = input.getInput().getVnfInformation().getVnfId();
+        String vfModuleId = input.getInput().getVfModuleInformation().getVfModuleId();
+
+        SvcLogicContext ctxIn = new SvcLogicContext();
+
+        // Add input to SvcLogicContext
+        try {
+            ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
+        } catch (JsonProcessingException e) {
+            log.error("exiting {} due to parse error on input data", svcOperation);
+            resp.setResponseCode("500");
+            resp.setResponseMessage("internal error");
+            resp.setAckFinalIndicator("Y");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Add config tree data to SvcLogicContext
+        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
+        ConfigServices configService = null;
+        if (configServices != null && !configServices.isEmpty()) {
+            configService = configServices.get(0);
+            log.info("Read ({}) data for [{}] service-data: {}",
+                    "CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS", svcInstanceId, configService.getSvcData().toString());
+            ctxIn.mergeJson("service-data", configService.getSvcData());
+        } else {
+            log.debug("exiting {} because the service-instance does not have any service data in SDN", svcOperation);
+            resp.setResponseCode("404");
+            resp.setResponseMessage("invalid input: the service-instance does not have any service data in SDNC");
+            resp.setAckFinalIndicator("Y");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        // Add operational tree data to SvcLogicContext
+        List<OperationalServices> operServices = operationalServicesRepository.findBySvcInstanceId(svcInstanceId);
+        OperationalServices operService = null;
+
+        if (operServices != null && !operServices.isEmpty()) {
+            operService = operServices.get(0);
+            log.info("Read ({}) data for [{}] operational-data: {}",
+                    "OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS", svcInstanceId, operService.getSvcData().toString());
+            //ctxIn.mergeJson("operational-data", operService.getSvcData());
+        } else {
+            log.info("No operational-data found in OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS for [{}]", svcInstanceId);
+            operService = new OperationalServices(svcInstanceId, null, null);
+        }
+
+        // Update service status info in config entry from input
+        configService.setServiceStatusAction(input.getInput().getRequestInformation().getRequestAction().toString());
+        configService.setServiceStatusRpcAction(input.getInput().getSdncRequestHeader().getSvcAction().toString());
+        configService.setServiceStatusRpcName(svcOperation);
+
+        String ackFinal = "Y";
+        String skipMdsalUpdate;
+
+        // Call DG
+        try {
+            // Any of these can throw a nullpointer exception
+            // execute should only throw a SvcLogicException
+            SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
+            Properties respProps = ctxOut.toProperties();
+
+            ackFinal = respProps.getProperty("ack-final", "Y");
+            skipMdsalUpdate = respProps.getProperty("skip-mdsal-update", "N");
+            log.info("ackFinal [{}], skipMdsalUpdate [{}]", ackFinal, skipMdsalUpdate);
+
+            resp.setAckFinalIndicator(ackFinal);
+            resp.setResponseCode(respProps.getProperty("error-code", "200"));
+            resp.setResponseMessage(respProps.getProperty("error-message", "SUCCESS"));
+
+            // Update status in config services entry
+            configService.setServiceStatusFinalIndicator(resp.getAckFinalIndicator());
+            configService.setServiceStatusResponseCode(resp.getResponseCode());
+            configService.setServiceStatusResponseMessage(resp.getResponseMessage());
+            configService.setServiceStatusResponseTimestamp(Iso8601Util.now());
+            configService
+                    .setServiceStatusRequestStatus(GenericResourceApiRequestStatusEnumeration.SYNCCOMPLETE.toString());
+
+            if ("200".equals(resp.getResponseCode())) {
+
+                GenericResourceApiInstanceReference serviceReference = new GenericResourceApiInstanceReference();
+                serviceReference.setInstanceId(svcInstanceId);
+                serviceReference.setObjectPath(respProps.getProperty(SERVICE_OBJECT_PATH_PARAM));
+                resp.setServiceResponseInformation(serviceReference);
+
+                GenericResourceApiInstanceReference vnfReference = new GenericResourceApiInstanceReference();
+                vnfReference.setInstanceId(vnfId);
+                vnfReference.setObjectPath(respProps.getProperty(VNF_OBJECT_PATH_PARAM));
+                resp.setVnfResponseInformation(vnfReference);
+
+                GenericResourceApiInstanceReference vfModuleReference = new GenericResourceApiInstanceReference();
+                vnfReference.setInstanceId(vfModuleId);
+                vnfReference.setObjectPath(respProps.getProperty(VF_MODULE_OBJECT_PATH_PARAM));
+                resp.setVnfResponseInformation(vfModuleReference);
+
+                if (skipMdsalUpdate.equals("N")) {
+                    // If DG returns success,
+                    // ONLY update svcData in config and operational trees
+                    // and remember to save operational data when skip-mdsal-update is Y in ctx.
+                    String ctxJson = ctxOut.toJsonString("service-data");
+                    log.info("Saving service-data in SDN because skiMdsalUpdate is {}", skipMdsalUpdate);
+                    configService.setSvcData(ctxJson);
+                    configServicesRepository.save(configService);
+
+                    log.info("Copying service-data to operational-data");
+                    operService.setSvcData(ctxJson);
+                    operService.setServiceStatus(configService.getServiceStatus());
+                    operationalServicesRepository.save(operService);
+                }
+            }
+        } catch (NullPointerException npe) {
+            resp.setAckFinalIndicator("Y");
+            resp.setResponseCode("500");
+            resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+        } catch (SvcLogicException e) {
+            resp.setAckFinalIndicator("Y");
+        }
+
+        if (ackFinal.equals("N")) {
+            // Spawn background thread to invoke the Async DG
+            Runnable backgroundThread = new Runnable() {
+                public void run() {
+                    log.info(BACKGROUND_THREAD_STARTED_MESSAGE);
+                    processAsyncVfModuleTopologyOperation(svcOperation, input);
+                }
+            };
+            new Thread(backgroundThread).start();
+        }
+        retval.setOutput(resp);
+        return (new ResponseEntity<>(retval, HttpStatus.OK));
+    }
+
+    public void processAsyncVfModuleTopologyOperation( String parentOperation,
+            @Valid GenericResourceApiVfModuleOperationInformationBodyparam input) {
+        log.info(BACKGROUND_THREAD_INFO, input.getInput().getVfModuleInformation().getVfModuleId());
+        final String svcOperation = "vf-module-topology-operation-async";
+
+        log.info(CALLED_STR, svcOperation);
+        String svcInstanceId = input.getInput().getServiceInformation().getServiceInstanceId();
+        SvcLogicContext ctxIn = new SvcLogicContext();
+
+        // Add input to SvcLogicContext
+        try {
+            ctxIn.mergeJson(parentOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
+        } catch (JsonProcessingException e) {
+            log.error("exiting {} due to parse error on input data", svcOperation);
+            return;
+        }
+
+        // Add config tree data to SvcLogicContext
+        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
+        ConfigServices configService = null;
+        if (configServices != null && !configServices.isEmpty()) {
+            configService = configServices.get(0);
+            log.info("Read ({}) data for [{}] service-data: {}",
+                    "CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS", svcInstanceId, configService.getSvcData().toString());
+            ctxIn.mergeJson("service-data", configService.getSvcData());
+        } else {
+            log.debug("exiting {} because the service-instance does not have any service data in SDN", svcOperation);
+            return;
+        }
+
+        // Add operational tree data to SvcLogicContext
+        List<OperationalServices> operServices = operationalServicesRepository.findBySvcInstanceId(svcInstanceId);
+        OperationalServices operService = null;
+
+        if (operServices != null && !operServices.isEmpty()) {
+            operService = operServices.get(0);
+            log.info("Read ({}) data for [{}] operational-data: {}",
+                    "OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS", svcInstanceId, operService.getSvcData().toString());
+            //ctxIn.mergeJson("operational-data", operService.getSvcData());
+        } else {
+            log.info("No operational-data found in OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS for [{}]", svcInstanceId);
+            operService = new OperationalServices(svcInstanceId, null, null);
+        }
+
+        // Update service status info in config entry from input
+        configService.setServiceStatusAction(input.getInput().getRequestInformation().getRequestAction().toString());
+        configService.setServiceStatusRpcAction(input.getInput().getSdncRequestHeader().getSvcAction().toString());
+        configService.setServiceStatusRpcName(svcOperation);
+
+        String respStatus = "SUCCESS";
+        String errorMessage = null;
+
+        log.info ("Adding INPUT data for {} [{}] input: {}", svcOperation, svcInstanceId, input.getInput().toString());
+
+        // Call DG
+        try {
+            // Any of these can throw a nullpointer exception
+            // execute should only throw a SvcLogicException
+            SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
+            Properties respProps = ctxOut.toProperties();
+
+            String ackFinal = respProps.getProperty("ack-final-indicator", "Y");
+            String errorCode = respProps.getProperty("error-code", "200");
+            errorMessage = respProps.getProperty("error-message", "SUCCESS");
+
+            if (! "200".equals(errorCode)) {
+                respStatus = "FAILED";
+            }
+
+            // Update status in config services entry
+            configService.setServiceStatusFinalIndicator(ackFinal);
+            configService.setServiceStatusResponseTimestamp(Iso8601Util.now());
+            configService.setServiceStatusResponseCode(errorCode);
+            configService.setServiceStatusResponseMessage(errorMessage);
+            configService
+                    .setServiceStatusRequestStatus(GenericResourceApiRequestStatusEnumeration.SYNCCOMPLETE.toString());
+
+            String ctxJson = ctxOut.toJsonString("service-data");
+            configServicesRepository.save(configService);
+
+            operService.setSvcData(ctxJson);
+            operService.setServiceStatus(configService.getServiceStatus());
+            operationalServicesRepository.save(operService);
+
+        } catch (Exception ex) {
+            log.error("Caught Exception updating service status in SDN for {} [{}] \n", svcOperation, svcInstanceId);
+        }
+        log.info("Returned {} for {} [{}] {}.", respStatus, svcOperation, svcInstanceId, errorMessage);
+    }
+
+    @Override
+    public ResponseEntity<GenericResourceApiPortMirrorTopologyOperation> operationsGENERICRESOURCEAPIportMirrorTopologyOperationPost(
+            @Valid GenericResourceApiPortMirrorTopologyOperationInformationBodyparam input)
+            throws RestException {
+        final String svcOperation = "port-mirror-topology-operation";
+        GenericResourceApiPortMirrorTopologyOperation retval = new GenericResourceApiPortMirrorTopologyOperation();
+        GenericResourceApiPortmirrortopologyoperationOutput resp = new GenericResourceApiPortmirrortopologyoperationOutput();
+
+        log.info(CALLED_STR, svcOperation);
+
+        // Verify input contains configuration-id
+        if (hasInvalidConfigurationId(input.getInput())) {
+            log.debug("exiting {} because of null or empty configuration-id", svcOperation);
+
+            resp.setResponseCode("404");
+            resp.setResponseMessage("null or empty configuration-id");
+            resp.setAckFinalIndicator("Y");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        // Verify input contains service instance id
+        if (hasInvalidServiceId(input.getInput())) {
+            log.debug("exiting {} because of null or empty service-instance-id", svcOperation);
+
+            resp.setResponseCode("404");
+            resp.setResponseMessage("null or empty service-instance-id");
+            resp.setAckFinalIndicator("Y");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        String svcInstanceId = input.getInput().getServiceInformation().getServiceInstanceId();
+        String configurationId = input.getInput().getConfigurationInformation().getConfigurationId();
+
+        SvcLogicContext ctxIn = new SvcLogicContext();
+
+        // Add input to SvcLogicContext
+        try {
+            ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
+        } catch (JsonProcessingException e) {
+            log.error("exiting {} due to parse error on input data", svcOperation);
+            resp.setResponseCode("500");
+            resp.setResponseMessage("internal error");
+            resp.setAckFinalIndicator("Y");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Add service instance config data to SvcLogicContext
+        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
+        ConfigServices configService = null;
+        if (configServices != null && !configServices.isEmpty()) {
+            configService = configServices.get(0);
+            log.info("Read ({}) data for [{}] service-data: {}", "CONFIG_GRA_SERVICES", svcInstanceId, configService.getSvcData());
+            ctxIn.mergeJson("service-data", configService.getSvcData());
+
+        } else {
+            log.debug("exiting {} because there is no service data with id [{}] in SDN", svcOperation, svcInstanceId);
+            resp.setResponseCode("404");
+            resp.setResponseMessage("invalid input: there is no service-instance with id [{}] in SDNC");
+            resp.setAckFinalIndicator("Y");
+
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        // Add configuration config data to SvcLogicContext
+        List<ConfigPortMirrorConfigurations> configPortMirrorConfigurations =
+                configPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+        ConfigPortMirrorConfigurations configPortMirrorConfiguration;
+        if (configPortMirrorConfigurations != null && !configPortMirrorConfigurations.isEmpty()) {
+            configPortMirrorConfiguration = configPortMirrorConfigurations.get(0);
+            log.info("Read ({}) data for [{}] configuration-data: {}",
+                    "CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS", configurationId, configPortMirrorConfiguration.getPmcData());
+            ctxIn.mergeJson("configuration-data", configPortMirrorConfiguration.getPmcData());
+
+        } else {
+            log.info("No configuration-data found ({}) for [{}]", "CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS", configurationId);
+            configPortMirrorConfiguration = new ConfigPortMirrorConfigurations(configurationId, null);
+        }
+
+        /*
+        // Add configuration operational data to SvcLogicContext
+        List<OperationalPortMirrorConfigurations> operPortMirrorConfigurations =
+                operationalPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+        OperationalPortMirrorConfigurations operPortMirrorConfiguration;
+
+        if (operPortMirrorConfigurations != null && !operPortMirrorConfigurations.isEmpty()) {
+            operPortMirrorConfiguration = operPortMirrorConfigurations.get(0);
+            log.info("Read ({}) data for [{}] operational-data: {}",
+                    "OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS", configurationId, operPortMirrorConfiguration.getPmcData());
+            ctxIn.mergeJson("operational-data", operPortMirrorConfiguration.getPmcData());
+
+        } else {
+            log.info("No operational-data found ({}) for [{}]", "OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS", configurationId);
+            operPortMirrorConfiguration = new OperationalPortMirrorConfigurations(configurationId, null, null);
+        }
+
+        */
+
+        String ackFinal = "Y";
+        String errorCode = "200";
+        String errorMessage = "SUCCESS";
+        String respStatus = "SUCCESS";
+
+        log.info(ADDING_INPUT_DATA_LOG, svcOperation, svcInstanceId, input.getInput().toString());
+        //log.info(ADDING_INPUT_DATA_LOG, svcOperation, svcInstanceId, input.toString());
+
+        // Update service status info in config entry from input
+        configPortMirrorConfiguration.setPortMirrorConfigurationStatusAction(input.getInput().getRequestInformation().getRequestAction().toString());
+        configPortMirrorConfiguration.setPortMirrorConfigurationStatusRpcAction(input.getInput().getSdncRequestHeader().getSvcAction().toString());
+        configPortMirrorConfiguration.setPortMirrorConfigurationStatusRpcName(svcOperation);
+
+        // Call DG
+        try {
+            // Any of these can throw a nullpointer exception
+            // execute should only throw a SvcLogicException
+            SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
+            Properties respProps = ctxOut.toProperties();
+
+            ackFinal = respProps.getProperty("ack-final", "Y");
+            errorCode = respProps.getProperty("error-code", "200");
+            errorMessage = respProps.getProperty("error-message", "SUCCESS");
+            log.info("ackFinal [{}], error-code [{}], error-message [{}]", ackFinal, errorCode, errorMessage);
+
+            resp.setAckFinalIndicator(ackFinal);
+            resp.setResponseCode(errorCode);
+            resp.setResponseMessage(errorMessage);
+
+            // Update status in config services entry
+            configPortMirrorConfiguration
+                    .setPortMirrorConfigurationStatusRequestStatus(GenericResourceApiRequestStatusEnumeration.SYNCCOMPLETE.toString());
+            configPortMirrorConfiguration.setPortMirrorConfigurationStatusFinalIndicator(resp.getAckFinalIndicator());
+            configPortMirrorConfiguration.setPortMirrorConfigurationStatusResponseCode(resp.getResponseCode());
+            configPortMirrorConfiguration.setPortMirrorConfigurationStatusResponseMessage(resp.getResponseMessage());
+            configPortMirrorConfiguration.setPortMirrorConfigurationStatusResponseTimestamp(Iso8601Util.now());
+
+            GenericResourceApiInstanceReference serviceReference = new GenericResourceApiInstanceReference();
+            serviceReference.setInstanceId(svcInstanceId);
+            serviceReference.setObjectPath(respProps.getProperty(SERVICE_OBJECT_PATH_PARAM));
+            resp.setServiceResponseInformation(serviceReference);
+
+            GenericResourceApiInstanceReference pmcReference = new GenericResourceApiInstanceReference();
+            serviceReference.setInstanceId(configurationId);
+            serviceReference.setObjectPath(respProps.getProperty(PORT_MIRROR_OBJECT_PATH_PARAM));
+            resp.setServiceResponseInformation(pmcReference);
+
+            retval.setOutput(resp);
+
+            // ONLY update pmcData in config and operational trees
+            //String ctxJson = ctxOut.toJsonString("configuration-data");
+            //configPortMirrorConfiguration.setPmcData(ctxJson);
+            //operPortMirrorConfiguration.setPmcData(ctxJson);
+            //configPortMirrorConfigurationsRepository.save(configPortMirrorConfiguration);
+
+            // If necessary, sync status to operation service entry and save
+            //operPortMirrorConfiguration.setPortMirrorConfigurationStatus(configPortMirrorConfiguration.getPortMirrorConfigurationStatus());
+            //operationalPortMirrorConfigurationsRepository.save(operPortMirrorConfiguration);
+
+            if (! "200".equals(errorCode)) {
+                respStatus = "FAILED";
+            }
+
+        } catch (NullPointerException npe) {
+            resp.setAckFinalIndicator("Y");
+            resp.setResponseCode("500");
+            resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+        } catch (SvcLogicException e) {
+            resp.setAckFinalIndicator("Y");
+        }
+
+        if (ackFinal.equals("N")) {
+            // Spawn background thread to invoke the Async DG
+            Runnable backgroundThread = new Runnable() {
+                public void run() {
+                    log.info(BACKGROUND_THREAD_STARTED_MESSAGE);
+                    processAsyncPortMirrorTopologyOperation(svcOperation, input);
+                 }
+            };
+            new Thread(backgroundThread).start();
+        }
+        log.info("Returned {} for {} [{}] {}.", respStatus, svcOperation, configurationId, errorMessage);
+        return (new ResponseEntity<>(retval, HttpStatus.OK));
+    }
+
+    public void processAsyncPortMirrorTopologyOperation( String parentOperation,
+             @Valid GenericResourceApiPortMirrorTopologyOperationInformationBodyparam input) {
+        log.info(BACKGROUND_THREAD_INFO, input.getInput().getConfigurationInformation().getConfigurationId());
+        final String svcOperation = "port-mirror-topology-operation-async";
+
+        log.info(CALLED_STR, svcOperation);
+        String svcInstanceId = input.getInput().getServiceInformation().getServiceInstanceId();
+        String configurationId = input.getInput().getConfigurationInformation().getConfigurationId();
+        SvcLogicContext ctxIn = new SvcLogicContext();
+
+        String errorMessage;
+
+        // Add input to SvcLogicContext
+        try {
+            ctxIn.mergeJson(parentOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
+        } catch (JsonProcessingException e) {
+            log.error("exiting {} due to parse error on input data", svcOperation);
+            return;
+        }
+
+        // Add service instance config data to SvcLogicContext
+        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
+        ConfigServices configService = null;
+        if (configServices != null && !configServices.isEmpty()) {
+            configService = configServices.get(0);
+            ctxIn.mergeJson("service-data", configService.getSvcData());
+        } else {
+            log.error("exiting {} because there is no service data with id [{}] in SDN", svcOperation, svcInstanceId);
+            return;
+        }
+
+        // Add config tree data to SvcLogicContext
+        List<ConfigPortMirrorConfigurations> configPortMirrorConfigurations = configPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+        ConfigPortMirrorConfigurations configPortMirrorConfiguration;
+        if (configPortMirrorConfigurations != null && !configPortMirrorConfigurations.isEmpty()) {
+            configPortMirrorConfiguration = configPortMirrorConfigurations.get(0);
+            ctxIn.mergeJson("configuration-data", configPortMirrorConfiguration.getPmcData());
+        } else {
+            configPortMirrorConfiguration = new ConfigPortMirrorConfigurations(configurationId, null);
+        }
+
+        /*
+        // Add operational tree data to SvcLogicContext
+        List<OperationalPortMirrorConfigurations> operPortMirrorConfigurations = operationalPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+        OperationalPortMirrorConfigurations operPortMirrorConfiguration = null;
+
+        if (operPortMirrorConfigurations != null && !operPortMirrorConfigurations.isEmpty()) {
+            operPortMirrorConfiguration = operPortMirrorConfigurations.get(0);
+            ctxIn.mergeJson("operational-data", operPortMirrorConfiguration.getPmcData());
+        } else {
+            operPortMirrorConfiguration = new OperationalPortMirrorConfigurations(configurationId, null, null);
+        }
+
+        */
+
+        // Update service status info in config entry from input
+        configPortMirrorConfiguration.setPortMirrorConfigurationStatusAction(input.getInput().getRequestInformation().getRequestAction().toString());
+        configPortMirrorConfiguration.setPortMirrorConfigurationStatusRpcAction(input.getInput().getSdncRequestHeader().getSvcAction().toString());
+        configPortMirrorConfiguration.setPortMirrorConfigurationStatusRpcName(parentOperation);
+
+        log.info("Adding INPUT data for {} [{}] input: {}", svcOperation, svcInstanceId, input.toString());
+
+        // Call DG
+        try {
+            // Any of these can throw a nullpointer exception
+            // execute should only throw a SvcLogicException
+            SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
+            Properties respProps = ctxOut.toProperties();
+
+            String ackFinalIndicator = respProps.getProperty("ack-final-indicator", "Y");
+            String errorCode = respProps.getProperty("error-code", "200");
+            errorMessage = respProps.getProperty("error-message", "SUCCESS");
+
+            // Update status in config services entry
+            configPortMirrorConfiguration.setPortMirrorConfigurationStatusFinalIndicator(ackFinalIndicator);
+            configPortMirrorConfiguration.setPortMirrorConfigurationStatusResponseTimestamp(Iso8601Util.now());
+            configPortMirrorConfiguration.setPortMirrorConfigurationStatusResponseCode(errorCode);
+            configPortMirrorConfiguration.setPortMirrorConfigurationStatusResponseMessage(errorMessage);
+            configPortMirrorConfiguration
+                    .setPortMirrorConfigurationStatusRequestStatus(GenericResourceApiRequestStatusEnumeration.SYNCCOMPLETE.toString());
+
+            // ONLY update status
+            //String ctxJson = ctxOut.toJsonString("configuration-data");
+            //configPortMirrorConfiguration.setPmcData(ctxJson);
+            //configPortMirrorConfiguration.setPmcData(ctxJson);
+
+            // Update config tree
+            configPortMirrorConfigurationsRepository.save(configPortMirrorConfiguration);
+
+            //update operational tree
+            //operPortMirrorConfiguration.setPortMirrorConfigurationStatus(configPortMirrorConfiguration.getPortMirrorConfigurationStatus());
+            //operationalPortMirrorConfigurationsRepository.save(operPortMirrorConfiguration);
+
+        } catch (Exception e) {
+            log.error("Caught Exception updating configuration status in SDN for {} [{}] \n", svcOperation, configurationId);
+        }
+        log.info("Returned SUCCESS for {} [{}]", svcOperation, configurationId);
+    }
+
+    @Override
+    public ResponseEntity<GenericResourceApiVnfGetResourceRequest> operationsGENERICRESOURCEAPIvnfGetResourceRequestPost(
+            @Valid GenericResourceApiVnfgetresourcerequestInputBodyparam input)
+            throws RestException {
+        final String svcOperation = "vnf-get-resource-request";
+        GenericResourceApiVnfGetResourceRequest retval = new GenericResourceApiVnfGetResourceRequest();
+
+        log.info(CALLED_STR, svcOperation);
+        // Verify input contains service instance id
+        if (hasInvalidServiceId(input.getInput())) {
+            log.debug("exiting {} because of null or empty service-instance-id", svcOperation);
+            //return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        String svcInstanceId = input.getInput().getServiceInformation().getServiceInstanceId();
+        SvcLogicContext ctxIn = new SvcLogicContext();
+
+        // Add input to SvcLogicContext
+        try {
+            ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
+        } catch (JsonProcessingException e) {
+            log.error("exiting {} due to parse error on input data", svcOperation);
+            return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Add config tree data to SvcLogicContext
+        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
+        ConfigServices configService = null;
+        if (configServices != null && !configServices.isEmpty()) {
+            configService = configServices.get(0);
+            ctxIn.mergeJson("service-data", configService.getSvcData());
+        } else {
+            log.debug("exiting {} because the service-instance does not have any service data in SDN", svcOperation);
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        // Call DG
+        try {
+            // Any of these can throw a nullpointer exception
+            // execute should only throw a SvcLogicException
+            SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
+            Properties respProps = ctxOut.toProperties();
+
+            /* For debugging Only
+            respProps.forEach((k,v) -> {
+                log.debug("prop: {} -> {}",k,v);
+            });
+            */
+
+            String ctxJson = ctxOut.toJsonString("vnf-get-resource-request-output");
+            GenericResourceApiVnfgetresourcerequestOutput vnfgetresourcerequestOutput =
+                    objectMapper.readValue(ctxJson, GenericResourceApiVnfgetresourcerequestOutput.class);
+
+            retval.setOutput(vnfgetresourcerequestOutput);
+
+        } catch (Exception e) {
+            return (new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+        return (new ResponseEntity<>(retval, HttpStatus.OK));
+    }
+
+    @Override
+    public ResponseEntity<GenericResourceApiPolicyUpdateNotifyOperation> operationsGENERICRESOURCEAPIpolicyUpdateNotifyOperationPost(
+            @Valid GenericResourceApiPolicyupdatenotifyoperationInputBodyparam input)
+            throws RestException {
+        final String svcOperation = "policy-update-notify-operation";
+        GenericResourceApiPolicyUpdateNotifyOperation retval = new GenericResourceApiPolicyUpdateNotifyOperation();
+        GenericResourceApiPolicyupdatenotifyoperationOutput resp = new GenericResourceApiPolicyupdatenotifyoperationOutput();
+
+        log.info(CALLED_STR, svcOperation);
+        // Verify required input elements
+        if (hasInvalidPolicyUpdateInput(input.getInput())) {
+            log.debug("exiting {} because policy name, update type, or version id was not provided", svcOperation);
+            resp.setErrorCode("404");
+            resp.setErrorMsg("policy-name, update-type, and/or version-id is null or empty");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        SvcLogicContext ctxIn = new SvcLogicContext();
+
+        // Add input to SvcLogicContext
+        try {
+            ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
+        } catch (JsonProcessingException e) {
+            log.error("exiting {} due to parse error on input data", svcOperation);
+            resp.setErrorCode("500");
+            resp.setErrorMsg("internal error");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Call DG
+        try {
+            // Any of these can throw a nullpointer exception
+            // execute should only throw a SvcLogicException
+            SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
+            Properties respProps = ctxOut.toProperties();
+            resp.setErrorCode(respProps.getProperty("error-code", "200"));
+            resp.setErrorMsg(respProps.getProperty("error-message", "SUCCESS"));
+
+            /* For debugging Only
+            respProps.forEach((k,v) -> {
+                log.debug("prop: {} -> {}",k,v);
+            });
+             */
+
+        } catch (NullPointerException npe) {
+            resp.setErrorCode("500");
+            resp.setErrorMsg("Check that you populated module, rpc and or mode correctly.");
+        } catch (SvcLogicException e) {
+            resp.setErrorCode("500");
+            resp.setErrorMsg(e.getMessage());
+        }
+
+        retval.setOutput(resp);
+        return (new ResponseEntity<>(retval, HttpStatus.OK));
+    }
+
 }

@@ -2791,3 +2791,57 @@ CREATE TABLE OPERATIONAL_GRA_SERVICES (
   svcData longtext,
   primary key (svcInstanceId)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+
+CREATE TABLE CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS (
+  configurationId varchar(255) not null,
+  portMirrorConfigurationStatusAction varchar(255),
+  portMirrorConfigurationStatusFinalIndicator varchar(255),
+  portMirrorConfigurationStatusRequestStatus varchar(255),
+  portMirrorConfigurationStatusResponseCode varchar(255),
+  portMirrorConfigurationStatusResponseMessage varchar(255),
+  portMirrorConfigurationStatusResponseTimestamp varchar(255),
+  portMirrorConfigurationStatusRpcAction varchar(255),
+  portMirrorConfigurationStatusRpcName varchar(255),
+  pmcData longtext, primary key (configurationId)
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+
+CREATE TABLE OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS (
+  configurationId varchar(255) not null,
+  portMirrorConfigurationStatusAction varchar(255),
+  portMirrorConfigurationStatusFinalIndicator varchar(255),
+  portMirrorConfigurationStatusRequestStatus varchar(255),
+  portMirrorConfigurationStatusResponseCode varchar(255),
+  portMirrorConfigurationStatusResponseMessage varchar(255),
+  portMirrorConfigurationStatusResponseTimestamp varchar(255),
+  portMirrorConfigurationStatusRpcAction varchar(255),
+  portMirrorConfigurationStatusRpcName varchar(255),
+  pmcData longtext,
+  primary key (configurationId)
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+
+CREATE TABLE CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES (
+  allottedResourceId varchar(255) not null,
+  allottedResourceStatusAction varchar(255),
+  allottedResourceStatusFinalIndicator varchar(255),
+  allottedResourceStatusRequestStatus varchar(255),
+  allottedResourceStatusResponseCode varchar(255),
+  allottedResourceStatusResponseMessage varchar(255),
+  allottedResourceStatusResponseTimestamp varchar(255),
+  allottedResourceStatusRpcAction varchar(255),
+  allottedResourceStatusRpcName varchar(255),
+  arData longtext, primary key (allottedResourceId)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+
+CREATE TABLE OPERATIONAL_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES (
+  allottedResourceId varchar(255) not null,
+  allottedResourceStatusAction varchar(255),
+  allottedResourceStatusFinalIndicator varchar(255),
+  allottedResourceStatusRequestStatus varchar(255),
+  allottedResourceStatusResponseCode varchar(255),
+  allottedResourceStatusResponseMessage varchar(255),
+  allottedResourceStatusResponseTimestamp varchar(255),
+  allottedResourceStatusRpcAction varchar(255),
+  allottedResourceStatusRpcName varchar(255),
+  arData longtext,
+  primary key (allottedResourceId)
+  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
