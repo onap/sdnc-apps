@@ -777,146 +777,263 @@ public class OperationsApiController implements OperationsApi {
     public ResponseEntity<GenericResourceApiVnfTopologyOperation> operationsGENERICRESOURCEAPIvnfTopologyOperationPost(
             @Valid GenericResourceApiVnfOperationInformationBodyparam input)
             throws RestException {
-                final String svcOperation = "vnf-topology-operation";
-                GenericResourceApiVnfTopologyOperation retval = new GenericResourceApiVnfTopologyOperation();
-                GenericResourceApiVnftopologyoperationOutput resp = new GenericResourceApiVnftopologyoperationOutput();
-        
-                log.info(CALLED_STR, svcOperation);
-                // Verify input contains service instance id
-                if (hasInvalidServiceId(input.getInput())) {
-                    log.debug("exiting {} because of null or empty service-instance-id", svcOperation);
-        
-                    resp.setResponseCode("404");
-                    resp.setResponseMessage("null or empty service-instance-id");
-                    resp.setAckFinalIndicator("Y");
-        
-                    retval.setOutput(resp);
-        
-                    return new ResponseEntity<>(retval, HttpStatus.OK);
-                }
-        
-                String svcInstanceId = input.getInput().getServiceInformation().getServiceInstanceId();
-                String vnfId = null;
-                
-                if ((input.getInput() != null) && (input.getInput().getVnfInformation() != null)) {
-                    vnfId = input.getInput().getVnfInformation().getVnfId();
-                }
-        
-                SvcLogicContext ctxIn = new SvcLogicContext();
-        
-                // Add input to SvcLogicContext
-                try {
-                    ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
-                } catch (JsonProcessingException e) {
-                    log.error("exiting {} due to parse error on input data", svcOperation);
-                    resp.setResponseCode("500");
-                    resp.setResponseMessage("internal error");
-                    resp.setAckFinalIndicator("Y");
-                    retval.setOutput(resp);
-                    return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-        
-                // Add config tree data to SvcLogicContext
-                List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
-                ConfigServices configService = null;
-                if (configServices != null && !configServices.isEmpty()) {
-                    configService = configServices.get(0);
-                    ctxIn.mergeJson("service-data", configService.getSvcData());
-                } else {
-                    log.debug("exiting {} because the service-instance does not have any service data in SDN", svcOperation);
-        
-                    resp.setResponseCode("404");
-                    resp.setResponseMessage("invalid input: the service-instance does not have any service data in SDNC");
-                    resp.setAckFinalIndicator("Y");
-        
-                    retval.setOutput(resp);
-        
-                    return new ResponseEntity<>(retval, HttpStatus.OK);
-                }
-        
-                // Add operational tree data to SvcLogicContext
-                List<OperationalServices> operServices = operationalServicesRepository.findBySvcInstanceId(svcInstanceId);
-                OperationalServices operService = null;
-                boolean saveOperationalData = false;
-        
-                if (operServices != null && !operServices.isEmpty()) {
-                    operService = operServices.get(0);
-                    ctxIn.mergeJson("operational-data", operService.getSvcData());
-                } else {
-                    operService = new OperationalServices(svcInstanceId, null, null);
-                }
-        
-                // Update service status info in config entry from input
-                configService.setServiceStatusAction(input.getInput().getRequestInformation().getRequestAction().toString());
-                configService.setServiceStatusRpcAction(input.getInput().getSdncRequestHeader().getSvcAction().toString());
-                configService.setServiceStatusRpcName(svcOperation);
+        final String svcOperation = "vnf-topology-operation";
+        GenericResourceApiVnfTopologyOperation retval = new GenericResourceApiVnfTopologyOperation();
+        GenericResourceApiVnftopologyoperationOutput resp = new GenericResourceApiVnftopologyoperationOutput();
+
+        log.info(CALLED_STR, svcOperation);
+        // Verify input contains service instance id
+        if(hasInvalidServiceId(input.getInput())) {
+            log.debug("exiting {} because of null or empty service-instance-id", svcOperation);
+
+            resp.setResponseCode("404");
+            resp.setResponseMessage("null or empty service-instance-id");
+            resp.setAckFinalIndicator("Y");
+
+            retval.setOutput(resp);
+
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        String svcInstanceId = input.getInput().getServiceInformation().getServiceInstanceId();
+        String vnfId = null;
+
+        if((input.getInput() != null) && (input.getInput().getVnfInformation() != null)) {
+            vnfId = input.getInput().getVnfInformation().getVnfId();
+        }
+
+        SvcLogicContext ctxIn = new SvcLogicContext();
+
+        // Add input to SvcLogicContext
+        try {
+            ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
+        }
+        catch(JsonProcessingException e) {
+            log.error("exiting {} due to parse error on input data", svcOperation);
+            resp.setResponseCode("500");
+            resp.setResponseMessage("internal error");
+            resp.setAckFinalIndicator("Y");
+            retval.setOutput(resp);
+            return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // Add config tree data to SvcLogicContext
+        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
+        ConfigServices configService = null;
+        if(configServices != null && !configServices.isEmpty()) {
+            configService = configServices.get(0);
+            ctxIn.mergeJson("service-data", configService.getSvcData());
+        }
+        else {
+            log.debug("exiting {} because the service-instance does not have any service data in SDN", svcOperation);
+
+            resp.setResponseCode("404");
+            resp.setResponseMessage("invalid input: the service-instance does not have any service data in SDNC");
+            resp.setAckFinalIndicator("Y");
+
+            retval.setOutput(resp);
+
+            return new ResponseEntity<>(retval, HttpStatus.OK);
+        }
+
+        // Add operational tree data to SvcLogicContext
+        List<OperationalServices> operServices = operationalServicesRepository.findBySvcInstanceId(svcInstanceId);
+        OperationalServices operService = null;
+        boolean saveOperationalData = false;
+
+        if(operServices != null && !operServices.isEmpty()) {
+            operService = operServices.get(0);
+            ctxIn.mergeJson("operational-data", operService.getSvcData());
+        }
+        else {
+            operService = new OperationalServices(svcInstanceId, null, null);
+        }
+
+        // Update service status info in config entry from input
+        configService.setServiceStatusAction(input.getInput().getRequestInformation().getRequestAction().toString());
+        configService.setServiceStatusRpcAction(input.getInput().getSdncRequestHeader().getSvcAction().toString());
+        configService.setServiceStatusRpcName(svcOperation);
 
 
-        
-                // Call DG
-                try {
-                    // Any of these can throw a nullpointer exception
-                    // execute should only throw a SvcLogicException
-                    SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
-                    Properties respProps = ctxOut.toProperties();
-        
-                    resp.setAckFinalIndicator(respProps.getProperty("ack-final-indicator", "Y"));
-                    resp.setResponseCode(respProps.getProperty("error-code", "200"));
-                    resp.setResponseMessage(respProps.getProperty("error-message", "SUCCESS"));
+        // Call DG
+        try {
+            // Any of these can throw a nullpointer exception
+            // execute should only throw a SvcLogicException
+            SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
+            Properties respProps = ctxOut.toProperties();
 
-                    configService
-                            .setServiceStatusRequestStatus(GenericResourceApiRequestStatusEnumeration.SYNCCOMPLETE.toString());
-        
-                    if ("200".equals(resp.getResponseCode())) {
+            resp.setAckFinalIndicator(respProps.getProperty("ack-final-indicator", "Y"));
+            resp.setResponseCode(respProps.getProperty("error-code", "200"));
+            resp.setResponseMessage(respProps.getProperty("error-message", "SUCCESS"));
 
-                        GenericResourceApiInstanceReference serviceReference = new GenericResourceApiInstanceReference();
-                        serviceReference.setInstanceId(svcInstanceId);
-                        serviceReference.setObjectPath(respProps.getProperty(SERVICE_OBJECT_PATH_PARAM));
-                        resp.setServiceResponseInformation(serviceReference);
-                        
-                        if (vnfId == null) {
-                            vnfId = respProps.getProperty("vnfId");
-                        }
-                        GenericResourceApiInstanceReference vnfReference = new GenericResourceApiInstanceReference();
-                        vnfReference.setInstanceId(vnfId);
-                        vnfReference.setObjectPath(respProps.getProperty(VNF_OBJECT_PATH_PARAM));
-                        resp.setVnfResponseInformation(vnfReference);
-                        
-                        // If DG returns success, update svcData in config and operational trees
-                        // and remember to save operational data.
-                        String ctxJson = ctxOut.toJsonString("service-data");
-                        configService.setSvcData(ctxJson);
-                        operService.setSvcData(ctxJson);
-                        saveOperationalData = true;
-                    }
-        
-                } catch (NullPointerException npe) {
-                    resp.setAckFinalIndicator("true");
-                    resp.setResponseCode("500");
-                    resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
-                } catch (SvcLogicException e) {
-                    resp.setAckFinalIndicator("true");
-                    resp.setResponseCode("500");
-                    resp.setResponseMessage(e.getMessage());
+            configService
+                    .setServiceStatusRequestStatus(GenericResourceApiRequestStatusEnumeration.SYNCCOMPLETE.toString());
+
+            if("200".equals(resp.getResponseCode())) {
+
+                GenericResourceApiInstanceReference serviceReference = new GenericResourceApiInstanceReference();
+                serviceReference.setInstanceId(svcInstanceId);
+                serviceReference.setObjectPath(respProps.getProperty(SERVICE_OBJECT_PATH_PARAM));
+                resp.setServiceResponseInformation(serviceReference);
+
+                if(vnfId == null) {
+                    vnfId = respProps.getProperty("vnfId");
                 }
-        
+                GenericResourceApiInstanceReference vnfReference = new GenericResourceApiInstanceReference();
+                vnfReference.setInstanceId(vnfId);
+                vnfReference.setObjectPath(respProps.getProperty(VNF_OBJECT_PATH_PARAM));
+                resp.setVnfResponseInformation(vnfReference);
+
+                // If DG returns success, update svcData in config and operational trees
+                // and remember to save operational data.
+                String ctxJson = ctxOut.toJsonString("service-data");
+                configService.setSvcData(ctxJson);
+                operService.setSvcData(ctxJson);
+                saveOperationalData = true;
+            }
+
+        }
+        catch(NullPointerException npe) {
+            resp.setAckFinalIndicator("Y");
+            resp.setResponseCode("500");
+            resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+        }
+        catch(SvcLogicException e) {
+            resp.setAckFinalIndicator("Y");
+            resp.setResponseCode("500");
+            resp.setResponseMessage(e.getMessage());
+        }
+
+        // Update status in config services entry
+
+        configService.setServiceStatusFinalIndicator(resp.getAckFinalIndicator());
+        configService.setServiceStatusResponseCode(resp.getResponseCode());
+        configService.setServiceStatusResponseMessage(resp.getResponseMessage());
+        configService.setServiceStatusResponseTimestamp(Iso8601Util.now());
+
+        // Update config tree
+        configServicesRepository.save(configService);
+
+        // If necessary, sync status to operation service entry and save
+        if(saveOperationalData) {
+            operService.setServiceStatus(configService.getServiceStatus());
+            operationalServicesRepository.save(operService);
+        }
+
+        if(resp.getAckFinalIndicator().equals("N")) {
+            // Spawn background thread to invoke the Async DG
+            Runnable backgroundThread = () -> {
+                log.info(BACKGROUND_THREAD_STARTED_MESSAGE);
+                processAsyncVnfTopologyOperation(svcOperation, input);
+            };
+            new Thread(backgroundThread).start();
+        }
+
+        log.info("Returned {} for {} [{}] {}.", resp.getResponseCode(), svcOperation, vnfId, resp.getResponseMessage());
+        retval.setOutput(resp);
+        return (new ResponseEntity<>(retval, HttpStatus.OK));
+    }
+
+    public void processAsyncVnfTopologyOperation(String parentOperation, @Valid GenericResourceApiVnfOperationInformationBodyparam input) {
+        final String svcOperation = "vnf-topology-operation-async";
+        GenericResourceApiVnftopologyoperationOutput resp = new GenericResourceApiVnftopologyoperationOutput();
+
+        log.info(CALLED_STR, svcOperation);
+        // Verify input contains service instance id
+        String svcInstanceId = input.getInput().getServiceInformation().getServiceInstanceId();
+        String vnfId = input.getInput().getVnfInformation().getVnfId();
+
+        SvcLogicContext ctxIn = new SvcLogicContext();
+
+        // Add input to SvcLogicContext
+        try {
+            ctxIn.mergeJson(parentOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
+        } catch (JsonProcessingException e) {
+            log.error("exiting {} due to parse error on input data", svcOperation);
+            return;
+        }
+
+        // Add config tree data to SvcLogicContext
+        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
+        ConfigServices configService = null;
+        if(configServices != null && !configServices.isEmpty()) {
+            configService = configServices.get(0);
+            ctxIn.mergeJson("service-data", configService.getSvcData());
+        }
+        else {
+            log.error("exiting {} because there is no service data with id [{}] in SDN", svcOperation, svcInstanceId);
+            return;
+        }
+
+        // Add operational tree data to SvcLogicContext
+        List<OperationalServices> operServices = operationalServicesRepository.findBySvcInstanceId(svcInstanceId);
+        OperationalServices operService = null;
+
+        if(operServices != null && !operServices.isEmpty()) {
+            operService = operServices.get(0);
+            ctxIn.mergeJson("operational-data", operService.getSvcData());
+        }
+        else {
+            operService = new OperationalServices(svcInstanceId, null, null);
+        }
+
+        // Update service status info in config entry from input
+        configService.setServiceStatusAction(input.getInput().getRequestInformation().getRequestAction().toString());
+        configService.setServiceStatusRpcAction(input.getInput().getSdncRequestHeader().getSvcAction().toString());
+        configService.setServiceStatusRpcName(svcOperation);
+
+
+        // Call DG
+        try {
+            // Any of these can throw a nullpointer exception
+            // execute should only throw a SvcLogicException
+            SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
+            Properties respProps = ctxOut.toProperties();
+
+            resp.setAckFinalIndicator(respProps.getProperty("ack-final-indicator", "Y"));
+            resp.setResponseCode(respProps.getProperty("error-code", "200"));
+            resp.setResponseMessage(respProps.getProperty("error-message", "SUCCESS"));
+
+            configService
+                    .setServiceStatusRequestStatus(GenericResourceApiRequestStatusEnumeration.SYNCCOMPLETE.toString());
+
+            if("200".equals(resp.getResponseCode())) {
+                GenericResourceApiInstanceReference serviceReference = new GenericResourceApiInstanceReference();
+                serviceReference.setInstanceId(svcInstanceId);
+                serviceReference.setObjectPath(respProps.getProperty(SERVICE_OBJECT_PATH_PARAM));
+                resp.setServiceResponseInformation(serviceReference);
+
+                if(vnfId == null) {
+                    vnfId = respProps.getProperty("vnfId");
+                }
+                GenericResourceApiInstanceReference vnfReference = new GenericResourceApiInstanceReference();
+                vnfReference.setInstanceId(vnfId);
+                vnfReference.setObjectPath(respProps.getProperty(VNF_OBJECT_PATH_PARAM));
+                resp.setVnfResponseInformation(vnfReference);
+
+                // If DG returns success, update svcData in config and operational trees
+                // and remember to save operational data.
+                String ctxJson = ctxOut.toJsonString("service-data");
+                configService.setSvcData(ctxJson);
+                operService.setSvcData(ctxJson);
+
                 // Update status in config services entry
-        
+
                 configService.setServiceStatusFinalIndicator(resp.getAckFinalIndicator());
                 configService.setServiceStatusResponseCode(resp.getResponseCode());
                 configService.setServiceStatusResponseMessage(resp.getResponseMessage());
                 configService.setServiceStatusResponseTimestamp(Iso8601Util.now());
-        
-                // Update config tree
+
+                // Update config and operational tree
                 configServicesRepository.save(configService);
-        
-                // If necessary, sync status to operation service entry and save
-                if (saveOperationalData) {
-                    operService.setServiceStatus(configService.getServiceStatus());
-                    operationalServicesRepository.save(operService);
-                }
-                retval.setOutput(resp);
-                return (new ResponseEntity<>(retval, HttpStatus.OK));
+                operService.setServiceStatus(configService.getServiceStatus());
+                operationalServicesRepository.save(operService);
+                log.info("Returned SUCCESS for {} [{}]", svcOperation, vnfId);
+            }
+        }
+        catch(Exception e) {
+            log.error("Caught Exception updating configuration status in SDN for {} [{}] \n", svcOperation, vnfId);
+        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,6 +52,9 @@ public class OperationsApiControllerTest {
 
     @Autowired
     OperationalServicesRepository operationalServicesRepository;
+
+    @Autowired
+    OperationsApiController operationsApiController;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -126,7 +130,32 @@ public class OperationsApiControllerTest {
         assertEquals(200, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
         assertEquals(0, operationalServicesRepository.count());
+    }
 
+    @Test
+    public void serviceTopologyOperationAsync() throws Exception {
+        configServicesRepository.deleteAll();
+        GenericResourceApiVnfOperationInformationBodyparam inputParam = operationsApiController.getObjectMapper().get().readValue(readFileContent("src/test/resources/vnf-assign-rpc.json"), GenericResourceApiVnfOperationInformationBodyparam.class);
+        operationsApiController.processAsyncVnfTopologyOperation("vnf-topology-operation",inputParam);
+
+        loadVnfData("src/test/resources/vnf-data.json");
+        inputParam.getInput().getServiceInformation().setServiceInstanceId("98f189dd-2971-46f5-b4f1-1a9a323f39a4");
+        operationsApiController.processAsyncVnfTopologyOperation("vnf-topology-operation",inputParam);
+        configServicesRepository.deleteAll();
+    }
+
+    private void loadVnfData(String path) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String content = readFileContent(path);
+        GenericResourceApiServicedataServiceData svcData = new GenericResourceApiServicedataServiceData();
+        GenericResourceApiServicedataServicedataVnfsVnf vnfData = objectMapper.readValue(content, GenericResourceApiServicedataServicedataVnfsVnf.class);
+        svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
+        svcData.getVnfs().setVnf(new ArrayList<>());
+        svcData.getVnfs().addVnfItem(vnfData);
+        ConfigServices newService = new ConfigServices();
+        newService.setSvcData(objectMapper.writeValueAsString(svcData));
+        newService.setSvcInstanceId("98f189dd-2971-46f5-b4f1-1a9a323f39a4");
+        configServicesRepository.save(newService);
     }
 
     @Test
