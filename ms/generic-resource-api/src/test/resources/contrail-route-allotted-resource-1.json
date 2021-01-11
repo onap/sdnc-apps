@@ -1,0 +1,33 @@
+{
+  "contrail-route-allotted-resource" : [
+    {
+      "allotted-resource-id": "ar1",
+      "allotted-resource-data": {
+        "allotted-resource-oper-status": {
+          "create-timestamp": "2020-11-24T12:41:01.796Z",
+          "order-status": "Active"
+        },
+        "contrail-route-topology": {
+          "contrail-route-assignments": {
+            "contrail-id": "cr1",
+            "dest-network": {
+              "network-id": "19cdfce4-9124-4bbf-83bd-5140931bb519",
+              "network-role": "pktmirror"
+            },
+            "fq-name": "default-domain.GRP-27529-T-IST-13C.GRP-27529-T-SIL-13C_gn_SCTPA_IP_net_12_dyh2b_GRP-27529-T-SIL-13C_gn_SCTPA_IP_pktmirror_policy_32",
+            "source-network": {
+              "network-id": "1610d17a-fb91-48ac-9d4c-43f739fdbe54",
+              "network-role": "GRP-27529-T-SIL-13C_gn_SCTPA_IP"
+            }
+          },
+          "allotted-resource-identifiers": {
+            "allotted-resource-id": "ar1",
+            "allotted-resource-type": "contrail-route",
+            "allotted-resource-name": "GRP-27529-T-SIL-13C_gn_SCTPA_IP_net_12_dyh2b_GRP-27529-T-SIL-13C_gn_SCTPA_IP_pktmirror_policy_32",
+            "parent-service-instance-id": "service1"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -122,7 +122,9 @@ public class ConfigApiController implements ConfigApi {
 
         if (pmConfigurations.isEmpty()) {
             log.info("No configuration data found with id [{}]",configurationId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
         } else {
             ConfigPortMirrorConfigurations pmConfiguration = pmConfigurations.get(0);
             retval = new GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration();
@@ -183,7 +185,10 @@ public class ConfigApiController implements ConfigApi {
 
         List<ConfigPortMirrorConfigurations> configPortMirrorConfigurations = configPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
         if ((configPortMirrorConfigurations == null) || (configPortMirrorConfigurations.isEmpty())) {
-            throw new RestProtocolException("data-missing", "No port-mirror-configuration entry found", HttpStatus.NOT_FOUND.value());
+            log.info("No configuration data found with id [{}]", configurationId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
         }
 
         try {
@@ -226,7 +231,10 @@ public class ConfigApiController implements ConfigApi {
         List<ConfigContrailRouteAllottedResources> allottedResources = configContrailRouteAllottedResourcesRepository.findByAllottedResourceId(allottedResourceId);
 
         if (allottedResources.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            log.info("No contrail-route-allotted-resource found with id [{}]", allottedResourceId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
         }
         else {
             ConfigContrailRouteAllottedResources allottedResource = allottedResources.get(0);
@@ -309,7 +317,10 @@ public class ConfigApiController implements ConfigApi {
                 configContrailRouteAllottedResourcesRepository.findByAllottedResourceId(allottedResourceId);
 
         if ((configContrailRouteAllottedResources == null) || (configContrailRouteAllottedResources.isEmpty())) {
-            throw new RestProtocolException("data-missing", "No port-mirror-configuration entry found", HttpStatus.NOT_FOUND.value());
+            log.info("No contrail-route-allotted-resoure data found with id [{}]", allottedResourceId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
         }
 
         try {
@@ -345,7 +356,6 @@ public class ConfigApiController implements ConfigApi {
         configContrailRouteAllottedResourcesRepository.deleteByAllottedResourceId(allottedResourceId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
 
     @Override
@@ -2038,7 +2048,9 @@ public class ConfigApiController implements ConfigApi {
             return new ResponseEntity<>(vfModule.get(), HttpStatus.OK);
         } else {
             log.info("No vf-module found for [{}]", vfModuleId);
-            throw new RestApplicationException("data-missing", "Request could not be completed because the relevant data model content does not exist", HttpStatus.NOT_FOUND.value());
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
         }
     }
 
@@ -2157,14 +2169,16 @@ public class ConfigApiController implements ConfigApi {
         log.info("GET | vf-module-topology for ({})", vfModuleId);
         if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
             if (getAcceptHeader().get().contains("application/json")) {
-
+                log.info("Something with header");
             }
         } else {
             log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
         }
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         if((services == null) || (services.isEmpty())) {
-            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
         }
 
         Optional<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> vfModule =
@@ -2175,7 +2189,9 @@ public class ConfigApiController implements ConfigApi {
             return new ResponseEntity<>(vfModule.get().getVfModuleData().getVfModuleTopology(), HttpStatus.OK);
         } else {
             log.info("No information found for {}", vfModuleId);
-            throw new RestApplicationException("data-missing", "Request could not be completed because the relevant data model content does not exist", HttpStatus.NOT_FOUND.value());
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
         }
     }
 

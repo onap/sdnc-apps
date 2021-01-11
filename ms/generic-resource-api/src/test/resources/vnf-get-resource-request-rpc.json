@@ -1,0 +1,15 @@
+{
+  "input": {
+    "sdnc-request-header": {
+      "svc-request-id": "id-0002",
+      "svc-action": "assign"
+    },
+    "request-information": {
+      "request-id": "id-2006-2",
+      "source": "local-vm"
+    },
+    "service-information": {
+      "service-instance-id": "service9"
+    }
+  }
+}

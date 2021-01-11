@@ -26,7 +26,8 @@ ENV LOG_PATH /var/log/onap/sdnc
 USER root
 
 # Install sudo and IP utilities
-RUN apk update && apk --no-cache add sudo iputils openssl
+#RUN apk update && apk --no-cache add sudo iputils openssl
+RUN HTTP_PROXY=http://135.28.13.29:8080 && apk update && apk --no-cache add sudo iputils openssl
 
 
 # Enable wheel group

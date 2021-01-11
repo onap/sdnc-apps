@@ -1,0 +1,268 @@
+{
+  "service": [
+    {
+      "service-instance-id": "service9",
+      "service-data": {
+        "request-information": {
+          "request-id": "id-2006-2",
+          "source": "local-vm",
+          "request-action": "CreateServiceInstance"
+        },
+        "service-request-input": {
+          "service-instance-name": "service-name-9"
+        },
+        "service-information": {
+          "service-id": "service-id-0002",
+          "onap-model-information": {
+            "model-invariant-uuid": "service-model-invariant-uuid",
+            "model-name": "service-model-name",
+            "model-version": "service-model-version",
+            "model-uuid": "service-uuid-2006"
+          },
+          "service-instance-id": "service9",
+          "global-customer-id": "MCBH-2006",
+          "subscription-service-type": "viprsvc"
+        },
+        "service-topology": {
+          "service-topology-identifier": {
+            "service-instance-id": "service9",
+            "service-instance-name": "service-name-9",
+            "service-type": "viprsvc",
+            "global-customer-id": "MCBH-2006"
+          },
+          "onap-model-information": {
+            "model-invariant-uuid": "service-model-invariant-uuid",
+            "model-name": "service-model-name",
+            "model-version": "service-model-version",
+            "model-uuid": "service-uuid-2006"
+          }
+        },
+        "service-level-oper-status": {
+          "order-status": "Created",
+          "last-rpc-action": "assign",
+          "last-action": "CreateServiceInstance"
+        },
+        "sdnc-request-header": {
+          "svc-action": "assign",
+          "svc-request-id": "id-0002"
+        },
+        "vnfs": {
+          "vnf": [
+            {
+              "vnf-id": "vnf-9",
+              "vnf-data": {
+                "vnf-level-oper-status": {
+                  "order-status": "PendingCreate",
+                  "last-rpc-action": "assign",
+                  "last-action": "CreateVnfInstance"
+                },
+                "service-information": {
+                  "service-instance-id": "service9",
+                  "global-customer-id": "MCBH-2006"
+                },
+                "sdnc-request-header": {
+                  "svc-action": "assign",
+                  "svc-request-id": "vnf-9",
+                  "svc-notification-url": "http://dummy.att.com"
+                },
+                "vnf-information": {
+                  "vnf-id": "vnf-9",
+                  "vnf-name": "vnf-name-9",
+                  "vnf-type": "vdns",
+                  "onap-model-information": {
+                    "model-invariant-uuid": "bgb-model",
+                    "model-name": "model-name-vnf-9",
+                    "model-version": "4.0",
+                    "model-customization-uuid": "cust-uuid-vnf-9",
+                    "model-uuid": "bgb-model-ver-id"
+                  }
+                },
+                "request-information": {
+                  "request-id": "vnf-0002",
+                  "source": "local-vm",
+                  "request-action": "CreateVnfInstance"
+                },
+                "vnf-request-input": {
+                  "vnf-name": "vnf-name-9",
+                  "tenant": "pc-tenant-1",
+                  "cloud-owner": "att-aic",
+                  "aic-cloud-region": "mtn6"
+                },
+                "vnf-topology": {
+                  "onap-model-information": {
+                    "model-invariant-uuid": "bgb-model",
+                    "model-name": "model-name-vnf-9",
+                    "model-version": "4.0",
+                    "model-customization-uuid": "cust-uuid-vnf-200",
+                    "model-uuid": "bgb-model-ver-id"
+                  },
+                  "vnf-parameters-data": {
+                    "param": [
+                      {
+                        "name": "vnf_param_1",
+                        "value": "vnf_value_1",
+                        "resource-resolution-data": {
+                          "status": "SUCCESS",
+                          "payload": "vnfpayload",
+                          "capability-name": "param-capability"
+                        }
+                      },
+                      {
+                        "name": "vnf_param_2",
+                        "value": "vnf_value_2"
+                      }
+                    ]
+                  },
+                  "tenant": "pc-tenant-1",
+                  "vnf-topology-identifier-structure": {
+                    "vnf-id": "vnf-200",
+                    "vnf-type": "vdns",
+                    "nf-type": "NAT",
+                    "nf-role": "vdns",
+                    "nf-code": "vn2",
+                    "nf-function": "AVPNvdns"
+                  },
+                  "aic-clli": "AUSTTXGR",
+                  "aic-cloud-region": "mtn6"
+                },
+                "vf-modules": {
+                  "vf-module": [
+                    {
+                      "vf-module-id": "vf-module-9",
+                      "vf-module-data": {
+                        "service-information": {
+                          "service-id": "service-id-0002",
+                          "onap-model-information": {
+                            "model-invariant-uuid": "service-model-invariant-uuid",
+                            "model-name": "service-model-name",
+                            "model-version": "service-model-version",
+                            "model-uuid": "service-uuid-2006"
+                          },
+                          "service-instance-id": "service9",
+                          "global-customer-id": "MCBH-2006",
+                          "subscription-service-type": "viprsvc"
+                        },
+                        "vf-module-topology": {
+                          "onap-model-information": {
+                            "model-invariant-uuid": "bgb-model",
+                            "model-name": "vSAMP10aDEV::base::module-0",
+                            "model-version": "1.0",
+                            "model-customization-uuid": "cust-uuid-vf-module-9",
+                            "model-uuid": "bgb-model-ver-id"
+                          },
+                          "vf-module-parameters": {
+                            "param": [
+                              {
+                                "name": "param1",
+                                "value": "param_value_1"
+                              },
+                              {
+                                "name": "param2",
+                                "value": "param_value_2",
+                                "resource-resolution-data": {
+                                  "resource-key": [
+                                    {
+                                      "name": "key1",
+                                      "value": "key_value_1"
+                                    },
+                                    {
+                                      "name": "key2",
+                                      "value": "key_value_2"
+                                    }
+                                  ],
+                                  "payload": "12",
+                                  "capability-name": "walkingmachine",
+                                  "status": "SUCCESS"
+                                }
+                              },
+                              {
+                                "name": "param3",
+                                "value": "param_value3",
+                                "resource-resolution-data": {
+                                  "payload": "12",
+                                  "capability-name": "walkingmachine",
+                                  "status": "SUCCESS"
+                                }
+                              },
+                              {
+                                "name": "mob1_names",
+                                "value": "",
+                                "resource-resolution-data": {
+                                  "payload": "",
+                                  "capability-name": "None",
+                                  "status": "FAILED"
+                                }
+                              },
+                              {
+                                "name": "mob1_role1_public_vlans",
+                                "value": "4000"
+                              }
+                            ]
+                          },
+                          "tenant": "pc-tenant-1",
+                          "sdnc-generated-cloud-resources": true,
+                          "aic-clli": "rxutest201901",
+                          "vf-module-topology-identifier": {
+                            "vf-module-type": "vSAMP10aDEV::base::module-0",
+                            "vf-module-id": "vf-module-9",
+                            "vf-module-name": "vf-module-name-9"
+                          },
+                          "aic-cloud-region": "mtn6"
+                        },
+                        "vf-module-request-input": {
+                          "tenant": "pc-tenant-1",
+                          "vf-module-name": "vf-module-name-1",
+                          "aic-cloud-region": "mtn6"
+                        },
+                        "sdnc-request-header": {
+                          "svc-action": "assign",
+                          "svc-request-id": "vf-id-0001",
+                          "svc-notification-url": "http://dummy.att.com"
+                        },
+                        "vnf-information": {
+                          "vnf-id": "vnf-100",
+                          "vnf-type": "vdns",
+                          "vnf-name": "vnf-name-1",
+                          "onap-model-information": {
+                            "model-invariant-uuid": "bgb-model",
+                            "model-name": "model-name-vnf-100",
+                            "model-version": "4.0",
+                            "model-customization-uuid": "cust-uuid-vnf-100",
+                            "model-uuid": "bgb-model-ver-id"
+                          }
+                        },
+                        "vf-module-information": {
+                          "onap-model-information": {
+                            "model-invariant-uuid": "bgb-model",
+                            "model-name": "vSAMP10aDEV::base::module-0",
+                            "model-version": "1.0",
+                            "model-customization-uuid": "cust-uuid-vf-module-100",
+                            "model-uuid": "bgb-model-ver-id"
+                          },
+                          "vf-module-id": "vf-module-100",
+                          "vf-module-type": "ss-vf-module-type",
+                          "from-preload": true
+                        },
+                        "request-information": {
+                          "notification-url": "http://some.url.com",
+                          "request-id": "request-0001",
+                          "request-action": "CreateVfModuleInstance",
+                          "source": "VID"
+                        },
+                        "vf-module-level-oper-status": {
+                          "order-status": "PendingCreate",
+                          "last-rpc-action": "assign",
+                          "last-action": "CreateVfModuleInstance"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -13,10 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.sdnc.apps.ms.gra.GenericResourceMsApp;
-import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
-import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
-import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
-import org.onap.sdnc.apps.ms.gra.data.OperationalServicesRepository;
+import org.onap.sdnc.apps.ms.gra.data.*;
 import org.onap.sdnc.apps.ms.gra.swagger.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,6 +36,10 @@ public class OperationsApiControllerTest {
     private final static String SERVICE_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:service-topology-operation/";
     private final static String NETWORK_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:network-topology-operation/";
     private final static String VNF_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:vnf-topology-operation/";
+    private final static String VF_MODULE_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:vf-module-topology-operation/";
+    private final static String PORT_MIRROR_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:port-mirror-topology-operation/";
+    private final static String VNF_GET_RESOURCE_REQUEST_URL = "/operations/GENERIC-RESOURCE-API:vnf-get-resource-request/";
+    private final static String POLICY_UPDATE_NOTIFY_URL = "/operations/GENERIC-RESOURCE-API:policy-update-notify-operation/";
 
 
     @Autowired
@@ -55,6 +56,12 @@ public class OperationsApiControllerTest {
 
     @Autowired
     OperationsApiController operationsApiController;
+
+    @Autowired
+    ConfigPortMirrorConfigurationsRepository configPortMirrorConfigurationsRepository;
+
+    @Autowired
+    OperationalPortMirrorConfigurationsRepository operationalPortMirrorConfigurationsRepository;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -206,6 +213,86 @@ public class OperationsApiControllerTest {
 
     }
 
+    @Test
+    public void operationsGENERICRESOURCEAPIvfModuleTopologyOperationAssignPost() throws Exception {
+
+        // Remove any existing service data
+        configServicesRepository.deleteAll();
+        operationalServicesRepository.deleteAll();
+
+        // Load services data
+        loadServicesData("src/test/resources/service1.json");
+
+        // Add invalid content
+        String content = readFileContent("src/test/resources/preload1-rpc-vfmodule.json");
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(VF_MODULE_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        // Add valid content
+        content = readFileContent("src/test/resources/vf-module-assign-rpc.json");
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(VF_MODULE_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+    }
+
+    @Test
+    public void operationsGENERICRESOURCEAPIportMirrorConfigurationTopologyOperationAssignPost() throws Exception {
+
+        // Remove any existing service data
+        configPortMirrorConfigurationsRepository.deleteAll();
+        operationalPortMirrorConfigurationsRepository.deleteAll();
+
+        // Load port-mirror-configuration data
+        loadPortMirrorConfigurationData("src/test/resources/port-mirror-configuration-1.json");
+
+        // Load services data
+        loadServicesData("src/test/resources/service1.json");
+
+        // Add invalid content for request input
+        String content = readFileContent("src/test/resources/preload1-rpc-vfmodule.json");
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(PORT_MIRROR_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        // Add valid content
+        content = readFileContent("src/test/resources/port-mirror-assign-rpc.json");
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(PORT_MIRROR_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+    }
+
+    @Test
+    public void operationsGENERICRESOURCEAPIvnfGetResourceRequestPost() throws Exception {
+
+        // Remove any existing service data
+        configServicesRepository.deleteAll();
+        operationalServicesRepository.deleteAll();
+
+        // Load services data
+        loadServicesData("src/test/resources/service9.json");
+
+        // Add valid content
+        String content = readFileContent("src/test/resources/vnf-get-resource-request-rpc.json");
+        String expected = readFileContent("src/test/resources/vnf-get-resource-request-expected.json");
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(VNF_GET_RESOURCE_REQUEST_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals(expected, mvcResult.getResponse().getContentAsString());
+
+    }
+    @Test
+    public void operationsGENERICRESOURCEAPIpolicyUpdateNotifyOperationPost() throws Exception {
+
+        // Add valid content
+        String content = readFileContent("src/test/resources/policy-update-notify-rpc.json");
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(POLICY_UPDATE_NOTIFY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+    }
+
 
     private void loadServicesData(String path) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -218,6 +305,20 @@ public class OperationsApiControllerTest {
             newService.setSvcData(objectMapper.writeValueAsString(service.getServiceData()));
             newService.setServiceStatus(service.getServiceStatus());
             configServicesRepository.save(newService);
+        }
+    }
+
+    private void loadPortMirrorConfigurationData(String path) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String content = readFileContent(path);
+        GenericResourceApiPortMirrorConfigurations pmConfigurations = objectMapper.readValue(content, GenericResourceApiPortMirrorConfigurations.class);
+
+        for (GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration pmConfig : pmConfigurations.getPortMirrorConfiguration()) {
+            ConfigPortMirrorConfigurations newPmConfig = new ConfigPortMirrorConfigurations();
+            newPmConfig.setConfigureationId(pmConfig.getConfigurationId());
+            newPmConfig.setPmcData(objectMapper.writeValueAsString(pmConfig.getConfigurationData()));
+            newPmConfig.setPortMirrorConfigurationStatus(pmConfig.getConfigurationStatus());
+            configPortMirrorConfigurationsRepository.save(newPmConfig);
         }
     }
 

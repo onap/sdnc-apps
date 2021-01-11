@@ -1,0 +1,46 @@
+{
+  "input": {
+    "request-information": {
+      "request-action": "CreatePortMirrorConfigurationInstance",
+      "source": "MSO",
+      "request-id": "pm-request-1"
+    },
+    "sdnc-request-header": {
+      "svc-request-id": "767f2d08-e022-4000-97c2-61c002ebc740",
+      "svc-notification-url": "https://mso-bpmn-url",
+      "svc-action": "assign"
+    },
+    "service-information": {
+      "subscription-service-type": "viprsvc",
+      "service-instance-id": "service1"
+    },
+    "configuration-information": {
+      "onap-model-information": {
+        "model-name": "SmsfNc2578..smsf_base..module-0",
+        "model-version": "3",
+        "model-customization-uuid": "cfg-customization-uuid-1",
+        "model-uuid": "795f1014-7fe5-4c4f-a0ca-dc6ebd2185ab",
+        "model-invariant-uuid": "6265446b-58a6-4689-860f-78bada0faf2c"
+      },
+      "configuration-id": "cfg-1",
+      "configuration-type": "PORT-MIRROR",
+      "configuration-sub-type": "vprobe"
+    },
+    "port-mirror-configuration-request-input": {
+      "source-port": {
+        "source-port-id": "1",
+        "vnf-information": {
+          "vnf-id": "mob-vnf-1"
+        }
+      },
+      "dest-port": {
+        "dest-port-id": "1",
+        "vnf-information": {
+          "vnf-id": "mob-vnf-2"
+        }
+      }
+    },
+    "aic-cloud-region": "mtn6",
+    "tenant": "4714fe06cc24414c914c51ca0aa1bf84"
+  }
+}
