@@ -51,6 +51,24 @@
       "revId": "e71c86c428806b55076c1687bb180176f87e6a23",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7098d2bf_49164296",
+        "filename": "ms/generic-resource-api/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2021-01-12T12:49:54Z",
+      "side": 1,
+      "message": "Agreed.  Instead of setting HTTP_PROXY here, you can set it in your command line for local builds by adding -Ddocker.buildArgs.http_proxy\u003d{proxy}",
+      "parentUuid": "a87cfe24_af4e0017",
+      "revId": "e71c86c428806b55076c1687bb180176f87e6a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
     }
   ]
 }
