@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a037e8d1_962ea986",
+        "filename": "ms/generic-resource-api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5625
+      },
+      "writtenOn": "2021-01-12T08:17:12Z",
+      "side": 1,
+      "message": "url is not really needed for internal builds (jenkins)\nbut maybe easier for developers",
+      "revId": "e71c86c428806b55076c1687bb180176f87e6a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a87cfe24_af4e0017",
+        "filename": "ms/generic-resource-api/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5625
+      },
+      "writtenOn": "2021-01-12T08:17:12Z",
+      "side": 1,
+      "message": "hardcoded proxy in Dockerfile is not really a good idea.\nshould be at least moved as a property to the pom.xml",
+      "revId": "e71c86c428806b55076c1687bb180176f87e6a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
