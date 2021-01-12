@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "90bdba30_e07a1ff3",
+        "filename": "ms/generic-resource-api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2021-01-12T12:42:34Z",
+      "side": 1,
+      "message": "Agreed - it would be better just to use onap/ccsdk-alpine-j11-image without the hostname/port, and set docker.pull.registry in your .m2/settings.xml to nexus3.onap.org:10001 for local builds",
+      "parentUuid": "a037e8d1_962ea986",
+      "revId": "e71c86c428806b55076c1687bb180176f87e6a23",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a87cfe24_af4e0017",
         "filename": "ms/generic-resource-api/src/main/docker/Dockerfile",
         "patchSetId": 1
