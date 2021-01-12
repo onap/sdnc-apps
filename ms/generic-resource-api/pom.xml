@@ -26,7 +26,7 @@
         <sdnc.northbound.version>2.1.1-SNAPSHOT</sdnc.northbound.version>
         <sdnc.oam.version>2.1.1-SNAPSHOT</sdnc.oam.version>
 
-        <base.image.name>nexus3.onap.org:10001/onap/ccsdk-alpine-j11-image</base.image.name>
+        <base.image.name>onap/ccsdk-alpine-j11-image</base.image.name>
         <image.name>onap/sdnc-gra-image</image.name>
         <ccsdk.project.version>${project.version}</ccsdk.project.version>
         <ccsdk.build.timestamp>${maven.build.timestamp}</ccsdk.build.timestamp>
