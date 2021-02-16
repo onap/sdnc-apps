@@ -7,11 +7,11 @@ services:
     ports:
       - "13306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=itsASecret
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_ROOT_HOST=%
-      - MYSQL_USER=gra
-      - MYSQL_PASSWORD=test123
-      - MYSQL_DATABASE=gradb
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     logging:       
       driver:   "json-file"
       options:  
@@ -31,18 +31,17 @@ services:
       - db:dbhost
     environment:
       - MYSQL_DB_HOST=dbhost
-      - MYSQL_ROOT_PASSWORD=itsASecret
-      - MYSQL_USER=gra
-      - MYSQL_PASSWORD=test123
-      - MYSQL_DATABASE=gradb
-      - LOG_LEVEL=TRACE
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - SDNC_CONFIG_DIR=/opt/onap/sdnc/config
+      - LOG_LEVEL=INFO
       - TRUSTSTORE_PASSWORD=changeit
       - CACERT_PASSWORD=changeit
       - SDNC_CERT_DIR=/opt/onap/sdnc/config
       - JAVA_SECURITY_DIR=/usr/lib/jvm/default-jvm/jre/lib/security
       - TRUSTSTORE=truststoreONAPall.jks
-    volumes:
-      - ../resources:/opt/onap/sdnc/config
     logging:       
       driver:   "json-file"
       options:  
@@ -69,11 +68,11 @@ services:
       - db:sdnctldb01
       - db:sdnctldb02
     environment:
-      - MYSQL_ROOT_PASSWORD=itsASecret
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - SDNC_CONFIG_DIR=/opt/onap/ccsdk/data/properties
-      - MYSQL_USER=gra
-      - MYSQL_PASSWORD=test123
-      - MYSQL_DATABASE=gradb
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     logging:       
       driver:   "json-file"
       options:  

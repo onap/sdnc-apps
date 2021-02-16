@@ -31,6 +31,7 @@ export TRUSTSTORE=${TRUSTSTORE:-truststoreONAPall.jks}
 export JAVA_SECURITY_DIR=${JAVA_SECURITY_DIR:-/etc/ssl/certs/java}
 export CACERT_PASSWORD=${CACERT_PASSWORD:-${TRUSTSTORE_PASSWORD}}
 export MYSQL_DB_HOST=${MYSQL_DB_HOST:-dbhost}
+export SVCLOGIC_PROPERTIES=${SVCLOGIC_PROPERTIES:-${SDNC_CONFIG_DIR}/svclogic.properties}
 
 #
 # Wait for database

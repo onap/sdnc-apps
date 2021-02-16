@@ -39,6 +39,7 @@
         <gratest.mysql.user>gra</gratest.mysql.user>
         <gratest.mysql.password>test123</gratest.mysql.password>
         <docker.autoCreateCustomNetworks>true</docker.autoCreateCustomNetworks>
+        <liquibase.properties>${project.basedir}/src/main/resources/liquibase.properties</liquibase.properties>
     </properties>
 
     <dependencies>
@@ -83,7 +84,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-          </dependency>
+        </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -157,6 +158,12 @@
             <groupId>org.onap.ccsdk.sli.plugins</groupId>
             <artifactId>properties-node-provider</artifactId>
             <version>${ccsdk.sli.plugins.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>4.3.0</version>
         </dependency>
 
         <!-- this jersey jar is needed for rest api call node to function properly -->
@@ -322,15 +329,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <executions>
-                  <execution>
-                    <goals>
-                      <goal>integration-test</goal>
-                      <goal>verify</goal>
-                    </goals>
-                  </execution>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
                 </executions>
                 <configuration>
-                  <skipITs>true</skipITs>
+                    <skipITs>true</skipITs>
                 </configuration>
             </plugin>
         </plugins>
@@ -374,7 +381,7 @@
                                 <id>copy-dockerfile</id>
                                 <goals>
                                     <goal>copy-resources</goal>
-                                </goals><!-- here the phase you need -->
+                                </goals> <!-- here the phase you need -->
                                 <phase>initialize</phase>
                                 <configuration>
                                     <outputDirectory>${basedir}/target/docker-stage</outputDirectory>
@@ -393,7 +400,7 @@
                                 <id>copy-config</id>
                                 <goals>
                                     <goal>copy-resources</goal>
-                                </goals><!-- here the phase you need -->
+                                </goals> <!-- here the phase you need -->
                                 <phase>generate-resources</phase>
                                 <configuration>
                                     <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc/config</outputDirectory>
@@ -414,7 +421,7 @@
                                 <id>copy-script</id>
                                 <goals>
                                     <goal>copy-resources</goal>
-                                </goals><!-- here the phase you need -->
+                                </goals> <!-- here the phase you need -->
                                 <phase>generate-resources</phase>
                                 <configuration>
                                     <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc/bin</outputDirectory>
@@ -433,7 +440,7 @@
                                 <id>copy-jar</id>
                                 <goals>
                                     <goal>copy-resources</goal>
-                                </goals><!-- here the phase you need -->
+                                </goals> <!-- here the phase you need -->
                                 <phase>package</phase>
                                 <configuration>
                                     <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc/lib</outputDirectory>
@@ -454,20 +461,20 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <executions>
-                          <execution>
-                            <goals>
-                              <goal>integration-test</goal>
-                              <goal>verify</goal>
-                            </goals>
-                          </execution>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
                         </executions>
                         <configuration>
-                          <skipITs>false</skipITs>
-                          <environmentVariables>
-                            <GRA_PORT>${gra.port}</GRA_PORT>
-                          </environmentVariables>
+                            <skipITs>false</skipITs>
+                            <environmentVariables>
+                                <GRA_PORT>${gra.port}</GRA_PORT>
+                            </environmentVariables>
                         </configuration>
-                      </plugin>
+                    </plugin>
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
@@ -534,10 +541,12 @@
                                             <alias>gra-container</alias>
                                             <run>
                                                 <env>
+                                                    <MYSQL_ROOT_PASSWORD>${gratest.mysql.root.password}</MYSQL_ROOT_PASSWORD>
+                                                    <MYSQL_DB_HOST>dbhost</MYSQL_DB_HOST>
                                                     <MYSQL_USER>${gratest.mysql.user}</MYSQL_USER>
                                                     <MYSQL_PASSWORD>${gratest.mysql.password}</MYSQL_PASSWORD>
                                                     <MYSQL_DATABASE>${gratest.mysql.database}</MYSQL_DATABASE>
-                                                    <LOG_LEVEL>TRACE</LOG_LEVEL>
+                                                    <LOG_LEVEL>INFO</LOG_LEVEL>
                                                     <SDNC_CONFIG_DIR>/opt/onap/sdnc/config</SDNC_CONFIG_DIR>
                                                 </env>
                                                 <dependsOn>
@@ -553,7 +562,7 @@
                                                 </ports>
                                                 <wait>
                                                     <log>Started GenericResourceMsApp</log>
-                                                    <time>120000</time>
+                                                    <time>180000</time>
                                                 </wait>
                                                 <log>
                                                     <enabled>true</enabled>
