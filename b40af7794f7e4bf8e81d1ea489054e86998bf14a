@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c765f4ed_964f6e83",
+        "filename": "ms/generic-resource-api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 551,
+      "author": {
+        "id": 121
+      },
+      "writtenOn": "2021-02-17T16:30:30Z",
+      "side": 1,
+      "message": "Should we be using a different password ? and getting it from secrets ?",
+      "range": {
+        "startLine": 551,
+        "startChar": 53,
+        "endLine": 551,
+        "endChar": 72
+      },
+      "revId": "b40af7794f7e4bf8e81d1ea489054e86998bf14a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
