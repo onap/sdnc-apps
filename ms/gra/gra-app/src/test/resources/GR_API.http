@@ -1,0 +1,1341 @@
+### preload data (network)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:preload-network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "preload-network-topology-information": {
+            "host-routes": [
+                {
+                    "next-hop": "10.1.12.1",
+                    "route-prefix": "12"
+                }
+            ],
+            "is-external-network": true,
+            "is-provider-network": true,
+            "is-shared-network": true,
+            "network-policy": [
+                {
+                    "network-policy-fqdn": "policy-sdnc.onap.org",
+                    "network-policy-id": "123"
+                }
+            ],
+            "network-topology-identifier-structure": {
+                "eipam-v4-address-plan": "plan9",
+                "eipam-v6-address-plan": "plan9v6",
+                "is-trunked": true,
+                "network-id": "vUSP-23804-T-01-wnv1a_int_csdb_net_1",
+                "network-instance-group-id": "abc123",
+                "network-name": "syfy",
+                "network-role": "secret",
+                "network-technology": "soupcan",
+                "network-type": "fake",
+                "related-networks": {
+                    "related-network": [
+                        {
+                            "network-id": "skynet",
+                            "network-role": "master",
+                            "vlan-tags": {
+                                "is-private": true,
+                                "lower-tag-id": 0,
+                                "upper-tag-id": 0,
+                                "vlan-interface": "le0"
+                            }
+                        }
+                    ]
+                },
+                "segmentation-id": "seg1"
+            },
+            "physical-network-name": "skynet",
+            "route-table-reference": [
+                {
+                    "route-table-reference-fqdn": "sky.net",
+                    "route-table-reference-id": "ref1"
+                }
+            ],
+            "subnets": [
+                {
+                    "addr-from-start": "Y",
+                    "cidr-mask": "255.255.0.0",
+                    "dhcp-enabled": "Y",
+                    "dhcp-end-address": "10.1.2.254",
+                    "dhcp-start-address": "10.1.2.1",
+                    "gateway-address": "10.1.2.255",
+                    "ip-version": "ipv4",
+                    "start-address": "10.1.2.1",
+                    "subnet-name": "subnet1",
+                    "subnet-role": "puppies",
+                    "subnet-sequence": 0
+                }
+            ],
+            "vpn-bindings": [
+                {
+                    "aic-zone": "zone1",
+                    "global-route-target": "string",
+                    "route-target-role": "string",
+                    "vpn-binding-id": "string",
+                    "vpn-name": "string"
+                }
+            ]
+        },
+        "request-information": {
+            "notification-url": "http://dev.null.com",
+            "order-number": "123456",
+            "order-version": "2010.06",
+            "request-action": "CreateNetworkInstance",
+            "request-id": "REQ123456",
+            "source": "curl"
+        },
+        "sdnc-request-header": {
+            "svc-action": "reserve",
+            "svc-notification-url": "http://dev.null.com",
+            "svc-request-id": "SVCREQ123456"
+        }
+    }
+}
+
+### preload data (vf-module)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:preload-vf-module-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "input": {
+    "preload-vf-module-topology-information": {
+      "vf-module-topology": {
+        "aic-clli": "AIC12345",
+        "aic-cloud-region": "rdm61a",
+        "cloud-owner": "att-nc",
+        "onap-model-information": {
+          "model-customization-uuid": "123123123",
+          "model-invariant-uuid": "123123123",
+          "model-name": "frankfurt",
+          "model-uuid": "121212",
+          "model-version": "frankfurt"
+        },
+        "sdnc-generated-cloud-resources": true,
+        "tenant": "tenant",
+        "vf-module-assignments": {
+          "dhcp-subnet-assignments": {
+            "dhcp-subnet-assignment": [
+              {
+                "ip-version": "ipv4",
+                "network-role": "netrole",
+                "neutron-subnet-id": "sub1"
+              }
+            ]
+          },
+          "vf-module-status": "Active",
+          "vlan-vnfc-instance-groups": {
+            "vlan-vnfc-instance-group": [
+              {
+                "instance-group-function": "function",
+                "instance-group-id": "groupid",
+                "vnf-id": "123",
+                "vnfcs": {
+                  "vnfc": [
+                    {
+                      "vnfc-name": "vnc1",
+                      "vnic-groups": {
+                        "vnic-group": [
+                          {
+                            "network-instance-group-function": "func1",
+                            "vlan-assignment-policy-name": "policy1",
+                            "vlan-common-ip-addresses": {
+                              "ip-addresses": {
+                                "ipv4-address": "10.1.2.1"
+                              }
+                            },
+                            "vlan-tag-index-next": 0,
+                            "vlan-vnics": {
+                              "vlan-vnic": [
+                                {
+                                  "vnic-port-id": "8080",
+                                  "vnic-sub-interfaces": {
+                                    "sub-interface-network-data": [
+                                      {
+                                        "floating-ips": {
+                                          "floating-ip-v4": [
+                                            "10.1.2.1"
+                                          ]
+                                        },
+                                        "network-id": "string",
+                                        "network-information-items": {
+                                          "network-information-item": [
+                                            {
+                                              "ip-count": 0,
+                                              "ip-version": "ipv4",
+                                              "network-ips": {
+                                                "network-ip": [
+                                                  "10.1.2.2"
+                                                ]
+                                              },
+                                              "use-dhcp": "Y"
+                                            }
+                                          ]
+                                        },
+                                        "network-name": 0,
+                                        "network-role": "role1",
+                                        "network-role-tag": "tag1",
+                                        "neutron-network-id": "net1",
+                                        "vlan-tag-id": 0
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "vnic-interface-role": "vnicrole1"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "vms": {
+            "vm": [
+              {
+                "nfc-naming-code": "name1",
+                "onap-model-information": {
+                  "model-customization-uuid": "456456456",
+                  "model-invariant-uuid": "456456456",
+                  "model-name": "model2",
+                  "model-uuid": "678678678",
+                  "model-version": "version2"
+                },
+                "vm-count": 0,
+                "vm-names": {
+                  "vm-name": [
+                    "vm1"
+                  ],
+                  "vnfc-names": [
+                    {
+                      "vnfc-name": "vnc1",
+                      "vnfc-networks": {
+                        "vnfc-network-data": [
+                          {
+                            "connection-point": {
+                              "connection-point-id": "conn1",
+                              "port-id": "8181",
+                              "vlan-data": [
+                                {
+                                  "vlan-role": "role2",
+                                  "vlan-tag-description": "tag2",
+                                  "vlan-tag-id": "1",
+                                  "vlan-uuid": "78789789"
+                                }
+                              ]
+                            },
+                            "vnfc-network-role": "role3",
+                            "vnfc-ports": {
+                              "vnfc-port": [
+                                {
+                                  "common-sub-interface-role": "subrole1",
+                                  "vnfc-port-id": "8787",
+                                  "vnic-sub-interfaces": {
+                                    "sub-interface-network-data": [
+                                      {
+                                        "floating-ips": {
+                                          "floating-ip-v4": [
+                                            "10.1.3.10"
+                                          ]
+                                        },
+                                        "network-id": "net2",
+                                        "network-information-items": {
+                                          "network-information-item": [
+                                            {
+                                              "ip-count": 0,
+                                              "ip-version": "ipv4",
+                                              "network-ips": {
+                                                "network-ip": [
+                                                  "10.1.3.4"
+                                                ]
+                                              },
+                                              "use-dhcp": "Y"
+                                            }
+                                          ]
+                                        },
+                                        "network-name": 0,
+                                        "network-role": "netrole4",
+                                        "network-role-tag": "tag5",
+                                        "neutron-network-id": "nnet5",
+                                        "vlan-tag-id": 0
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            "vnfc-subnet": [
+                              {
+                                "vnfc-ip-assignments": [
+                                  {
+                                    "vnfc-address-family": "ipv4",
+                                    "vnfc-subnet-dhcp": "Y",
+                                    "vnfc-subnet-ip": [
+                                      {
+                                        "ip-type": "FIXED",
+                                        "vnfc-client-key": "string",
+                                        "vnfc-ip-address": "10.1.7.1"
+                                      }
+                                    ],
+                                    "vnfc-subnet-ip-count": 0
+                                  }
+                                ],
+                                "vnfc-subnet-role": "string"
+                              }
+                            ],
+                            "vnfc-type": "string"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "vm-networks": {
+                  "vm-network": [
+                    {
+                      "floating-ips": {
+                        "floating-ip-v4": [
+                          "10.1.9.1"
+                        ]
+                      },
+                      "interface-route-prefixes": {
+                        "interface-route-prefix": [
+                          "10"
+                        ]
+                      },
+                      "is-trunked": true,
+                      "mac-addresses": {
+                        "mac-address": [
+                          "cafe:beef"
+                        ]
+                      },
+                      "network-information-items": {
+                        "network-information-item": [
+                          {
+                            "ip-count": 0,
+                            "ip-version": "ipv4",
+                            "network-ips": {
+                              "network-ip": [
+                                "10.2.3.10"
+                              ]
+                            },
+                            "use-dhcp": "Y"
+                          }
+                        ]
+                      },
+                      "network-role": "netrole9",
+                      "network-role-tag": "tag9",
+                      "related-networks": {
+                        "related-network": [
+                          {
+                            "network-id": "net9",
+                            "network-role": "netrole9",
+                            "vlan-tags": {
+                              "is-private": true,
+                              "lower-tag-id": 0,
+                              "upper-tag-id": 0,
+                              "vlan-interface": "vlan0"
+                            }
+                          }
+                        ]
+                      },
+                      "segmentation-id": "seg1",
+                      "sriov-parameters": {
+                        "application-tags": {
+                          "c-tags": {
+                            "c-tag": [
+                              "ctag1"
+                            ]
+                          },
+                          "s-tags": {
+                            "s-tag": [
+                              "stag1"
+                            ]
+                          }
+                        },
+                        "heat-vlan-filters": {
+                          "heat-vlan-filter": [
+                            "10"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "vm-type": "vmtype1",
+                "vm-type-tag": "vmtag1"
+              }
+            ]
+          }
+        },
+        "vf-module-parameters": {
+          "param": [
+            {
+              "name": "vfmodname",
+              "resource-resolution-data": {
+                "capability-name": "cap1",
+                "payload": "payload1",
+                "resource-key": [
+                  {
+                    "name": "key1",
+                    "value": "value1"
+                  }
+                ],
+                "status": "active"
+              },
+              "value": "value1"
+            }
+          ]
+        },
+        "vf-module-topology-identifier": {
+          "vf-module-id": "vfmodule1",
+          "vf-module-name": "vfmodule1",
+          "vf-module-type": "router"
+        }
+      },
+      "vnf-resource-assignments": {
+        "availability-zones": {
+          "availability-zone": [
+            "zone1"
+          ],
+          "max-count": 0
+        },
+        "vnf-networks": {
+          "vnf-network": [
+            {
+              "contrail-network-fqdn": "skynet.net",
+              "is-trunked": true,
+              "network-id": "net1",
+              "network-name": "net1",
+              "network-role": "netrole1",
+              "neutron-id": "neutron1",
+              "related-networks": {
+                "related-network": [
+                  {
+                    "network-id": "net2",
+                    "network-role": "netrole2",
+                    "vlan-tags": {
+                      "is-private": true,
+                      "lower-tag-id": 0,
+                      "upper-tag-id": 0,
+                      "vlan-interface": "vlan2"
+                    }
+                  }
+                ]
+              },
+              "segmentation-id": "seg2",
+              "subnets-data": {
+                "subnet-data": [
+                  {
+                    "cidr-mask": "255.255",
+                    "dhcp-enabled": "Y",
+                    "gateway-address": "10.1.2.254",
+                    "ip-version": "ipv4",
+                    "network-start-address": "10.1.2.1",
+                    "sdnc-subnet-id": "sub1",
+                    "subnet-id": "sub1",
+                    "subnet-name": "sub1",
+                    "subnet-role": "subrole1"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "vnf-status": "active"
+      },
+      "vnf-topology-identifier-structure": {
+        "nf-code": "code1",
+        "nf-function": "function1",
+        "nf-role": "role1",
+        "nf-type": "type1",
+        "vnf-id": "preload1",
+        "vnf-name": "vnf1",
+        "vnf-type": "vnftype1"
+      }
+    },
+    "request-information": {
+      "notification-url": "http://dev.null",
+      "order-number": "order123",
+      "order-version": "1",
+      "request-action": "CreateNetworkInstance",
+      "request-id": "req001",
+      "source": "curl"
+    },
+    "sdnc-request-header": {
+      "svc-action": "reserve",
+      "svc-notification-url": "http://dev.null",
+      "svc-request-id": "svcreq001"
+    }
+  }
+}
+
+### service-topology (assign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:service-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "CreateServiceInstance",
+        "request-id": "{{$guid}}",
+        "source": "simulator"
+      },
+      "sdnc-request-header": {
+        "svc-action": "assign",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svc-{{$guid}}"
+      },
+      "service-information": {
+        "global-customer-id": "{{$guid}}",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vBNG_0202",
+          "model-uuid": "00e50cbd-ef0f-4b28-821e-f2b583752dd3",
+          "model-version": "1920"
+        },
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-instance-name": "zrdm61asmsf01_svc"
+      }
+    }
+  }
+
+
+### service-topology (changeassign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:service-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "CreateServiceInstance",
+        "request-id": "{{$guid}}",
+        "source": "simulator"
+      },
+      "sdnc-request-header": {
+        "svc-action": "changeassign",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svc-{{$guid}}"
+      },
+      "service-information": {
+        "global-customer-id": "{{$guid}}",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vcpesvc_vbng_0412a",
+          "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+          "model-version": "1933"
+        },      
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-instance-name": "zrdm61asmsf01_svc"
+      }
+    }
+  }
+
+### service-topology (deactivate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:service-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "DeleteServiceInstance",
+        "request-id": "{{$guid}}",
+        "source": "simulator"
+      },
+      "sdnc-request-header": {
+        "svc-action": "deactivate",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svc-{{$guid}}"
+      },
+      "service-information": {
+        "global-customer-id": "{{$guid}}",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vcpesvc_vbng_0412a",
+          "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+          "model-version": "1933"
+        },      
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-instance-name": "zrdm61asmsf01_svc"
+      }
+    }
+  }
+
+### service-topology (delete)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:service-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "DeleteServiceInstance",
+        "request-id": "{{$guid}}",
+        "source": "simulator"
+      },
+      "sdnc-request-header": {
+        "svc-action": "delete",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svc-{{$guid}}"
+      },
+      "service-information": {
+        "global-customer-id": "{{$guid}}",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vcpesvc_vbng_0412a",
+          "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+          "model-version": "1933"
+        },      
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-instance-name": "zrdm61asmsf01_svc"
+      }
+    }
+  }
+
+
+### network-topology (assign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "network-information": {
+            "onap-model-information": {
+                "model-name": "VcpesvcVbng0412a.bng_mux",
+                "model-version": "1.0",
+                "model-customization-uuid": "b0cf3385-a390-488c-b6a0-d879fb4a4825",
+                "model-uuid": "9b7c1cbe-ddcd-458c-8792-d76391419b72",
+                "model-invariant-uuid": "206d5e6c-4cba-4c14-b942-5d946c881869"
+            },
+            "network-id": "2e723205-7f96-49a9-bd60-24168fbd9f07"
+        },
+        "network-request-input": {
+            "aic-cloud-region": "wnv1a",
+            "cloud-owner": "att-nc",
+            "tenant": "1795554216e946af8a3c788f195eb813",
+            "network-name": "vUSP-23804-T-01-wnv1a_int_csdb_net_1"
+        },
+        "request-information": {
+            "request-action": "CreateNetworkInstance",
+            "source": "simulator",
+            "request-id": "{{$guid}}"
+        },
+        "sdnc-request-header": {
+            "svc-request-id": "svc-{{$guid}}",
+            "svc-action": "assign"
+        },
+        "service-information": {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        }
+    }
+}
+
+
+### network-topology (activate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "network-information": {
+            "onap-model-information": {
+                "model-name": "VcpesvcVbng0412a.bng_mux",
+                "model-version": "1.0",
+                "model-customization-uuid": "b0cf3385-a390-488c-b6a0-d879fb4a4825",
+                "model-uuid": "9b7c1cbe-ddcd-458c-8792-d76391419b72",
+                "model-invariant-uuid": "206d5e6c-4cba-4c14-b942-5d946c881869"
+            },
+            "network-technology": "",
+            "network-id": "2e723205-7f96-49a9-bd60-24168fbd9f07",
+            "network-type": ""
+        },
+        "network-request-input": {
+            "aic-cloud-region": "wnv1a",
+            "cloud-owner": "att-nc",
+            "tenant": "1795554216e946af8a3c788f195eb813",
+            "network-name": "vUSP-23804-T-01-wnv1a_int_ccfx_net_1"
+        },
+        "request-information": {
+            "request-action": "CreateNetworkInstance",
+            "source": "simulator",
+            "request-id": "{{$guid}}"
+        },
+        "sdnc-request-header": {
+            "svc-request-id": "svc-{{$guid}}",
+            "svc-action": "activate"
+        },
+        "service-information": {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        }
+    }
+}
+
+### network-topology (deactivate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "network-information": {
+            "onap-model-information": {
+                "model-name": "VcpesvcVbng0412a.bng_mux",
+                "model-version": "1.0",
+                "model-customization-uuid": "b0cf3385-a390-488c-b6a0-d879fb4a4825",
+                "model-uuid": "9b7c1cbe-ddcd-458c-8792-d76391419b72",
+                "model-invariant-uuid": "206d5e6c-4cba-4c14-b942-5d946c881869"
+            },
+            "network-technology": "",
+            "network-id": "2e723205-7f96-49a9-bd60-24168fbd9f07",
+            "network-type": ""
+        },
+        "network-request-input": {
+            "aic-cloud-region": "wnv1a",
+            "cloud-owner": "att-nc",
+            "tenant": "1795554216e946af8a3c788f195eb813",
+            "network-name": "vUSP-23804-T-01-wnv1a_int_ccfx_net_1"
+        },
+        "request-information": {
+            "request-action": "DeleteNetworkInstance",
+            "source": "simulator",
+            "request-id": "{{$guid}}"
+        },
+        "sdnc-request-header": {
+            "svc-request-id": "svc-{{$guid}}",
+            "svc-action": "deactivate"
+        },
+        "service-information": {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        }
+    }
+}
+
+### network-topology (unassign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:network-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input": {
+        "network-information": {
+            "onap-model-information": {
+                "model-name": "VcpesvcVbng0412a.bng_mux",
+                "model-version": "1.0",
+                "model-customization-uuid": "b0cf3385-a390-488c-b6a0-d879fb4a4825",
+                "model-uuid": "9b7c1cbe-ddcd-458c-8792-d76391419b72",
+                "model-invariant-uuid": "206d5e6c-4cba-4c14-b942-5d946c881869"
+            },
+            "network-technology": "",
+            "network-id": "2e723205-7f96-49a9-bd60-24168fbd9f07",
+            "network-type": ""
+        },
+        "network-request-input": {
+            "aic-cloud-region": "wnv1a",
+            "cloud-owner": "att-nc",
+            "tenant": "1795554216e946af8a3c788f195eb813",
+            "network-name": "vUSP-23804-T-01-wnv1a_int_ccfx_net_1"
+        },
+        "request-information": {
+            "request-action": "DeleteNetworkInstance",
+            "source": "simulator",
+            "request-id": "{{$guid}}"
+        },
+        "sdnc-request-header": {
+            "svc-request-id": "svc-{{$guid}}",
+            "svc-action": "unassign"
+        },
+        "service-information": {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        }
+    }
+}
+
+### vnf-topology (assign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:vnf-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input":{
+        "request-information" : {
+            "request-action" : "CreateVnfInstance",
+            "source" : "simulator",
+            "request-id" : "{{$guid}}"
+        },
+        "sdnc-request-header" : {
+            "svc-request-id" : "svc-{{$guid}}",
+            "svc-action" : "assign"
+        },
+        "service-information" : {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        },
+        "vnf-information" : {
+            "onap-model-information" : {
+                "model-name" : "vcpevsp_vgmux_0412 ",
+                "model-version" : "1.0",
+                "model-customization-uuid" : "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+                "model-uuid" : "ba3b8981-9a9c-4945-92aa-486234ec321f",
+                "model-invariant-uuid" : "b3dc6465-942c-42af-8464-2bf85b6e504b"
+            },
+            "vnf-id" : "afb0dae3-85f0-4804-89a8-063204e61c1c",
+            "vnf-name" : "zrdm61asmsf01",
+            "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
+        },
+        "vnf-request-input" : {
+            "aic-cloud-region" : "rdm61a",
+            "cloud-owner" : "att-nc",
+            "tenant" : "4714fe06cc24414c914c51ca0aa1bf84",
+            "vnf-network-instance-group-ids" : [ ],
+            "vnf-input-parameters" : { },
+            "vnf-name" : "zrdm61asmsf01"
+        }
+    }
+}
+
+### vnf-topology (activate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:vnf-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input":{
+        "request-information" : {
+            "request-action" : "CreateVnfInstance",
+            "source" : "simulator",
+            "request-id" : "{{$guid}}"
+        },
+        "sdnc-request-header" : {
+            "svc-request-id" : "svc-{{$guid}}",
+            "svc-action" : "activate"
+        },
+        "service-information" : {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        },
+        "vnf-information" : {
+            "onap-model-information" : {
+                "model-name" : "vcpevsp_vgmux_0412 ",
+                "model-version" : "1.0",
+                "model-customization-uuid" : "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+                "model-uuid" : "ba3b8981-9a9c-4945-92aa-486234ec321f",
+                "model-invariant-uuid" : "b3dc6465-942c-42af-8464-2bf85b6e504b"
+            },
+            "vnf-id" : "afb0dae3-85f0-4804-89a8-063204e61c1c",
+            "vnf-name" : "zrdm61asmsf01",
+            "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
+        },
+        "vnf-request-input" : {
+            "aic-cloud-region" : "rdm61a",
+            "cloud-owner" : "att-nc",
+            "tenant" : "4714fe06cc24414c914c51ca0aa1bf84",
+            "vnf-network-instance-group-ids" : [ ],
+            "vnf-input-parameters" : { },
+            "vnf-name" : "zrdm61asmsf01"
+        }
+    }
+}
+
+### vnf-topology (deactivate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:vnf-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input":{
+        "request-information" : {
+            "request-action" : "DeleteVnfInstance",
+            "source" : "simulator",
+            "request-id" : "{{$guid}}"
+        },
+        "sdnc-request-header" : {
+            "svc-request-id" : "svc-{{$guid}}",
+            "svc-action" : "deactivate"
+        },
+        "service-information" : {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        },
+        "vnf-information" : {
+            "onap-model-information" : {
+                "model-name" : "vcpevsp_vgmux_0412 ",
+                "model-version" : "1.0",
+                "model-customization-uuid" : "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+                "model-uuid" : "ba3b8981-9a9c-4945-92aa-486234ec321f",
+                "model-invariant-uuid" : "b3dc6465-942c-42af-8464-2bf85b6e504b"
+            },
+            "vnf-id" : "afb0dae3-85f0-4804-89a8-063204e61c1c",
+            "vnf-name" : "zrdm61asmsf01",
+            "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
+        },
+        "vnf-request-input" : {
+            "aic-cloud-region" : "rdm61a",
+            "cloud-owner" : "att-nc",
+            "tenant" : "4714fe06cc24414c914c51ca0aa1bf84",
+            "vnf-network-instance-group-ids" : [ ],
+            "vnf-input-parameters" : { },
+            "vnf-name" : "zrdm61asmsf01"
+        }
+    }
+}
+
+### vnf-topology (unassign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:vnf-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input":{
+        "request-information" : {
+            "request-action" : "DeleteVnfInstance",
+            "source" : "simulator",
+            "request-id" : "{{$guid}}"
+        },
+        "sdnc-request-header" : {
+            "svc-request-id" : "svc-{{$guid}}",
+            "svc-action" : "unassign"
+        },
+        "service-information" : {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        },
+        "vnf-information" : {
+            "onap-model-information" : {
+                "model-name" : "vcpevsp_vgmux_0412 ",
+                "model-version" : "1.0",
+                "model-customization-uuid" : "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+                "model-uuid" : "ba3b8981-9a9c-4945-92aa-486234ec321f",
+                "model-invariant-uuid" : "b3dc6465-942c-42af-8464-2bf85b6e504b"
+            },
+            "vnf-id" : "afb0dae3-85f0-4804-89a8-063204e61c1c",
+            "vnf-name" : "zrdm61asmsf01",
+            "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
+        },
+        "vnf-request-input" : {
+            "aic-cloud-region" : "rdm61a",
+            "cloud-owner" : "att-nc",
+            "tenant" : "4714fe06cc24414c914c51ca0aa1bf84",
+            "vnf-network-instance-group-ids" : [ ],
+            "vnf-input-parameters" : { },
+            "vnf-name" : "zrdm61asmsf01"
+        }
+    }
+}
+
+### vf-module-topology (assign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:vf-module-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input":{
+        "request-information" : {
+            "request-action" : "CreateVfModuleInstance",
+            "source" : "simulator",
+            "request-id" : "{{$guid}}"
+        },
+        "sdnc-request-header" : {
+            "svc-request-id" : "svc-{{$guid}}",
+            "svc-action" : "assign"
+        },
+        "service-information" : {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        },
+        "vnf-information" : {
+            "onap-model-information" : {
+                "model-name" : "vcpevsp_vgmux_0412 ",
+                "model-version" : "1.0",
+                "model-customization-uuid" : "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+                "model-uuid" : "ba3b8981-9a9c-4945-92aa-486234ec321f",
+                "model-invariant-uuid" : "b3dc6465-942c-42af-8464-2bf85b6e504b"
+            },
+            "vnf-id" : "afb0dae3-85f0-4804-89a8-063204e61c1c",
+            "vnf-name" : "zrdm61asmsf01",
+            "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
+        },
+        "vf-module-information" : {
+            "onap-model-information" : {
+                "model-name" : "SmsfNc2578..smsf_base..module-0",
+                "model-version" : "3",
+                "model-customization-uuid" : "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
+                "model-uuid" : "513cc9fc-fff5-4c46-9728-393437536c4d",
+                "model-invariant-uuid" : "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
+            },
+            "vf-module-id" : "45841173-3729-4a1d-a811-a3bde399e22d",
+            "from-preload" : true,
+            "vf-module-type" : "SmsfNc2578..smsf_base..module-0"
+        },
+        "vf-module-request-input" : {
+            "aic-cloud-region" : "rdm61a",
+            "cloud-owner" : "att-nc",
+            "tenant" : "4714fe06cc24414c914c51ca0aa1bf84",
+            "vf-module-name" : "vfmodule1",
+            "vf-module-input-parameters" : { }
+        }
+    }
+}
+
+### vf-module-topology (activate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:vf-module-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input":{
+        "request-information" : {
+            "request-action" : "CreateVfModuleInstance",
+            "source" : "simulator",
+            "request-id" : "{{$guid}}"
+        },
+        "sdnc-request-header" : {
+            "svc-request-id" : "svc-{{$guid}}",
+            "svc-action" : "activate"
+        },
+        "service-information" : {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        },
+        "vnf-information" : {
+            "onap-model-information" : {
+                "model-name" : "vcpevsp_vgmux_0412 ",
+                "model-version" : "1.0",
+                "model-customization-uuid" : "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+                "model-uuid" : "ba3b8981-9a9c-4945-92aa-486234ec321f",
+                "model-invariant-uuid" : "b3dc6465-942c-42af-8464-2bf85b6e504b"
+            },
+            "vnf-id" : "afb0dae3-85f0-4804-89a8-063204e61c1c",
+            "vnf-name" : "zrdm61asmsf01",
+            "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
+        },
+        "vf-module-information" : {
+            "onap-model-information" : {
+                "model-name" : "SmsfNc2578..smsf_base..module-0",
+                "model-version" : "3",
+                "model-customization-uuid" : "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
+                "model-uuid" : "513cc9fc-fff5-4c46-9728-393437536c4d",
+                "model-invariant-uuid" : "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
+            },
+            "vf-module-id" : "45841173-3729-4a1d-a811-a3bde399e22d",
+            "from-preload" : true,
+            "vf-module-type" : "SmsfNc2578..smsf_base..module-0"
+        },
+        "vf-module-request-input" : {
+            "aic-cloud-region" : "rdm61a",
+            "cloud-owner" : "att-nc",
+            "tenant" : "4714fe06cc24414c914c51ca0aa1bf84",
+            "vf-module-name" : "vfmodule1",
+            "vf-module-input-parameters" : { }
+        }
+    }
+}
+### vf-module-topology (deactivate)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:vf-module-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input":{
+        "request-information" : {
+            "request-action" : "DeleteVfModuleInstance",
+            "source" : "simulator",
+            "request-id" : "{{$guid}}"
+        },
+        "sdnc-request-header" : {
+            "svc-request-id" : "svc-{{$guid}}",
+            "svc-action" : "deactivate"
+        },
+        "service-information" : {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        },
+        "vnf-information" : {
+            "onap-model-information" : {
+                "model-name" : "vcpevsp_vgmux_0412 ",
+                "model-version" : "1.0",
+                "model-customization-uuid" : "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+                "model-uuid" : "ba3b8981-9a9c-4945-92aa-486234ec321f",
+                "model-invariant-uuid" : "b3dc6465-942c-42af-8464-2bf85b6e504b"
+            },
+            "vnf-id" : "afb0dae3-85f0-4804-89a8-063204e61c1c",
+            "vnf-name" : "zrdm61asmsf01",
+            "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
+        },
+        "vf-module-information" : {
+            "onap-model-information" : {
+                "model-name" : "SmsfNc2578..smsf_base..module-0",
+                "model-version" : "3",
+                "model-customization-uuid" : "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
+                "model-uuid" : "513cc9fc-fff5-4c46-9728-393437536c4d",
+                "model-invariant-uuid" : "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
+            },
+            "vf-module-id" : "45841173-3729-4a1d-a811-a3bde399e22d",
+            "from-preload" : true,
+            "vf-module-type" : "SmsfNc2578..smsf_base..module-0"
+        },
+        "vf-module-request-input" : {
+            "aic-cloud-region" : "rdm61a",
+            "cloud-owner" : "att-nc",
+            "tenant" : "4714fe06cc24414c914c51ca0aa1bf84",
+            "vf-module-name" : "vfmodule1",
+            "vf-module-input-parameters" : { }
+        }
+    }
+}
+
+### vf-module-topology (unassign)
+POST {{hostname}}/restconf/operations/GENERIC-RESOURCE-API:vf-module-topology-operation/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "input":{
+        "request-information" : {
+            "request-action" : "DeleteVfModuleInstance",
+            "source" : "simulator",
+            "request-id" : "{{$guid}}"
+        },
+        "sdnc-request-header" : {
+            "svc-request-id" : "svc-{{$guid}}",
+            "svc-action" : "unassign"
+        },
+        "service-information" : {
+            "onap-model-information": {
+                "model-name": "vcpesvc_vbng_0412a",
+                "model-version": "3.0",
+                "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+                "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+            },
+            "subscription-service-type": "VIRTUAL USP",
+            "service-id": "svc-{{$guid}}",
+            "global-customer-id": "{{$guid}}",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+        },
+        "vnf-information" : {
+            "onap-model-information" : {
+                "model-name" : "vcpevsp_vgmux_0412 ",
+                "model-version" : "1.0",
+                "model-customization-uuid" : "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+                "model-uuid" : "ba3b8981-9a9c-4945-92aa-486234ec321f",
+                "model-invariant-uuid" : "b3dc6465-942c-42af-8464-2bf85b6e504b"
+            },
+            "vnf-id" : "afb0dae3-85f0-4804-89a8-063204e61c1c",
+            "vnf-name" : "zrdm61asmsf01",
+            "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
+        },
+        "vf-module-information" : {
+            "onap-model-information" : {
+                "model-name" : "SmsfNc2578..smsf_base..module-0",
+                "model-version" : "3",
+                "model-customization-uuid" : "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
+                "model-uuid" : "513cc9fc-fff5-4c46-9728-393437536c4d",
+                "model-invariant-uuid" : "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
+            },
+            "vf-module-id" : "45841173-3729-4a1d-a811-a3bde399e22d",
+            "from-preload" : true,
+            "vf-module-type" : "SmsfNc2578..smsf_base..module-0"
+        },
+        "vf-module-request-input" : {
+            "aic-cloud-region" : "rdm61a",
+            "cloud-owner" : "att-nc",
+            "tenant" : "4714fe06cc24414c914c51ca0aa1bf84",
+            "vf-module-name" : "vfmodule1",
+            "vf-module-input-parameters" : { }
+        }
+    }
+}
+
+### Healthcheck
+POST {{hostname}}/restconf/operations/SLI-API:healthcheck/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ input: {}}
+
+### get preload information (top)
+GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:preload-information/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### get vfmodule1 preload information
+GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:preload-information/preload-list/vfmodule1/vf-module/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### get service instance / topology
+GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:services/service/5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca/service-data/service-topology/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### top level single service get
+GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:services/service/5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### top level all services get
+GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:services/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json

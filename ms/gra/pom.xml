@@ -24,18 +24,31 @@
 
     <parent>
         <groupId>org.onap.sdnc.apps</groupId>
-        <artifactId>sdnc-apps</artifactId>
+        <artifactId>sdnc-apps-ms</artifactId>
         <version>2.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>sdnc-apps-ms</artifactId>
+    <artifactId>gra</artifactId>
     <version>2.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Micro-services Root</name>
-    <description>Micro-services</description>
+    <name>sdnc-apps :: ms :: ${project.artifactId}</name>
+    <description>Generic Resource API microservice</description>
+    
+    <properties>
+        <aaf.cadi.version>2.1.21</aaf.cadi.version>
+        <ccsdk.apps.version>1.2.0-SNAPSHOT</ccsdk.apps.version>
+        <ccsdk.docker.version>1.1-STAGING-latest</ccsdk.docker.version>
+        <sdnc.northbound.version>2.2.0-SNAPSHOT</sdnc.northbound.version>
+        <sdnc.oam.version>2.2.0-SNAPSHOT</sdnc.oam.version>
+        <gratest.mysql.database>testdb</gratest.mysql.database>
+        <gratest.mysql.root.password>itsASecret</gratest.mysql.root.password>
+        <gratest.mysql.user>testdb</gratest.mysql.user>
+        <gratest.mysql.password>test123</gratest.mysql.password>
+    </properties>
 
     <modules>
-        <module>gra</module>
+        <module>gra-app</module>
+        <module>gra-docker</module>
     </modules>
 </project>

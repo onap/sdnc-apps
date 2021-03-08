@@ -1,0 +1,519 @@
+databaseChangeLog:
+- changeSet:
+    id: 20210211-1
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES
+    changes:
+    - createTable:
+        tableName: CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES
+        columns:
+        - column:
+            name: allottedResourceId
+            type: varchar(255)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: allottedResourceStatusAction
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusFinalIndicator
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusRequestStatus
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusResponseCode
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusResponseMessage
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusResponseTimestamp
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusRpcAction
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusRpcName
+            type: varchar(255)
+        - column:
+            name: arData
+            type: clob
+- changeSet:
+    id: 20210211-2
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not: 
+          - tableExists:
+              tableName: CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS
+    changes:
+    - createTable:
+        tableName: CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS
+        columns:
+        - column:
+            name: configurationId
+            type: varchar(255)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: pmcData
+            type: clob
+        - column:
+            name: portMirrorConfigurationStatusAction
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusFinalIndicator
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusRequestStatus
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusResponseCode
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusResponseMessage
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusResponseTimestamp
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusRpcAction
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusRpcName
+            type: varchar(255)
+- changeSet:
+    id: 20210211-3
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: CONFIG_GRA_SERVICES
+    changes:
+    - createTable:
+        tableName: CONFIG_GRA_SERVICES
+        columns:
+        - column:
+            name: svcInstanceId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: serviceStatusAction
+            type: varchar(255)
+        - column:
+            name: serviceStatusFinalIndicator
+            type: varchar(255)
+        - column:
+            name: serviceStatusRequestStatus
+            type: varchar(255)
+        - column:
+            name: serviceStatusResponseCode
+            type: varchar(255)
+        - column:
+            name: serviceStatusResponseMessage
+            type: varchar(255)
+        - column:
+            name: serviceStatusResponseTimestamp
+            type: varchar(255)
+        - column:
+            name: serviceStatusRpcAction
+            type: varchar(255)
+        - column:
+            name: serviceStatusRpcName
+            type: varchar(255)
+        - column:
+            name: svcData
+            type: clob
+- changeSet:
+    id: 20210211-4
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: CONFIG_PRELOAD_DATA
+    changes:
+    - createTable:
+        tableName: CONFIG_PRELOAD_DATA
+        columns:
+        - column:
+            name: preloadId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: preloadType
+            type: varchar(25)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: preloadData
+            type: clob
+- changeSet:
+    id: 20210211-5
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: NODE_TYPES
+    changes:
+    - createTable:
+        tableName: NODE_TYPES
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+            name: nodetype
+            type: varchar(80)
+- changeSet:
+    id: 20210211-6
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+         - tableExists:
+              tableName: OPERATIONAL_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES
+    changes:
+    - createTable:
+        tableName: OPERATIONAL_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES
+        columns:
+        - column:
+            name: allottedResourceId
+            type: varchar(255)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: allottedResourceStatusAction
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusFinalIndicator
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusRequestStatus
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusResponseCode
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusResponseMessage
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusResponseTimestamp
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusRpcAction
+            type: varchar(255)
+        - column:
+            name: allottedResourceStatusRpcName
+            type: varchar(255)
+        - column:
+            name: arData
+            type: clob
+- changeSet:
+    id: 20210211-7
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS
+    changes:
+    - createTable:
+        tableName: OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS
+        columns:
+        - column:
+            name: configurationId
+            type: varchar(255)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: pmcData
+            type: clob
+        - column:
+            name: portMirrorConfigurationStatusAction
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusFinalIndicator
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusRequestStatus
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusResponseCode
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusResponseMessage
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusResponseTimestamp
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusRpcAction
+            type: varchar(255)
+        - column:
+            name: portMirrorConfigurationStatusRpcName
+            type: varchar(255)
+- changeSet:
+    id: 20210211-8
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: OPERATIONAL_GRA_SERVICES
+    changes:
+    - createTable:
+        tableName: OPERATIONAL_GRA_SERVICES
+        columns:
+        - column:
+            name: svcInstanceId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: serviceStatusAction
+            type: varchar(255)
+        - column:
+            name: serviceStatusFinalIndicator
+            type: varchar(255)
+        - column:
+            name: serviceStatusRequestStatus
+            type: varchar(255)
+        - column:
+            name: serviceStatusResponseCode
+            type: varchar(255)
+        - column:
+            name: serviceStatusResponseMessage
+            type: varchar(255)
+        - column:
+            name: serviceStatusResponseTimestamp
+            type: varchar(255)
+        - column:
+            name: serviceStatusRpcAction
+            type: varchar(255)
+        - column:
+            name: serviceStatusRpcName
+            type: varchar(255)
+        - column:
+            name: svcData
+            type: clob
+- changeSet:
+    id: 20210211-10
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: SVC_LOGIC
+    changes:
+    - createTable:
+        tableName: SVC_LOGIC
+        columns:
+        - column:
+            name: module
+            type: varchar(80)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: rpc
+            type: varchar(80)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: version
+            type: varchar(40)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: mode
+            type: varchar(5)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: active
+            type: varchar(1)
+            constraints:
+              nullable: false
+        - column:
+            name: graph
+            type: longblob
+        - column:
+            name: modified_timestamp
+            type: timestamp
+            constraints:
+              nullable: false
+            defaultValueComputed: CURRENT_TIMESTAMP
+        - column:
+            name: md5sum
+            type: varchar(128)
+- changeSet:
+    id: 20210211-11
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: TEST_RESULT_CONFIG
+    changes:
+    - createTable:
+        tableName: TEST_RESULT_CONFIG
+        columns:
+        - column:
+            name: id
+            type: bigint
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: results
+            type: varchar(255)
+        - column:
+            name: testIdentifier
+            type: varchar(255)
+- changeSet:
+    id: 20210211-12
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: TEST_RESULT_OPERATIONAL
+    changes:
+    - createTable:
+        tableName: TEST_RESULT_OPERATIONAL
+        columns:
+        - column:
+            name: id
+            type: bigint
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: results
+            type: varchar(255)
+        - column:
+            name: testIdentifier
+            type: varchar(255)
+- changeSet:
+    id: 20210211-13
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: hibernate_sequence
+    changes:
+    - createTable:
+        tableName: hibernate_sequence
+        columns:
+        - column:
+            name: next_val
+            type: bigint
+- changeSet:
+    id: 20210216-1
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: CONFIG_GRA_NETWORKS
+    changes:
+    - createTable:
+        tableName: CONFIG_GRA_NETWORKS
+        columns:
+        - column:
+            name: svcInstanceId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: networkId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: networkData
+            type: clob
+- changeSet:
+    id: 20210216-2
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: CONFIG_GRA_VNFS
+    changes:
+    - createTable:
+        tableName: CONFIG_GRA_VNFS
+        columns:
+        - column:
+            name: svcInstanceId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: vnfId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: vnfData
+            type: clob
+- changeSet:
+    id: 20210216-3
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: CONFIG_GRA_VF_MODULES
+    changes:
+    - createTable:
+        tableName: CONFIG_GRA_VF_MODULES
+        columns:
+        - column:
+            name: svcInstanceId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: vnfId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: vfModuleId
+            type: varchar(100)
+            constraints:
+              nullable: false
+              primaryKey: true
+        - column:
+            name: vfModuleData
+            type: clob

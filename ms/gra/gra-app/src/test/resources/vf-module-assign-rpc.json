@@ -1,0 +1,56 @@
+{
+  "input":{
+    "request-information" : {
+      "request-action" : "CreateVfModuleInstance",
+      "source" : "MSO",
+      "request-id" : "fa988b60-ebd5-4d0b-9b7c-3073c365a9ed"
+    },
+    "sdnc-request-header" : {
+      "svc-request-id" : "767f2d08-e022-4000-97c2-61c002ebc740",
+      "svc-action" : "assign"
+    },
+    "service-information" : {
+      "onap-model-information" : {
+        "model-name" : "SMSF-NC2-578-SVC",
+        "model-version" : "3.0",
+        "model-uuid" : "20b35ef0-956f-4e1b-bf75-f51a2e7c53db",
+        "model-invariant-uuid" : "5c905067-7b5a-457a-9f25-7a83a04b2a6d"
+      },
+      "subscription-service-type" : "Mobility",
+      "service-id" : "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+      "global-customer-id" : "cust123",
+      "service-instance-id" : "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
+    },
+    "vf-module-information" : {
+      "onap-model-information" : {
+        "model-name" : "SmsfNc2578..smsf_base..module-0",
+        "model-version" : "3",
+        "model-customization-uuid" : "0e6a57c1-abd7-436b-963f-1ad051cb3c40",
+        "model-uuid" : "795f1014-7fe5-4c4f-a0ca-dc6ebd2185ab",
+        "model-invariant-uuid" : "6265446b-58a6-4689-860f-78bada0faf2c"
+      },
+      "vf-module-id" : "45841173-3729-4a1d-a811-a3bde399e22d",
+      "from-preload" : true,
+      "vf-module-type" : "SmsfNc2578..smsf_base..module-0"
+    },
+    "vf-module-request-input" : {
+      "aic-cloud-region" : "rdm61a",
+      "cloud-owner" : "att-nc",
+      "tenant" : "4714fe06cc24414c914c51ca0aa1bf84",
+      "vf-module-name" : "zrdm61asmsf01_base",
+      "vf-module-input-parameters" : { }
+    },
+    "vnf-information" : {
+      "onap-model-information" : {
+        "model-name" : "SMSF-NC2-578",
+        "model-version" : "3.0",
+        "model-customization-uuid" : "0f229dd7-36ba-44ff-b7fb-327721dcb8d2",
+        "model-uuid" : "7b44be32-b39f-4a3b-8650-ece4e75fd094",
+        "model-invariant-uuid" : "0017cd47-7f1b-49fb-874d-6add86ececb1"
+      },
+      "vnf-id" : "fae319cc-68d6-496f-be1e-a09e133c71d4",
+      "vnf-name" : "Python_ONAP_SDK_vnf_instance_2aff902a-4714-4d08-942d-d97b3a3b87c2",
+      "vnf-type" : "service-nginx-ingress-1/nginx-ingress-1 0"
+    }
+  }
+}
