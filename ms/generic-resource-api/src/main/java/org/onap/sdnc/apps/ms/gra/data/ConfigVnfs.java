@@ -28,6 +28,12 @@ public class ConfigVnfs {
         this.vnfData = "";
     }
 
+    public ConfigVnfs(String svcInstanceId, String vnfId) {
+        this.svcInstanceId = svcInstanceId;
+        this.vnfId = vnfId;
+        this.vnfData = "";
+    }
+
     public ConfigVnfs(String svcInstanceId, String vnfId, String vnfData) {
         this.svcInstanceId = svcInstanceId;
         this.vnfId = vnfId;
