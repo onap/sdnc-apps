@@ -1,0 +1,34 @@
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "CreateServiceInstance",
+        "request-id": "req123",
+        "source": "curl"
+      },
+      "sdnc-request-header": {
+        "svc-action": "assign",
+        "svc-notification-url": "http://dev.null",
+        "svc-request-id": "svcreq123"
+      },
+      "service-information": {
+        "global-customer-id": "cust123",
+        "onap-model-information": {
+          "model-customization-uuid": "12341234",
+          "model-invariant-uuid": "12341234",
+          "model-name": "vBNG_0202",
+          "model-uuid": "00e50cbd-ef0f-4b28-821e-f2b583752dd3",
+          "model-version": "1920"
+        },
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "service-request-input": {
+        "service-instance-name": "zrdm61asmsf01_svc"
+      }
+    }
+  }

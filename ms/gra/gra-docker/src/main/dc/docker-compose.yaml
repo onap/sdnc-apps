@@ -1,0 +1,85 @@
+version: '2.1'
+
+services:
+  db:
+    image: mariadb:10.5
+    container_name: gra_db
+    ports:
+      - "13306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    logging:       
+      driver:   "json-file"
+      options:  
+        max-size: "30m"
+        max-file: "5"
+  
+      
+  gra:
+    image: onap/sdnc-gra-image:latest
+    depends_on:
+      - db
+    container_name: gra_controller
+    ports:
+      - "8181:8080"
+      - "8443:8443"
+    volumes:
+      - ../resources/application.properties:/opt/onap/sdnc/config/application.properties 
+      - ../resources/cadi-example.properties:/opt/onap/sdnc/config/cadi.properties 
+      - ../resources/cadi-log.properties:/opt/onap/sdnc/config/cadi-log.properties 
+      - ../resources/cadi.keyfile:/opt/onap/sdnc/config/cadi.keyfile
+    links:
+      - db:dbhost
+    environment:
+      - MYSQL_DB_HOST=dbhost
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - SDNC_CONFIG_DIR=/opt/onap/sdnc/config
+      - LOG_LEVEL=DEBUG
+      - TRUSTSTORE_PASSWORD=changeit
+      - CACERT_PASSWORD=changeit
+      - SDNC_CERT_DIR=/opt/onap/sdnc/config
+      - JAVA_SECURITY_DIR=/usr/lib/jvm/default-jvm/jre/lib/security
+      - TRUSTSTORE=truststoreONAPall.jks
+    logging:       
+      driver:   "json-file"
+      options:  
+        max-size: "30m"
+        max-file: "5"
+    extra_hosts:
+      aaf-onap-test.osaaf.org: 10.12.5.145
+
+  dgbuilder:
+    image: nexus3.onap.org:10001/onap/ccsdk-dgbuilder-image:latest
+    depends_on:
+      - db
+    container_name:  gra_dgbuilder
+    entrypoint:
+       - "/bin/bash"
+       - "-c"
+       - "cd /opt/onap/ccsdk/dgbuilder/ && ./start.sh sdnc1.0 && wait"
+    ports:
+      - "3200:3100"
+    volumes:
+      - ${HOME}/gerrit/sdnc/oam/platform-logic:/opt/onap/ccsdk/platform-logic
+    links:
+      - db:dbhost
+      - db:sdnctldb01
+      - db:sdnctldb02
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - SDNC_CONFIG_DIR=/opt/onap/ccsdk/data/properties
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    logging:       
+      driver:   "json-file"
+      options:  
+        max-size: "30m"
+        max-file: "5"

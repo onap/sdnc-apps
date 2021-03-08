@@ -1,0 +1,85 @@
+{
+    "input": {
+      "request-information": {
+        "notification-url": "http://dev.null",
+        "order-number": "123",
+        "order-version": "version1",
+        "request-action": "CreateVnfInstance",
+        "request-id": "req123",
+        "source": "curl"
+      },
+      "sdnc-request-header": {
+        "svc-action": "assign",
+        "svc-request-id": "svcreq123"
+      },
+      "service-information": {
+        "global-customer-id": "cust123",
+        "onap-model-information": {
+          "model-name": "vcpesvc_vbng_0412a",
+          "model-version": "3.0",
+          "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+          "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+      },
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "subscriber-name": "test",
+        "subscription-service-type": "test"
+      },
+      "vnf-information" : {
+        "onap-model-information" : {
+          "model-name" : "vcpevsp_vgmux_0412 ",
+          "model-version" : "1.0",
+          "model-customization-uuid" : "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+          "model-uuid" : "ba3b8981-9a9c-4945-92aa-486234ec321f",
+          "model-invariant-uuid" : "b3dc6465-942c-42af-8464-2bf85b6e504b"
+      },
+        "vnf-id" : "fae319cc-68d6-496f-be1e-a09e133c71d4",
+        "vnf-name" : "myVnf",
+        "vnf-type" : "router"
+      },
+      "vnf-request-input" : {
+        "aic-clli": "complexMC",
+        "aic-cloud-region": "k8s_region_1",
+        "cloud-owner": "k8sCloudOwner",
+        "tenant" : "k8s_tenant_1",
+        "vnf-input-parameters": {
+          "param": [
+            {
+              "name": "test-param",
+              "resource-resolution-data": {
+                "capability-name": "myCapability",
+                "payload": "myPayload",
+                "resource-key": [
+                  {
+                    "name": "resource1",
+                    "value": "hello_world"
+                  }
+                ],
+                "status": "Pending"
+              },
+              "value": "HiThere"
+            }
+          ]
+        },
+        "vnf-name" : "myVnf",
+        "vnf-network-instance-group-ids": [
+          {
+            "vnf-network-instance-group-id" : "netgrp123"
+          }
+        ],
+        "vnf-networks" : {
+          "vnf-network" : [
+          {
+            "contrail-network-fqdn" : "contrail.onap",
+            "is-trunked" : "true",
+            "network-id" : "net123",
+            "network-name" : "myNetwork",
+            "network-role" : "lan",
+            "neutron-id" : "neutron1234",
+            "segmentation-id" : "seg123"
+          }
+          ]
+      }
+    }
+  }
+}
