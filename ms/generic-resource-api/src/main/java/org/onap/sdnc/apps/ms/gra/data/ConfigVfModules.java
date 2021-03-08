@@ -34,6 +34,13 @@ public class ConfigVfModules {
         this.vfModuleData = "";
     }
 
+    public ConfigVfModules(String svcInstanceId, String vnfId, String vfModuleId) {
+        this.svcInstanceId = svcInstanceId;
+        this.vnfId = vnfId;
+        this.vfModuleId = vfModuleId;
+        this.vfModuleData = "";
+    }
+
     public ConfigVfModules(String svcInstanceId, String vnfId, String vfModuleId, String vfModuleData) {
         this.svcInstanceId = svcInstanceId;
         this.vnfId = vnfId;

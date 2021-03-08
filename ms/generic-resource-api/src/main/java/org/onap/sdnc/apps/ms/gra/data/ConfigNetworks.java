@@ -28,6 +28,12 @@ public class ConfigNetworks {
         this.networkData = "";
     }
 
+    public ConfigNetworks(String svcInstanceId, String networkId) {
+        this.svcInstanceId = svcInstanceId;
+        this.networkId = networkId;
+        this.networkData = "";
+    }
+
     public ConfigNetworks(String svcInstanceId, String networkId, String networkData) {
         this.svcInstanceId = svcInstanceId;
         this.networkId = networkId;

@@ -40,6 +40,9 @@
         <gratest.mysql.password>test123</gratest.mysql.password>
         <docker.autoCreateCustomNetworks>true</docker.autoCreateCustomNetworks>
         <liquibase.properties>${project.basedir}/src/main/resources/liquibase.properties</liquibase.properties>
+
+        <maven.compiler.source>1.11</maven.compiler.source>
+        <maven.compiler.target>1.11</maven.compiler.target>
     </properties>
 
     <dependencies>

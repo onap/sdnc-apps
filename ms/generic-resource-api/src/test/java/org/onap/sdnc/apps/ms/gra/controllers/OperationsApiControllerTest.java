@@ -167,7 +167,10 @@ public class OperationsApiControllerTest {
 
     @Test
     public void operationsGENERICRESOURCEAPInetworkTopologyOperationAssignPost() throws Exception {
-
+        System.out.println("OperationsApiControllerTest: Setting serviceLogicProperties, serviceLogicDirectory and sdnc.config.dir");
+        System.setProperty("serviceLogicProperties", "src/test/resources/svclogic.properties");
+        System.setProperty("serviceLogicDirectory", "src/test/resources/svclogic");
+        System.setProperty("sdnc.config.dir", "src/test/resources");
         // Remove any existing service data
         configServicesRepository.deleteAll();
         operationalServicesRepository.deleteAll();
