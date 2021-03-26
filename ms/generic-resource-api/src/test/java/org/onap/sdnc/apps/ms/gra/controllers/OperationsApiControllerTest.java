@@ -52,6 +52,15 @@ public class OperationsApiControllerTest {
     ConfigServicesRepository configServicesRepository;
 
     @Autowired
+    ConfigNetworksRepository configNetworksRepository;
+
+    @Autowired
+    ConfigVnfsRepository configVnfsRepository;
+
+    @Autowired
+    ConfigVfModulesRepository configVfModulesRepository;
+
+    @Autowired
     OperationalServicesRepository operationalServicesRepository;
 
     @Autowired
@@ -62,6 +71,9 @@ public class OperationsApiControllerTest {
 
     @Autowired
     OperationalPortMirrorConfigurationsRepository operationalPortMirrorConfigurationsRepository;
+
+    @Autowired
+    ServiceDataHelper serviceDataHelper;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -119,7 +131,7 @@ public class OperationsApiControllerTest {
     public void operationsGENERICRESOURCEAPIserviceTopologyOperationAssignPost() throws Exception {
 
         // Remove any existing service data
-        configServicesRepository.deleteAll();
+        clearServicesData();
         operationalServicesRepository.deleteAll();
 
         // Add invalid content
@@ -141,14 +153,14 @@ public class OperationsApiControllerTest {
 
     @Test
     public void serviceTopologyOperationAsync() throws Exception {
-        configServicesRepository.deleteAll();
+        clearServicesData();
         GenericResourceApiVnfOperationInformationBodyparam inputParam = operationsApiController.getObjectMapper().get().readValue(readFileContent("src/test/resources/vnf-assign-rpc.json"), GenericResourceApiVnfOperationInformationBodyparam.class);
         operationsApiController.processAsyncVnfTopologyOperation("vnf-topology-operation",inputParam);
 
         loadVnfData("src/test/resources/vnf-data.json");
         inputParam.getInput().getServiceInformation().setServiceInstanceId("98f189dd-2971-46f5-b4f1-1a9a323f39a4");
         operationsApiController.processAsyncVnfTopologyOperation("vnf-topology-operation",inputParam);
-        configServicesRepository.deleteAll();
+        clearServicesData();
     }
 
     private void loadVnfData(String path) throws IOException {
@@ -172,7 +184,7 @@ public class OperationsApiControllerTest {
         System.setProperty("serviceLogicDirectory", "src/test/resources/svclogic");
         System.setProperty("sdnc.config.dir", "src/test/resources");
         // Remove any existing service data
-        configServicesRepository.deleteAll();
+        clearServicesData();
         operationalServicesRepository.deleteAll();
 
         // Load services data
@@ -196,7 +208,7 @@ public class OperationsApiControllerTest {
     public void operationsGENERICRESOURCEAPIvnfTopologyOperationAssignPost() throws Exception {
 
         // Remove any existing service data
-        configServicesRepository.deleteAll();
+        clearServicesData();
         operationalServicesRepository.deleteAll();
 
         // Load services data
@@ -217,14 +229,22 @@ public class OperationsApiControllerTest {
     }
 
     @Test
-    public void operationsGENERICRESOURCEAPIvfModuleTopologyOperationAssignPost() throws Exception {
+    public void operationsGENERICRESOURCEAPIvfModuleTopologyOperationPost() throws Exception {
 
         // Remove any existing service data
-        configServicesRepository.deleteAll();
+        clearServicesData();
         operationalServicesRepository.deleteAll();
+        assertEquals(0, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(0, configVnfsRepository.count());
+        assertEquals(0, configVfModulesRepository.count());
 
         // Load services data
-        loadServicesData("src/test/resources/service1.json");
+        loadServicesData("src/test/resources/service1-service_vnf.json");
+        assertEquals(1, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(1, configVnfsRepository.count());
+        assertEquals(0, configVfModulesRepository.count());
 
         // Add invalid content
         String content = readFileContent("src/test/resources/preload1-rpc-vfmodule.json");
@@ -237,8 +257,23 @@ public class OperationsApiControllerTest {
         mvcResult = mvc.perform(MockMvcRequestBuilders.post(VF_MODULE_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(1, configVnfsRepository.count());
+        assertEquals(1, configVfModulesRepository.count());
+
+        // Delete content
+        content = readFileContent("src/test/resources/vf-module-unassign-rpc.json");
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(VF_MODULE_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
+                        .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(1, configVnfsRepository.count());
+        assertEquals(0, configVfModulesRepository.count());
 
     }
+
 
     @Test
     public void operationsGENERICRESOURCEAPIportMirrorConfigurationTopologyOperationAssignPost() throws Exception {
@@ -271,7 +306,7 @@ public class OperationsApiControllerTest {
     public void operationsGENERICRESOURCEAPIvnfGetResourceRequestPost() throws Exception {
 
         // Remove any existing service data
-        configServicesRepository.deleteAll();
+        clearServicesData();
         operationalServicesRepository.deleteAll();
 
         // Load services data
@@ -305,9 +340,8 @@ public class OperationsApiControllerTest {
         for (GenericResourceApiServicemodelinfrastructureService service : services.getService()) {
             ConfigServices newService = new ConfigServices();
             newService.setSvcInstanceId(service.getServiceInstanceId());
-            newService.setSvcData(objectMapper.writeValueAsString(service.getServiceData()));
             newService.setServiceStatus(service.getServiceStatus());
-            configServicesRepository.save(newService);
+            serviceDataHelper.saveService(newService, service.getServiceData());
         }
     }
 
@@ -323,6 +357,13 @@ public class OperationsApiControllerTest {
             newPmConfig.setPortMirrorConfigurationStatus(pmConfig.getConfigurationStatus());
             configPortMirrorConfigurationsRepository.save(newPmConfig);
         }
+    }
+
+    private void clearServicesData() {
+        configServicesRepository.deleteAll();
+        configNetworksRepository.deleteAll();
+        configVnfsRepository.deleteAll();
+        configVfModulesRepository.deleteAll();
     }
 
     private String readFileContent(String path) throws IOException {

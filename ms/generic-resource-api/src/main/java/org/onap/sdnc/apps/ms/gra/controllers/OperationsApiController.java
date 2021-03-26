@@ -42,7 +42,6 @@ import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceBase;
 import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResourcesRepository;
-import org.onap.sdnc.apps.ms.gra.data.ConfigNetworks;
 import org.onap.sdnc.apps.ms.gra.data.ConfigNetworksRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurations;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurationsRepository;
@@ -50,9 +49,7 @@ import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
-import org.onap.sdnc.apps.ms.gra.data.ConfigVfModules;
 import org.onap.sdnc.apps.ms.gra.data.ConfigVfModulesRepository;
-import org.onap.sdnc.apps.ms.gra.data.ConfigVnfs;
 import org.onap.sdnc.apps.ms.gra.data.ConfigVnfsRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalContrailRouteAllottedResourcesRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalPortMirrorConfigurationsRepository;
@@ -84,16 +81,6 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRequestStatusEn
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceOperationInformation;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceOperationInformationBodyparam;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceTopologyOperation;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServiceData;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataNetworks;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataNetworksNetwork;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataNetworksNetworkNetworkData;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfs;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnf;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnfVnfData;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule;
-import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfmoduleVfModuleData;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicetopologyoperationOutput;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVfModuleOperationInformation;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVfModuleOperationInformationBodyparam;
@@ -174,6 +161,9 @@ public class OperationsApiController implements OperationsApi {
 
     @Autowired
     private OperationalPortMirrorConfigurationsRepository operationalPortMirrorConfigurationsRepository;
+
+    @Autowired
+    private ServiceDataHelper serviceDataHelper;
 
     private static class Iso8601Util {
 
@@ -552,147 +542,6 @@ public class OperationsApiController implements OperationsApi {
 
     }
 
-    private String getConfigServiceDataAsString(String svcInstanceId) throws JsonProcessingException {
-        return(objectMapper.writeValueAsString(getConfigServiceData(svcInstanceId)));
-    }
-
-    private GenericResourceApiServicedataServiceData getConfigServiceData(String svcInstanceId)
-            throws JsonProcessingException {
-
-        List<ConfigServices> configServices = configServicesRepository.findBySvcInstanceId(svcInstanceId);
-
-        if (configServices.isEmpty()) {
-            return (null);
-        }
-
-        GenericResourceApiServicedataServiceData svcData = (objectMapper.readValue(configServices.get(0).getSvcData(), GenericResourceApiServicedataServiceData.class));
-        
-        // Get networks
-        List<ConfigNetworks> configNetworks = configNetworksRepository.findBySvcInstanceId(svcInstanceId);
-        GenericResourceApiServicedataServicedataNetworks networks = new GenericResourceApiServicedataServicedataNetworks();
-        for (ConfigNetworks configNetwork : configNetworks) {
-            GenericResourceApiServicedataServicedataNetworksNetwork network = new GenericResourceApiServicedataServicedataNetworksNetwork();
-            network.setNetworkId(configNetwork.getNetworkId());
-            network.setNetworkData(objectMapper.readValue(configNetwork.getNetworkData(), GenericResourceApiServicedataServicedataNetworksNetworkNetworkData.class));
-            networks.addNetworkItem(network);
-        }
-        svcData.setNetworks(networks);
-
-        // Get VNFs
-        List<ConfigVnfs> configVnfs = configVnfsRepository.findBySvcInstanceId(svcInstanceId);
-        GenericResourceApiServicedataServicedataVnfs vnfs = new GenericResourceApiServicedataServicedataVnfs();
-        for (ConfigVnfs configVnf : configVnfs) {
-            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
-            vnf.setVnfId(configVnf.getVnfId());
-            GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = objectMapper.readValue(configVnf.getVnfData(), GenericResourceApiServicedataServicedataVnfsVnfVnfData.class);
-            
-            // Get vf modules for this vnf
-            List<ConfigVfModules> configVfModules = configVfModulesRepository.findBySvcInstanceIdAndVnfId(svcInstanceId, configVnf.getVnfId());
-            GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules vfModules = new GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules();
-            for (ConfigVfModules configVfModule : configVfModules) {
-                GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule vfModule = new GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule();
-                vfModule.setVfModuleId(configVfModule.getVfModuleId());
-                vfModule.setVfModuleData(objectMapper.readValue(configVfModule.getVfModuleData(), GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfmoduleVfModuleData.class));
-                vfModules.addVfModuleItem(vfModule);
-            }
-            vnfData.setVfModules(vfModules);
-            vnf.setVnfData(vnfData);
-            vnfs.addVnfItem(vnf);
-        }
-        svcData.setVnfs(vnfs);
-        return(svcData);
-    }
-
-    private void saveSvcData(ConfigServices configService, String svcDataAsString) throws JsonProcessingException {
-        if (svcDataAsString == null) {
-            configServicesRepository.save(configService);
-            return;
-        }
-        saveSvcData(configService, objectMapper.readValue(svcDataAsString, GenericResourceApiServicedataServiceData.class));
-    }
-
-    private void saveSvcData(ConfigServices configService, GenericResourceApiServicedataServiceData svcData) throws JsonProcessingException {
-        if (svcData == null) {
-            configServicesRepository.save(configService);
-            return;
-        }
-
-        String svcInstanceId = configService.getSvcInstanceId();
-
-        // Write networks
-        GenericResourceApiServicedataServicedataNetworks networks = svcData.getNetworks();
-        if (networks != null) {
-            List<GenericResourceApiServicedataServicedataNetworksNetwork> networkItems = networks.getNetwork();
-            if ((networkItems != null) && !networkItems.isEmpty()) {
-                for (GenericResourceApiServicedataServicedataNetworksNetwork networkItem : networkItems) {
-                    List<ConfigNetworks> configNetworks = configNetworksRepository
-                            .findBySvcInstanceIdAndNetworkId(svcInstanceId, networkItem.getNetworkId());
-                    ConfigNetworks configNetwork;
-                    if ((configNetworks == null) || (configNetworks.isEmpty())) {
-                        configNetwork = new ConfigNetworks(svcInstanceId, networkItem.getNetworkId());
-                    } else {
-                        configNetwork = configNetworks.get(0);
-                    }
-                    configNetwork.setNetworkData(objectMapper.writeValueAsString(networkItem.getNetworkData()));
-                    configNetworksRepository.save(configNetwork);
-                }
-            }
-            svcData.setNetworks(null);
-        }
-
-        // Write vnfs
-        GenericResourceApiServicedataServicedataVnfs vnfs = svcData.getVnfs();
-        if (vnfs != null) {
-            List<GenericResourceApiServicedataServicedataVnfsVnf> vnfItems = vnfs.getVnf();
-            if ((vnfItems != null) && !vnfItems.isEmpty()) {
-                for (GenericResourceApiServicedataServicedataVnfsVnf vnfItem : vnfItems) {
-                    String vnfId = vnfItem.getVnfId();
-                    List<ConfigVnfs> configVnfs = configVnfsRepository.findBySvcInstanceIdAndVnfId(svcInstanceId,
-                            vnfId);
-                    ConfigVnfs configVnf;
-                    if ((configVnfs == null) || (configVnfs.isEmpty())) {
-                        configVnf = new ConfigVnfs(svcInstanceId, vnfId);
-                    } else {
-                        configVnf = configVnfs.get(0);
-                    }
-
-                    GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnfItem.getVnfData();
-
-                    // Write vf modules
-                    GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules vfModules = vnfData.getVfModules();
-                    if (vfModules != null) {
-                        List<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> vfModuleItems = vfModules
-                                .getVfModule();
-                        if ((vfModuleItems != null) && !vfModuleItems.isEmpty()) {
-                            for (GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule vfModuleItem : vfModuleItems) {
-                                List<ConfigVfModules> configVfModules = configVfModulesRepository
-                                        .findBySvcInstanceIdAndVnfIdAndVfModuleId(svcInstanceId, vnfId,
-                                                vfModuleItem.getVfModuleId());
-                                ConfigVfModules configVfModule;
-                                if ((configVfModules == null) || (configVfModules.isEmpty())) {
-                                    configVfModule = new ConfigVfModules(svcInstanceId, vnfId,
-                                            vfModuleItem.getVfModuleId());
-                                } else {
-                                    configVfModule = configVfModules.get(0);
-                                }
-                                configVfModule.setVfModuleData(
-                                        objectMapper.writeValueAsString(vfModuleItem.getVfModuleData()));
-                                configVfModulesRepository.save(configVfModule);
-                            }
-                            vnfData.setVfModules(null);
-
-                            configVnf.setVnfData(objectMapper.writeValueAsString(vnfData));
-                            configVnfsRepository.save(configVnf);
-                        }
-                    }
-                }
-            }
-            svcData.setVnfs(null);
-        }
-
-        configService.setSvcData(objectMapper.writeValueAsString(svcData));
-        configServicesRepository.save(configService);
-    }
 
     @Override
     public ResponseEntity<GenericResourceApiNetworkTopologyOperation> operationsGENERICRESOURCEAPInetworkTopologyOperationPost(
@@ -738,7 +587,7 @@ public class OperationsApiController implements OperationsApi {
         if (configServices != null && !configServices.isEmpty()) {
             configService = configServices.get(0);
             try {
-                svcData = getConfigServiceDataAsString(svcInstanceId);
+                svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
             } catch (JsonProcessingException e) {
                 log.error("exiting {} due to parse error on service data", svcOperation);
                 resp.setResponseCode("500");
@@ -836,7 +685,7 @@ public class OperationsApiController implements OperationsApi {
 
         // Save service data
         try {
-            saveSvcData(configService, ctxSvcDataJson);
+            serviceDataHelper.saveService(configService, ctxSvcDataJson);
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to  error saving service data", svcOperation);
             resp.setResponseCode("500");
@@ -901,10 +750,12 @@ public class OperationsApiController implements OperationsApi {
         if (configServices != null && !configServices.isEmpty()) {
             configService = configServices.get(0);
             try {
-                svcData = getConfigServiceDataAsString(svcInstanceId);
-                ctxIn.mergeJson("service-data", svcData);
+                svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
+                if (svcData != null) {
+                    ctxIn.mergeJson("service-data", svcData);
+                }
             } catch (JsonProcessingException e) {
-                log.error("exiting {} due to parse error on service data", svcOperation);
+                log.error("exiting {} due to parse error on service data", svcOperation, e);
                 resp.setResponseCode("500");
                 resp.setResponseMessage("internal error");
                 resp.setAckFinalIndicator("Y");
@@ -912,7 +763,7 @@ public class OperationsApiController implements OperationsApi {
                 return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
-            configService = new ConfigServices(svcInstanceId, null);
+            configService = new ConfigServices(svcInstanceId);
         }
 
 
@@ -981,7 +832,7 @@ public class OperationsApiController implements OperationsApi {
 
         // Save service data
         try {
-            saveSvcData(configService, ctxSvcDataJson);
+            serviceDataHelper.saveService(configService, ctxSvcDataJson);
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to  error saving service data", svcOperation);
             resp.setResponseCode("500");
@@ -1052,7 +903,7 @@ public class OperationsApiController implements OperationsApi {
        if (configServices != null && !configServices.isEmpty()) {
            configService = configServices.get(0);
            try {
-               svcData = getConfigServiceDataAsString(svcInstanceId);
+               svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
            } catch (JsonProcessingException e) {
                log.error("exiting {} due to parse error on service data", svcOperation);
                resp.setResponseCode("500");
@@ -1153,7 +1004,7 @@ public class OperationsApiController implements OperationsApi {
 
         // Save service data
         try {
-            saveSvcData(configService, ctxSvcDataJson);
+            serviceDataHelper.saveService(configService, ctxSvcDataJson);
         } catch (JsonProcessingException e) {
             log.error("exiting {} due to  error saving service data", svcOperation);
             resp.setResponseCode("500");
@@ -1210,7 +1061,7 @@ public class OperationsApiController implements OperationsApi {
         if (configServices != null && !configServices.isEmpty()) {
             configService = configServices.get(0);
             try {
-                svcData = getConfigServiceDataAsString(svcInstanceId);
+                svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
             } catch (JsonProcessingException e) {
                 log.error("exiting {} due to parse error on service data", svcOperation);
                 return;
@@ -1285,7 +1136,7 @@ public class OperationsApiController implements OperationsApi {
 
                 // Save service data
                 try {
-                    saveSvcData(configService, ctxSvcDataJson);
+                    serviceDataHelper.saveService(configService, ctxSvcDataJson);
                 } catch (JsonProcessingException e) {
                     log.error("exiting {} due to  error saving service data", svcOperation);
                     return;
@@ -1311,6 +1162,8 @@ public class OperationsApiController implements OperationsApi {
         GenericResourceApiVfmoduletopologyoperationOutput resp = new GenericResourceApiVfmoduletopologyoperationOutput();
 
         log.info(CALLED_STR, svcOperation);
+
+        log.info("MYSQL_DATABASE = {}", System.getenv("MYSQL_DATABASE"));
         // Verify input contains service instance id
         if (hasInvalidServiceId(input.getInput())) {
             log.debug("exiting {} because of null or empty service-instance-id", svcOperation);
@@ -1358,7 +1211,7 @@ public class OperationsApiController implements OperationsApi {
         if (configServices != null && !configServices.isEmpty()) {
             configService = configServices.get(0);
             try {
-                svcData = getConfigServiceDataAsString(svcInstanceId);
+                svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
             } catch (JsonProcessingException e) {
                 log.error("exiting {} due to parse error on service data", svcOperation);
                 resp.setResponseCode("500");
@@ -1404,7 +1257,7 @@ public class OperationsApiController implements OperationsApi {
         String ackFinal = "Y";
         String skipMdsalUpdate;
         
-        String ctxSvcDataJson = svcData;
+
         // Call DG
         try {
             // Any of these can throw a nullpointer exception
@@ -1450,8 +1303,9 @@ public class OperationsApiController implements OperationsApi {
                     // ONLY update svcData in config and operational trees
                     // and remember to save operational data when skip-mdsal-update is Y in ctx.
                     String ctxJson = ctxOut.toJsonString("service-data");
-                    log.info("Saving service-data in SDN because skiMdsalUpdate is {}", skipMdsalUpdate);
-                    saveSvcData(configService, ctxJson);
+                    log.info("Saving service-data in SDN because skipMdsalUpdate is {}", skipMdsalUpdate);
+                    log.info("Service data : {}", ctxJson);
+                    serviceDataHelper.saveService(configService, ctxJson);
 
                     log.info("Copying service-data to operational-data");
                     operService.setSvcData(ctxJson);
@@ -1510,7 +1364,7 @@ public class OperationsApiController implements OperationsApi {
         if (configServices != null && !configServices.isEmpty()) {
             configService = configServices.get(0);
             try {
-                svcData = getConfigServiceDataAsString(svcInstanceId);
+                svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
             } catch (JsonProcessingException e) {
                 log.error("exiting {} due to parse error on service data", svcOperation);
                 return;
@@ -1578,7 +1432,7 @@ public class OperationsApiController implements OperationsApi {
 
             // Save service data
             try {
-                saveSvcData(configService, ctxSvcDataJson);
+                serviceDataHelper.saveService(configService, ctxSvcDataJson);
             } catch (JsonProcessingException e) {
                 log.error("exiting {} due to  error saving service data", svcOperation);
                 return;
@@ -1909,7 +1763,12 @@ public class OperationsApiController implements OperationsApi {
         ConfigServices configService = null;
         if (configServices != null && !configServices.isEmpty()) {
             configService = configServices.get(0);
-            ctxIn.mergeJson("service-data", configService.getSvcData());
+            try {
+                ctxIn.mergeJson("service-data", serviceDataHelper.getServiceDataAsString(svcInstanceId));
+            } catch (JsonProcessingException e) {
+                log.error("exiting {} due to parse error on service data", svcOperation);
+                return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } else {
             log.debug("exiting {} because the service-instance does not have any service data in SDN", svcOperation);
             return new ResponseEntity<>(retval, HttpStatus.OK);
@@ -1920,13 +1779,7 @@ public class OperationsApiController implements OperationsApi {
             // Any of these can throw a nullpointer exception
             // execute should only throw a SvcLogicException
             SvcLogicContext ctxOut = svc.execute(MODULE_NAME, svcOperation, null, "sync", ctxIn);
-            Properties respProps = ctxOut.toProperties();
 
-            /* For debugging Only
-            respProps.forEach((k,v) -> {
-                log.debug("prop: {} -> {}",k,v);
-            });
-            */
 
             String ctxJson = ctxOut.toJsonString("vnf-get-resource-request-output");
             GenericResourceApiVnfgetresourcerequestOutput vnfgetresourcerequestOutput =

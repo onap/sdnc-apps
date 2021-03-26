@@ -67,7 +67,7 @@ then
 fi
 
 if [ ! -f ${SDNC_CERT_DIR}/${TRUSTSTORE} ]; then
-  echo "${SDNC_CERT_DIR}/${TRUSTSTORE} not found ... cannot install ONAP CA certs"
+  echo "${SDNC_CERT_DIR}/${TRUSTSTORE} not found ... skipping  ONAP CA cert installation"
 elif [ -z "$TRUSTSTORE_PASSWORD" ]; then
   echo "TRUSTSTORE_PASSWORD unset - cannot install ONAP CA certs"
 else

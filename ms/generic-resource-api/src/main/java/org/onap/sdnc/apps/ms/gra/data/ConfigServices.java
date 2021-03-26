@@ -41,9 +41,28 @@ public class ConfigServices {
         this.svcData = "";
     }
 
+    public ConfigServices(String svcInstanceId) {
+        this.svcInstanceId = svcInstanceId;
+        this.svcData = "";
+    }
+
     public ConfigServices(String svcInstanceId, String svcData) {
         this.svcInstanceId = svcInstanceId;
         this.svcData = svcData;
+    }
+
+    public ConfigServices(String svcInstanceId, GenericResourceApiServicestatusServiceStatus serviceStatus) {
+        this.svcInstanceId = svcInstanceId;
+        this.svcData = "";
+
+        if (serviceStatus != null) {
+            this.serviceStatusAction = serviceStatus.getAction();
+            this.serviceStatusFinalIndicator = serviceStatus.getFinalIndicator();
+            this.serviceStatusRequestStatus = serviceStatus.getRequestStatus().toString();
+            this.serviceStatusResponseCode = serviceStatus.getResponseCode();
+            this.serviceStatusResponseMessage = serviceStatus.getResponseMessage();
+            this.serviceStatusResponseTimestamp = serviceStatus.getResponseTimestamp();
+        }
     }
 
     public ConfigServices(String svcInstanceId, String svcData, GenericResourceApiServicestatusServiceStatus serviceStatus) {

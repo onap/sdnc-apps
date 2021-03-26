@@ -1328,8 +1328,14 @@ Authorization: Basic {{token}}
 Content-Type: application/json
 Accept: application/json
 
-### top level get
+### top level single service get
 GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:services/service/5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+### top level all services get
+GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:services/
 Authorization: Basic {{token}}
 Content-Type: application/json
 Accept: application/json

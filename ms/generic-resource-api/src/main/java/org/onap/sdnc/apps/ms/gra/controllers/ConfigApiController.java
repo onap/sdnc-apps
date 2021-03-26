@@ -20,24 +20,61 @@
 
 package org.onap.sdnc.apps.ms.gra.controllers;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.onap.ccsdk.apps.services.RestApplicationException;
 import org.onap.ccsdk.apps.services.RestException;
-import org.onap.ccsdk.apps.services.RestProtocolError;
 import org.onap.ccsdk.apps.services.RestProtocolException;
+import org.onap.sdnc.apps.ms.gra.controllers.ServiceDataHelper.ServiceDataTransaction;
+import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResources;
+import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResourcesRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigNetworksRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurations;
+import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurationsRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadData;
 import org.onap.sdnc.apps.ms.gra.data.ConfigPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServices;
 import org.onap.sdnc.apps.ms.gra.data.ConfigServicesRepository;
-import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurations;
-import org.onap.sdnc.apps.ms.gra.data.ConfigPortMirrorConfigurationsRepository;
-import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResources;
-import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResourcesRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigVfModules;
+import org.onap.sdnc.apps.ms.gra.data.ConfigVfModulesRepository;
+import org.onap.sdnc.apps.ms.gra.data.ConfigVnfsRepository;
 import org.onap.sdnc.apps.ms.gra.swagger.ConfigApi;
-import org.onap.sdnc.apps.ms.gra.swagger.model.*;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiContrailroutetopologyContrailRouteTopology;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiOnapmodelinformationOnapModelInformation;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiOperStatusData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPortmirrorconfigurationtopologyPortMirrorConfigurationTopology;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadModelInformation;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloaddataPreloadData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadmodelinformationPreloadList;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadnetworktopologyinformationPreloadNetworkTopologyInformation;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceModelInfrastructure;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServiceData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnf;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnfVnfData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicemodelinfrastructureService;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicestatusServiceStatus;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicetopologyServiceTopology;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVfmoduletopologyVfModuleTopology;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnfNetworkData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnfresourceassignmentsVnfResourceAssignments;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnftopologyVnfTopology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,17 +83,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Controller
 @ComponentScan(basePackages = { "org.onap.sdnc.apps.ms.gra.*" })
@@ -75,11 +101,22 @@ public class ConfigApiController implements ConfigApi {
     private ConfigServicesRepository configServicesRepository;
 
     @Autowired
+    private ConfigNetworksRepository configNetworksRepository;
+    
+    @Autowired
+    private ConfigVnfsRepository configVnfsRepository;
+
+    @Autowired
+    private ConfigVfModulesRepository configVfModulesRepository;
+    
+    @Autowired
     private ConfigPortMirrorConfigurationsRepository configPortMirrorConfigurationsRepository;
 
     @Autowired
     private ConfigContrailRouteAllottedResourcesRepository configContrailRouteAllottedResourcesRepository;
-
+    
+    @Autowired
+    private ServiceDataHelper serviceDataHelper;
 
     @Autowired
     public ConfigApiController(ObjectMapper objectMapper, HttpServletRequest request) {
@@ -667,8 +704,7 @@ public class ConfigApiController implements ConfigApi {
     public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypePreloadDataPost(
             String preloadId, String preloadType, @Valid GenericResourceApiPreloaddataPreloadData preloadData)
             throws RestApplicationException, RestProtocolException {
-        List<ConfigPreloadData> preloadDataEntries = configPreloadDataRepository
-                .findByPreloadIdAndPreloadType(preloadId, preloadType);
+
 
         List<ConfigPreloadData> preloadDataItems = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId,
                 preloadType);
@@ -743,6 +779,9 @@ public class ConfigApiController implements ConfigApi {
 
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesDelete() {
+        configVfModulesRepository.deleteAll();
+        configVnfsRepository.deleteAll();
+        configNetworksRepository.deleteAll();
         configServicesRepository.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -760,20 +799,26 @@ public class ConfigApiController implements ConfigApi {
 
         for (ConfigServices service : configServicesRepository.findAll()) {
             GenericResourceApiServicemodelinfrastructureService serviceItem = new GenericResourceApiServicemodelinfrastructureService();
-            serviceItem.setServiceInstanceId(service.getSvcInstanceId());
-            if (service.getSvcData() != null) {
-                try {
-                    serviceItem.setServiceData(objectMapper.readValue(service.getSvcData(),
-                            GenericResourceApiServicedataServiceData.class));
-                } catch (JsonProcessingException e) {
-                    log.error("Could not deserialize service data for {}", service.getSvcInstanceId(), e);
-                    throw new RestApplicationException("data-conversion",
-                            "Request could not be completed due to internal error", e,
-                            HttpStatus.INTERNAL_SERVER_ERROR.value());
+            String svcInstanceId = service.getSvcInstanceId();
 
-                }
-            }
+            serviceItem.setServiceInstanceId(svcInstanceId);
             serviceItem.setServiceStatus(service.getServiceStatus());
+
+            // Construct service data from networks/vnfs/vfModules
+            GenericResourceApiServicedataServiceData serviceItemSvcData;
+            try {
+                serviceItemSvcData = serviceDataHelper.getServiceData(service);
+            } catch (JsonProcessingException e) {
+                log.error("Could not deserialize service data for {}", service.getSvcInstanceId(), e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+
+            
+            if (serviceItemSvcData != null) {
+                serviceItem.setServiceData(serviceItemSvcData);
+            }
             modelInfrastructure.addServiceItem(serviceItem);
         }
 
@@ -782,10 +827,10 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPost(
-            @Valid GenericResourceApiServiceModelInfrastructure modelInfrastructure)
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPost(@Valid GenericResourceApiServiceModelInfrastructure modelInfrastructure)
             throws RestApplicationException, RestProtocolException {
-        List<ConfigServices> newServices = new LinkedList<>();
+        
+        ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
 
         for (GenericResourceApiServicemodelinfrastructureService serviceItem : modelInfrastructure.getService()) {
             String svcInstanceId = serviceItem.getServiceInstanceId();
@@ -797,8 +842,10 @@ public class ConfigApiController implements ConfigApi {
             }
             ConfigServices service = new ConfigServices();
             service.setSvcInstanceId(svcInstanceId);
+            service.setServiceStatus(serviceItem.getServiceStatus());
+
             try {
-                service.setSvcData(objectMapper.writeValueAsString(serviceItem.getServiceData()));
+                serviceDataHelper.saveService(service, serviceItem.getServiceData(), transaction);
             } catch (JsonProcessingException e) {
                 log.error("Could not serialize service data for {}", service.getSvcInstanceId(), e);
                 throw new RestApplicationException("data-conversion",
@@ -806,13 +853,9 @@ public class ConfigApiController implements ConfigApi {
                         HttpStatus.INTERNAL_SERVER_ERROR.value());
 
             }
-            service.setServiceStatus(serviceItem.getServiceStatus());
-            newServices.add(service);
         }
 
-        for (ConfigServices service : newServices) {
-            configServicesRepository.save(service);
-        }
+        transaction.commit();
 
         return new ResponseEntity<>(HttpStatus.CREATED);
 
@@ -822,7 +865,7 @@ public class ConfigApiController implements ConfigApi {
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPut(
             @Valid GenericResourceApiServiceModelInfrastructure modelInfrastructure) throws RestApplicationException {
 
-        List<ConfigServices> newServices = new LinkedList<>();
+        ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
         boolean dataExists = false;
 
         for (GenericResourceApiServicemodelinfrastructureService serviceItem : modelInfrastructure.getService()) {
@@ -833,8 +876,9 @@ public class ConfigApiController implements ConfigApi {
             }
             ConfigServices service = new ConfigServices();
             service.setSvcInstanceId(svcInstanceId);
+            service.setServiceStatus(serviceItem.getServiceStatus());
             try {
-                service.setSvcData(objectMapper.writeValueAsString(serviceItem.getServiceData()));
+                serviceDataHelper.saveService(service, serviceItem.getServiceData(), transaction);
             } catch (JsonProcessingException e) {
                 log.error("Could not serialize service data for {}", service.getSvcInstanceId(), e);
                 throw new RestApplicationException("data-conversion",
@@ -842,13 +886,9 @@ public class ConfigApiController implements ConfigApi {
                         HttpStatus.INTERNAL_SERVER_ERROR.value());
 
             }
-            service.setServiceStatus(serviceItem.getServiceStatus());
-            newServices.add(service);
         }
 
-        for (ConfigServices service : newServices) {
-            configServicesRepository.save(service);
-        }
+        transaction.commit();
 
         if (dataExists) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -863,10 +903,8 @@ public class ConfigApiController implements ConfigApi {
             @Valid GenericResourceApiServicemodelinfrastructureService servicesData) throws RestApplicationException {
         String svcInstanceId = servicesData.getServiceInstanceId();
         try {
-            String svcData = objectMapper.writeValueAsString(servicesData.getServiceData());
-            ConfigServices configService = new ConfigServices(svcInstanceId, svcData, servicesData.getServiceStatus());
-            configServicesRepository.deleteBySvcInstanceId(svcInstanceId);
-            configServicesRepository.save(configService);
+            ConfigServices configService = new ConfigServices(svcInstanceId, servicesData.getServiceStatus());
+            serviceDataHelper.saveService(configService, servicesData.getServiceData());
         } catch (JsonProcessingException e) {
             log.error("Cannot convert service data", e);
             throw new RestApplicationException("data-conversion",
@@ -880,7 +918,7 @@ public class ConfigApiController implements ConfigApi {
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdDelete(
             String serviceInstanceId) {
-        configServicesRepository.deleteBySvcInstanceId(serviceInstanceId);
+        serviceDataHelper.deleteService(serviceInstanceId);  
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -899,8 +937,7 @@ public class ConfigApiController implements ConfigApi {
             retval.setServiceInstanceId(serviceInstanceId);
             retval.setServiceStatus(service.getServiceStatus());
             try {
-                retval.setServiceData(
-                        objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class));
+                retval.setServiceData(serviceDataHelper.getServiceData(service));
             } catch (JsonProcessingException e) {
                 log.error("Could not deserialize service data for service instance id {}", serviceInstanceId, e);
                 throw new RestApplicationException("data-conversion",
@@ -927,8 +964,9 @@ public class ConfigApiController implements ConfigApi {
         }
         ConfigServices service = new ConfigServices();
         service.setSvcInstanceId(svcInstanceId);
+        service.setServiceStatus(newService.getServiceStatus());
         try {
-            service.setSvcData(objectMapper.writeValueAsString(newService.getServiceData()));
+            serviceDataHelper.saveService(service, newService.getServiceData());
         } catch (JsonProcessingException e) {
             log.error("Could not serialize service data for {}", service.getSvcInstanceId(), e);
             throw new RestApplicationException("data-conversion",
@@ -936,8 +974,6 @@ public class ConfigApiController implements ConfigApi {
                     HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         }
-        service.setServiceStatus(newService.getServiceStatus());
-        configServicesRepository.save(service);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -960,8 +996,9 @@ public class ConfigApiController implements ConfigApi {
             service.setSvcInstanceId(svcInstanceId);
         }
 
+        service.setServiceStatus(newService.getServiceStatus());
         try {
-            service.setSvcData(objectMapper.writeValueAsString(newService.getServiceData()));
+            serviceDataHelper.saveService(service, newService.getServiceData());
         } catch (JsonProcessingException e) {
             log.error("Could not serialize service data for {}", service.getSvcInstanceId(), e);
             throw new RestApplicationException("data-conversion",
@@ -969,8 +1006,6 @@ public class ConfigApiController implements ConfigApi {
                     HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         }
-        service.setServiceStatus(newService.getServiceStatus());
-        configServicesRepository.save(service);
 
         if (dataExists) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -989,11 +1024,10 @@ public class ConfigApiController implements ConfigApi {
         }
 
         ConfigServices service = services.get(0);
-        if (service.getSvcData() == null) {
+        if (!serviceDataHelper.hasServiceData(service)) {
             throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
         }
-        service.setSvcData(null);
-        configServicesRepository.save(service);
+        serviceDataHelper.clearServiceData(service);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -1009,8 +1043,7 @@ public class ConfigApiController implements ConfigApi {
         }
 
         try {
-            serviceData = objectMapper.readValue(services.get(0).getSvcData(),
-                    GenericResourceApiServicedataServiceData.class);
+            serviceData = serviceDataHelper.getServiceData(services.get(0));
             return new ResponseEntity<>(serviceData, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             log.error("Could not parse service data", e);
@@ -1038,15 +1071,14 @@ public class ConfigApiController implements ConfigApi {
         }
         service = services.get(0);
 
-        if ((service.getSvcData() != null) && (service.getSvcData().length() > 0)) {
+        if (serviceDataHelper.hasServiceData(service)) {
             log.error("service-data already exists for svcInstanceId {}", serviceInstanceId);
             throw new RestProtocolException("data-exists", "Data already exists for " + serviceInstanceId,
                     HttpStatus.CONFLICT.value());
         }
 
         try {
-            service.setSvcData(objectMapper.writeValueAsString(serviceData));
-            configServicesRepository.save(service);
+            serviceDataHelper.saveService(service, serviceData);
         } catch (JsonProcessingException e) {
             log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
             throw new RestApplicationException("data-conversion",
@@ -1077,13 +1109,10 @@ public class ConfigApiController implements ConfigApi {
         }
         service = services.get(0);
 
-        if ((service.getSvcData() != null) && (service.getSvcData().length() > 0)) {
-            dataExists = true;
-        }
+        dataExists = serviceDataHelper.hasServiceData(service);
 
         try {
-            service.setSvcData(objectMapper.writeValueAsString(serviceData));
-            configServicesRepository.save(service);
+            serviceDataHelper.saveService(service, serviceData);
         } catch (JsonProcessingException e) {
             log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
             throw new RestApplicationException("data-conversion",
@@ -1217,17 +1246,6 @@ public class ConfigApiController implements ConfigApi {
             String serviceInstanceId, String vnfId) throws RestException {
         log.info("DELETE | VNF Data for ({})", vnfId);
 
-        /*
-         * The logic may need to be moved inside of this check or this check may need to
-         * be removed.
-         */
-        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            log.info("Something with header.");
-        } else {
-            log.warn(
-                    "ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
-
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         ConfigServices data;
         if ((services == null) || (services.isEmpty())) {
@@ -1239,48 +1257,17 @@ public class ConfigApiController implements ConfigApi {
             data = services.get(0);
         }
 
-        GenericResourceApiServicedataServiceData svcData;
-        try {
-            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
-        } catch (JsonProcessingException e) {
-            // Or throw the data not found error?
-            log.error("Could not map service data for ({})", serviceInstanceId);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        if (svcData == null) {
-            // Or throw the data not found error?
+        if (!serviceDataHelper.hasServiceData(data)) {
             log.info("Could not find Service Data for ({}).", serviceInstanceId);
             throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
         }
 
-        GenericResourceApiServicedataServicedataVnfs vnfs = svcData.getVnfs();
-        if (vnfs == null) {
-            // Or throw the data not found error?
-            log.info("VNF List not found for ({}).", serviceInstanceId);
-            throw new RestProtocolException("data-missing", "VNFs not found.", HttpStatus.NOT_FOUND.value());
-        }
-
-        Stream<GenericResourceApiServicedataServicedataVnfsVnf> vnfStream = svcData.getVnfs().getVnf().stream();
-        if (vnfStream.noneMatch(targetVnf -> targetVnf.getVnfId().equals(vnfId))) {
+        if (serviceDataHelper.deleteVnf(serviceInstanceId, vnfId) > 0) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
             // Data was not found
             log.error("Did not find VNF ({}) in data.", vnfId);
             throw new RestProtocolException("data-missing", "VNF ID not found.", HttpStatus.NOT_FOUND.value());
-        }
-        // Recreate the stream per Sonar?
-        vnfStream = svcData.getVnfs().getVnf().stream();
-        svcData.getVnfs().setVnf(
-                vnfStream.filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId)).collect(Collectors.toList()));
-
-        // Map and save the new data
-        try {
-            data.setSvcData(objectMapper.writeValueAsString(svcData));
-            configServicesRepository.save(data);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (JsonProcessingException e) {
-            log.error("Error mapping object to JSON", e);
-            // Should probably be a 500 INTERNAL_SERVICE_ERROR
-            throw new RestProtocolException("internal-service-error", "Failed to save data.",
-                    HttpStatus.BAD_REQUEST.value());
         }
     }
 
@@ -1299,51 +1286,30 @@ public class ConfigApiController implements ConfigApi {
     public ResponseEntity<GenericResourceApiServicedataServicedataVnfsVnf> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdGet(
             String serviceInstanceId, String vnfId) throws RestException {
         log.info("GET | VNF Data for ({})", vnfId);
-        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            if (getAcceptHeader().get().contains("application/json")) {
-            }
-        } else {
-            log.warn(
-                    "ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
+
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         if ((services == null) || (services.isEmpty())) {
             throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
         }
 
-        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf = getVnfObject(services.get(0), vnfId);
-        if (vnf.isPresent()) {
-            return new ResponseEntity<>(vnf.get(), HttpStatus.OK);
+        GenericResourceApiServicedataServicedataVnfsVnf vnf = null;
+        try {
+            vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (vnf != null) {
+            return new ResponseEntity<>(vnf, HttpStatus.OK);
         } else {
             log.info("No information found for {}", vnfId);
             throw new RestApplicationException("data-missing",
                     "Request could not be completed because the relevant data model content does not exist",
                     HttpStatus.NOT_FOUND.value());
         }
-    }
-
-    /**
-     * Extracts a vf-module object from the database,
-     * @param configServices A Config Services option created from a Service
-     *                       Instance ID
-     * @param vnfId the target VNF ID
-     * @param vfModuleId the target vf-module ID
-     * @return An empty Optional if the Service Data does not exist, an empty
-     *         Optional if the VNF is not found, or an optional containing the
-     *         found VNF.
-     */
-    private Optional<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> getVfModuleObject (
-            ConfigServices configServices, String vnfId, String vfModuleId) {
-        // Map the Marshall the JSON String into a Java Object
-        log.info("Getting vf-module Data for ({})", vfModuleId);
-
-        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf = getVnfObject(configServices, vnfId);
-        GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.get().getVnfData();
-
-        return vnfData.getVfModules().getVfModule()
-                .stream()
-                .filter(vf -> vf.getVfModuleId().equals(vfModuleId))
-                .findFirst();
     }
 
     /**
@@ -1366,68 +1332,35 @@ public class ConfigApiController implements ConfigApi {
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdPut(
             String serviceInstanceId, String vnfId,
-            GenericResourceApiServicedataServicedataVnfsVnf genericResourceApiServicedataServicedataVnfsVnfBodyParam)
+            GenericResourceApiServicedataServicedataVnfsVnf vnf)
             throws RestException {
         log.info("PUT | VNF Data for ({})", vnfId);
-        if (!vnfId.equals(genericResourceApiServicedataServicedataVnfsVnfBodyParam.getVnfId())) {
+        if (!vnfId.equals(vnf.getVnfId())) {
             throw new RestProtocolException("bad-attribute", "vnf-id mismatch", HttpStatus.BAD_REQUEST.value());
-        }
-        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            log.info("Something with header");
-        } else {
-            log.warn(
-                    "ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
         }
 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         ConfigServices data;
+        ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
         if ((services == null) || (services.isEmpty())) {
             log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
             data = new ConfigServices();
             data.setSvcInstanceId(serviceInstanceId);
+            transaction.save(data);
         } else {
             data = services.get(0);
         }
 
-        GenericResourceApiServicedataServiceData svcData = null;
         try {
-            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
-        } catch (JsonProcessingException e) {
-            log.error("Could not map service data for ({})", serviceInstanceId);
-        }
-        if (svcData == null) {
-            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
-            svcData = new GenericResourceApiServicedataServiceData();
-        }
-        if (svcData.getVnfs() == null) {
-            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
-            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
-            svcData.getVnfs().setVnf(new ArrayList<>());
-        }
-
-        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
-        HttpStatus responseStatus = HttpStatus.NO_CONTENT;
-        if (svcData.getVnfs().getVnf().isEmpty()) {
-            log.info("Creating VNF data for ({})", vnfId);
-            vnflist.addVnfItem(genericResourceApiServicedataServicedataVnfsVnfBodyParam);
-            responseStatus = HttpStatus.CREATED;
-        } else {
-            log.info("Updating VNF data for ({})", vnfId);
-            // Filter out all of the other vnf objects into a new VNF List
-            // Replace if a delete method exists
-            svcData.getVnfs().getVnf().stream().filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
-                    .forEach(vnflist::addVnfItem);
-            vnflist.addVnfItem(genericResourceApiServicedataServicedataVnfsVnfBodyParam);
-        }
-        svcData.setVnfs(vnflist);
-        // Map and save the new data
-        try {
-            data.setSvcData(objectMapper.writeValueAsString(svcData));
-            configServicesRepository.save(data);
+            HttpStatus responseStatus = HttpStatus.NO_CONTENT;
+            if (serviceDataHelper.getVnf(serviceInstanceId, vnfId) == null) {
+                responseStatus = HttpStatus.CREATED;
+            }
+            serviceDataHelper.saveVnf(serviceInstanceId, vnf, transaction);
+            transaction.commit();
             return new ResponseEntity<>(responseStatus);
         } catch (JsonProcessingException e) {
-            log.error("Error mapping object to JSON", e);
-            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            log.error("Error saving vnf", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -1448,23 +1381,26 @@ public class ConfigApiController implements ConfigApi {
     public ResponseEntity<GenericResourceApiVnftopologyVnfTopology> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyGet(
             String serviceInstanceId, String vnfId) throws RestException {
         log.info("GET | VNF Topology for ({})", vnfId);
-        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            if (getAcceptHeader().get().contains("application/json")) {
 
-            }
-        } else {
-            log.warn(
-                    "ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         if ((services == null) || (services.isEmpty())) {
             throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
         }
 
-        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf = getVnfObject(services.get(0), vnfId);
+        GenericResourceApiServicedataServicedataVnfsVnf vnf = null;
+        
+        try {
+            vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
         // Drill down to find the data
-        if (vnf.isPresent() && vnf.get().getVnfData() != null && vnf.get().getVnfData().getVnfTopology() != null) {
-            return new ResponseEntity<>(vnf.get().getVnfData().getVnfTopology(), HttpStatus.OK);
+        if (vnf != null && vnf.getVnfData() != null && vnf.getVnfData().getVnfTopology() != null) {
+            return new ResponseEntity<>(vnf.getVnfData().getVnfTopology(), HttpStatus.OK);
         } else {
             log.info("No information found for {}", vnfId);
             throw new RestApplicationException("data-missing",
@@ -1498,11 +1434,7 @@ public class ConfigApiController implements ConfigApi {
             String serviceInstanceId, String vnfId,
             GenericResourceApiOperStatusData genericResourceApiOperStatusDataBodyParam) throws RestException {
         log.info("PUT | VNF Level Oper Status ({})", vnfId);
-        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-        } else {
-            log.warn(
-                    "ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
+        ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         ConfigServices data;
@@ -1510,66 +1442,31 @@ public class ConfigApiController implements ConfigApi {
             log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
             data = new ConfigServices();
             data.setSvcInstanceId(serviceInstanceId);
+            transaction.save(data);
         } else {
             data = services.get(0);
         }
 
-        GenericResourceApiServicedataServiceData svcData = null;
-        try {
-            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
-        } catch (JsonProcessingException e) {
-            log.error("Could not map service data for ({})", serviceInstanceId);
-        }
-        if (svcData == null) {
-            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
-            svcData = new GenericResourceApiServicedataServiceData();
-        }
-        if (svcData.getVnfs() == null) {
-            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
-            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
-            svcData.getVnfs().setVnf(new ArrayList<>());
-        }
-
-        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
         HttpStatus responseStatus = HttpStatus.NO_CONTENT;
-        if (svcData.getVnfs().getVnf().isEmpty()) {
-            log.info("Creating VNF data for ({})", vnfId);
-            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
-            vnf.setVnfId(vnfId);
-            vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
-            vnf.getVnfData().setVnfLevelOperStatus(genericResourceApiOperStatusDataBodyParam);
-            vnflist.addVnfItem(vnf);
-            responseStatus = HttpStatus.CREATED;
-        } else {
-            log.info("Updating VNF data for ({})", vnfId);
-            // Filter out all of the other vnf objects into a new VNF List
-            // Replace if a delete method exists
-            svcData.getVnfs().getVnf().stream().filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
-                    .forEach(vnflist::addVnfItem);
-            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
-            // If the vnf exists, set it up with new data
-            Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnfOptional = getVnfObject(data, vnfId);
-            if (vnfOptional.isPresent()) {
-                vnf = vnfOptional.get();
-            }
-            if (vnf.getVnfData() == null) {
-                vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
-                responseStatus = HttpStatus.CREATED;
-            }
 
-            vnf.getVnfData().setVnfLevelOperStatus(genericResourceApiOperStatusDataBodyParam);
-            vnflist.addVnfItem(vnf);
-        }
-
-        svcData.setVnfs(vnflist);
-        // Map and save the new data
         try {
-            data.setSvcData(objectMapper.writeValueAsString(svcData));
-            configServicesRepository.save(data);
+            GenericResourceApiServicedataServicedataVnfsVnf vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
+            if (vnf == null) {
+                responseStatus = HttpStatus.CREATED;
+                vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+                vnf.setVnfId(vnfId);
+            } 
+            GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.getVnfData();
+            if (vnfData == null) {
+                vnfData = new GenericResourceApiServicedataServicedataVnfsVnfVnfData();
+            }
+            vnfData.setVnfLevelOperStatus(genericResourceApiOperStatusDataBodyParam);
+            vnf.setVnfData(vnfData);
+            serviceDataHelper.saveVnf(serviceInstanceId, vnf, transaction);
+            transaction.commit();
             return new ResponseEntity<>(responseStatus);
         } catch (JsonProcessingException e) {
-            log.error("Error mapping object to JSON", e);
-            // Should probably be a 500 INTERNAL_SERVICE_ERROR
+            log.error("Error saving vnf", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -1614,11 +1511,7 @@ public class ConfigApiController implements ConfigApi {
             GenericResourceApiOnapmodelinformationOnapModelInformation genericResourceApiOnapmodelinformationOnapModelInformationBodyParam)
             throws RestException {
         log.info("PUT | VNF Topology Onap Model Information ({})", vnfId);
-        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-        } else {
-            log.warn(
-                    "ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
+        ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         ConfigServices data;
@@ -1626,68 +1519,40 @@ public class ConfigApiController implements ConfigApi {
             log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
             data = new ConfigServices();
             data.setSvcInstanceId(serviceInstanceId);
+            transaction.save(data);
         } else {
             data = services.get(0);
         }
 
-        GenericResourceApiServicedataServiceData svcData = null;
+
+        GenericResourceApiServicedataServicedataVnfsVnf vnf = null;
+        HttpStatus responseStatus = HttpStatus.NO_CONTENT;
+        
         try {
-            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
-        } catch (JsonProcessingException e) {
-            log.error("Could not map service data for ({})", serviceInstanceId);
-        }
-        if (svcData == null) {
-            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
-            svcData = new GenericResourceApiServicedataServiceData();
-        }
-        if (svcData.getVnfs() == null) {
-            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
-            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
-            svcData.getVnfs().setVnf(new ArrayList<>());
+            vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
+        } catch(JsonProcessingException e) {
+
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
-        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
-        HttpStatus responseStatus = HttpStatus.NO_CONTENT;
-        if (svcData.getVnfs().getVnf().isEmpty()) {
-            log.info("Creating VNF data for ({})", vnfId);
-            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+        if (vnf == null) {
+            responseStatus = HttpStatus.CREATED;
+            vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
             vnf.setVnfId(vnfId);
             vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
             vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
-            vnf.getVnfData().getVnfTopology()
-                    .setOnapModelInformation(genericResourceApiOnapmodelinformationOnapModelInformationBodyParam);
-            vnflist.addVnfItem(vnf);
-            responseStatus = HttpStatus.CREATED;
-        } else {
-            log.info("Updating VNF data for ({})", vnfId);
-            // Filter out all of the other vnf objects into a new VNF List
-            // Replace if a delete method exists
-            svcData.getVnfs().getVnf().stream().filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
-                    .forEach(vnflist::addVnfItem);
-            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
-            // If the vnf exists, set it up with new data
-            Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnfOptional = getVnfObject(data, vnfId);
-            if (vnfOptional.isPresent()) {
-                vnf = vnfOptional.get();
-            }
-            if (vnf.getVnfData() == null) {
-                vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
-            }
-            if (vnf.getVnfData().getVnfTopology() == null) {
-                vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
-                responseStatus = HttpStatus.CREATED;
-            }
-
-            vnf.getVnfData().getVnfTopology()
-                    .setOnapModelInformation(genericResourceApiOnapmodelinformationOnapModelInformationBodyParam);
-            vnflist.addVnfItem(vnf);
         }
 
-        svcData.setVnfs(vnflist);
-        // Map and save the new data
+        vnf.getVnfData().getVnfTopology()
+                .setOnapModelInformation(genericResourceApiOnapmodelinformationOnapModelInformationBodyParam);
+
+        // Save the updated VNF (and service, if new)
         try {
-            data.setSvcData(objectMapper.writeValueAsString(svcData));
-            configServicesRepository.save(data);
+            serviceDataHelper.saveVnf(serviceInstanceId, vnf, transaction);
+            transaction.commit();
             return new ResponseEntity<>(responseStatus);
         } catch (JsonProcessingException e) {
             log.error("Error mapping object to JSON", e);
@@ -1718,86 +1583,61 @@ public class ConfigApiController implements ConfigApi {
             GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam)
             throws RestException {
         log.info("PUT | VNF Topology VNF Resource Assignments VNF Networks ({})", vnfId);
-        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-        } else {
-            log.warn(
-                    "ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
 
+        ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         ConfigServices data;
         if ((services == null) || (services.isEmpty())) {
             log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
             data = new ConfigServices();
             data.setSvcInstanceId(serviceInstanceId);
+            transaction.save(data);
         } else {
             data = services.get(0);
         }
 
-        GenericResourceApiServicedataServiceData svcData = null;
-        try {
-            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
-        } catch (JsonProcessingException e) {
-            log.error("Could not map service data for ({})", serviceInstanceId);
-        }
-        if (svcData == null) {
-            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
-            svcData = new GenericResourceApiServicedataServiceData();
-        }
-        if (svcData.getVnfs() == null) {
-            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
-            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
-            svcData.getVnfs().setVnf(new ArrayList<>());
-        }
-
-        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
         HttpStatus responseStatus = HttpStatus.NO_CONTENT;
-        if (svcData.getVnfs().getVnf().isEmpty()) {
-            log.info("Creating VNF data for ({})", vnfId);
-            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
-            vnf.setVnfId(vnfId);
-            vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
-            vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
-            vnf.getVnfData().getVnfTopology()
-                    .setVnfResourceAssignments(new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments());
-            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments()
-                    .setVnfNetworks(genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam);
-            vnflist.addVnfItem(vnf);
-            responseStatus = HttpStatus.CREATED;
-        } else {
-            log.info("Updating VNF data for ({})", vnfId);
-            // Filter out all of the other vnf objects into a new VNF List
-            // Replace if a delete method exists
-            svcData.getVnfs().getVnf().stream().filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
-                    .forEach(vnflist::addVnfItem);
-            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
-            // If the vnf exists, set it up with new data
-            Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnfOptional = getVnfObject(data, vnfId);
-            if (vnfOptional.isPresent()) {
-                vnf = vnfOptional.get();
-            }
-            if (vnf.getVnfData() == null) {
-                vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
-            }
-            if (vnf.getVnfData().getVnfTopology() == null) {
-                vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
-            }
-            if (vnf.getVnfData().getVnfTopology().getVnfResourceAssignments() == null) {
-                vnf.getVnfData().getVnfTopology().setVnfResourceAssignments(
-                        new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments());
-                responseStatus = HttpStatus.CREATED;
-            }
+        GenericResourceApiServicedataServicedataVnfsVnf vnf = null;
 
-            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments()
-                    .setVnfNetworks(genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam);
-            vnflist.addVnfItem(vnf);
+        try {
+            vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
+        } catch(JsonProcessingException e) {
+
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
-        svcData.setVnfs(vnflist);
+        if (vnf == null) {
+            log.info("Creating VNF data for ({})", vnfId);
+            vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            vnf.setVnfId(vnfId);
+            responseStatus = HttpStatus.CREATED;
+        }
+        GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.getVnfData();
+        if (vnfData == null) {
+            vnfData = new GenericResourceApiServicedataServicedataVnfsVnfVnfData();
+        }
+
+        GenericResourceApiVnftopologyVnfTopology vnfTopology = vnfData.getVnfTopology();
+        if (vnfTopology == null) {
+            vnfTopology = new GenericResourceApiVnftopologyVnfTopology();
+        }
+
+        GenericResourceApiVnfresourceassignmentsVnfResourceAssignments vnfResourceAssignments = vnfTopology.getVnfResourceAssignments();
+        if (vnfResourceAssignments == null) {
+            vnfResourceAssignments = new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments();
+        }
+        vnfResourceAssignments.setVnfNetworks(genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam);
+        vnfTopology.setVnfResourceAssignments(vnfResourceAssignments);
+        vnfData.setVnfTopology(vnfTopology);
+        vnf.setVnfData(vnfData);
+
         // Map and save the new data
         try {
-            data.setSvcData(objectMapper.writeValueAsString(svcData));
-            configServicesRepository.save(data);
+            serviceDataHelper.saveVnf(serviceInstanceId, vnf, transaction);
+            transaction.commit();
             return new ResponseEntity<>(responseStatus);
         } catch (JsonProcessingException e) {
             log.error("Error mapping object to JSON", e);
@@ -1834,11 +1674,8 @@ public class ConfigApiController implements ConfigApi {
         if (!networkRole.equals(genericResourceApiVnfNetworkDataBodyParam.getNetworkRole())) {
             throw new RestProtocolException("bad-attribute", "network-role mismatch", HttpStatus.BAD_REQUEST.value());
         }
-        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-        } else {
-            log.warn(
-                    "ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
+
+        ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         ConfigServices data;
@@ -1846,102 +1683,71 @@ public class ConfigApiController implements ConfigApi {
             log.info("Could not find data for ({}). Creating new Service Object.", serviceInstanceId);
             data = new ConfigServices();
             data.setSvcInstanceId(serviceInstanceId);
+            transaction.save(data);
         } else {
             data = services.get(0);
         }
 
-        GenericResourceApiServicedataServiceData svcData = null;
-        try {
-            svcData = objectMapper.readValue(data.getSvcData(), GenericResourceApiServicedataServiceData.class);
-        } catch (JsonProcessingException e) {
-            log.error("Could not map service data for ({})", serviceInstanceId);
-        }
-        if (svcData == null) {
-            log.info("Could not find Service Data for ({}). Creating new Service Data Container", serviceInstanceId);
-            svcData = new GenericResourceApiServicedataServiceData();
-        }
-        if (svcData.getVnfs() == null) {
-            log.info("VNF List not found for ({}). Creating new VNF List Container.", serviceInstanceId);
-            svcData.setVnfs(new GenericResourceApiServicedataServicedataVnfs());
-            svcData.getVnfs().setVnf(new ArrayList<>());
-        }
-
-        GenericResourceApiServicedataServicedataVnfs vnflist = new GenericResourceApiServicedataServicedataVnfs();
         HttpStatus responseStatus = HttpStatus.NO_CONTENT;
-        if (svcData.getVnfs().getVnf().isEmpty()) {
-            log.info("Creating VNF data for ({})", vnfId);
-            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
-            vnf.setVnfId(vnfId);
-            vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
-            vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
-            vnf.getVnfData().getVnfTopology()
-                    .setVnfResourceAssignments(new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments());
-            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments()
-                    .setVnfNetworks(new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks());
-            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks()
-                    .setVnfNetwork(new ArrayList<>());
-            vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks()
-                    .addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
-            vnflist.addVnfItem(vnf);
-            responseStatus = HttpStatus.CREATED;
-        } else {
-            log.info("Updating VNF data for ({})", vnfId);
-            // Filter out all of the other vnf objects into a new VNF List
-            // Replace if a delete method exists
-            svcData.getVnfs().getVnf().stream().filter(targetVnf -> !targetVnf.getVnfId().equals(vnfId))
-                    .forEach(vnflist::addVnfItem);
-            GenericResourceApiServicedataServicedataVnfsVnf vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
-            // If the vnf exists, set it up with new data
-            Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnfOptional = getVnfObject(data, vnfId);
-            if (vnfOptional.isPresent()) {
-                vnf = vnfOptional.get();
-            }
-            if (vnf.getVnfData() == null) {
-                vnf.setVnfData(new GenericResourceApiServicedataServicedataVnfsVnfVnfData());
-            }
-            if (vnf.getVnfData().getVnfTopology() == null) {
-                vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
-            }
-            if (vnf.getVnfData().getVnfTopology().getVnfResourceAssignments() == null) {
-                vnf.getVnfData().getVnfTopology().setVnfResourceAssignments(
-                        new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments());
-            }
-            if (vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks() == null) {
-                log.info("Creating new VnfNetworks");
-                vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().setVnfNetworks(
-                        new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks());
-            }
+        GenericResourceApiServicedataServicedataVnfsVnf vnf = null;
 
-            GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks networkList = new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks();
-            if (vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks().getVnfNetwork()
-                    .isEmpty()) {
-                log.info("First entry into network info.");
-                vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks()
-                        .addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
-                responseStatus = HttpStatus.CREATED;
-            } else {
-                log.info("Found networks. Filtering.");
-                vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().getVnfNetworks().getVnfNetwork().stream()
-                        .filter(targetNetwork -> !targetNetwork.getNetworkRole().equals(networkRole))
-                        .forEach(networkList::addVnfNetworkItem);
-                networkList.addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
+        try {
+            vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
+        } catch(JsonProcessingException e) {
 
-                if (networkList.getVnfNetwork().size() != vnf.getVnfData().getVnfTopology().getVnfResourceAssignments()
-                        .getVnfNetworks().getVnfNetwork().size()) {
-                    log.info("Added a new Item");
-                    responseStatus = HttpStatus.CREATED;
-                }
-                vnf.getVnfData().getVnfTopology().getVnfResourceAssignments().setVnfNetworks(networkList);
-            }
-
-            vnflist.addVnfItem(vnf);
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
-        svcData.setVnfs(vnflist);
-        // Map and save the new data
+        if (vnf == null) {
+            log.info("Creating VNF data for ({})", vnfId);
+            vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
+            vnf.setVnfId(vnfId);
+            responseStatus = HttpStatus.CREATED;
+        }
+        GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.getVnfData();
+        if (vnfData == null) {
+            vnfData = new GenericResourceApiServicedataServicedataVnfsVnfVnfData();
+        }
+
+        GenericResourceApiVnftopologyVnfTopology vnfTopology = vnfData.getVnfTopology();
+        if (vnfTopology == null) {
+            vnfTopology = new GenericResourceApiVnftopologyVnfTopology();
+        }
+
+        GenericResourceApiVnfresourceassignmentsVnfResourceAssignments vnfResourceAssignments = vnfTopology.getVnfResourceAssignments();
+        if (vnfResourceAssignments == null) {
+            vnfResourceAssignments = new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments();
+        }
+
+        GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks vnfNetworks = vnfResourceAssignments.getVnfNetworks();
+        if (vnfNetworks == null) {
+            vnfNetworks = new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks();
+            vnfNetworks.setVnfNetwork(new ArrayList<>());
+        }
+
+
+        if (vnfNetworks.getVnfNetwork().isEmpty()) {
+            vnfNetworks.addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
+        } else {
+            GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks vnfNetworksNew = new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks();
+            vnfNetworksNew.setVnfNetwork(new ArrayList<>());
+            vnfNetworks.getVnfNetwork().stream()
+              .filter(targetNetwork -> !targetNetwork.getNetworkRole().equals(networkRole)).forEach(vnfNetworksNew::addVnfNetworkItem);
+
+            vnfNetworksNew.addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
+            vnfNetworks = vnfNetworksNew;
+        }
+
+        vnfResourceAssignments.setVnfNetworks(vnfNetworks);
+        vnfTopology.setVnfResourceAssignments(vnfResourceAssignments);
+        vnfData.setVnfTopology(vnfTopology);
+        vnf.setVnfData(vnfData);
         try {
-            data.setSvcData(objectMapper.writeValueAsString(svcData));
-            configServicesRepository.save(data);
+            serviceDataHelper.saveVnf(serviceInstanceId, vnf, transaction);
+            transaction.commit();        
             return new ResponseEntity<>(responseStatus);
         } catch (JsonProcessingException e) {
             log.error("Error mapping object to JSON", e);
@@ -1950,35 +1756,6 @@ public class ConfigApiController implements ConfigApi {
         }
     }
 
-    /**
-     * Extracts a VNF object from the database,
-     * 
-     * @param configServices A Config Services option created from a Service
-     *                       Instance ID
-     * @param vnfId          the target VNF ID
-     * @return An empty Optional if the Service Data does not exist, an empty
-     *         Optional if the VNF is not found, or an optional containing the found
-     *         VNF.
-     */
-    private Optional<GenericResourceApiServicedataServicedataVnfsVnf> getVnfObject(ConfigServices configServices,
-            String vnfId) {
-        // Map the Marshall the JSON String into a Java Object
-        log.info("Getting VNF Data for ({})", vnfId);
-        GenericResourceApiServicedataServiceData svcData;
-        try {
-            svcData = objectMapper.readValue(configServices.getSvcData(),
-                    GenericResourceApiServicedataServiceData.class);
-        } catch (JsonProcessingException e) {
-            log.error("Error", e);
-            return Optional.empty();
-        }
-
-        /*
-         * Get a stream of the VNF Objects and return the target if it's found, assuming
-         * that each VNF ID is unique within a Service Instance Object
-         */
-        return svcData.getVnfs().getVnf().stream().filter(targetVnf -> targetVnf.getVnfId().equals(vnfId)).findFirst();
-    }
 
     @Override
     public ResponseEntity<GenericResourceApiServicetopologyServiceTopology> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataServiceTopologyGet(
@@ -1991,13 +1768,14 @@ public class ConfigApiController implements ConfigApi {
             throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
         }
 
+        ConfigServices service = services.get(0);
+
         try {
-            if (services.get(0).getSvcData().isEmpty()) {
+            if ( (service.getSvcData() == null) || service.getSvcData().isEmpty()) {
                 throw new RestProtocolException("data-missing", "No service-data entry found",
                         HttpStatus.NOT_FOUND.value());
             } else {
-                serviceData = objectMapper.readValue(services.get(0).getSvcData(),
-                        GenericResourceApiServicedataServiceData.class);
+                serviceData = serviceDataHelper.getServiceData(service);
                 serviceTopology = serviceData.getServiceTopology();
             }
             if (serviceTopology == null) {
@@ -2031,21 +1809,24 @@ public class ConfigApiController implements ConfigApi {
 
         log.info("GET | Vf Module Data for ({})", vfModuleId);
 
-        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            if(getAcceptHeader().get().contains("application/json")) {
-            }
-        } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
+
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         if((services == null) || (services.isEmpty())) {
             throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
         }
 
-        Optional<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> vfModule =
-                getVfModuleObject(services.get(0), vnfId, vfModuleId);
-        if(vfModule.isPresent()) {
-            return new ResponseEntity<>(vfModule.get(), HttpStatus.OK);
+        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule vfModule;
+        try {
+            vfModule = serviceDataHelper.getVfModule(serviceInstanceId, vnfId, vfModuleId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if(vfModule != null) {
+            return new ResponseEntity<>(vfModule, HttpStatus.OK);
         } else {
             log.info("No vf-module found for [{}]", vfModuleId);
             throw new RestApplicationException("data-missing",
@@ -2074,75 +1855,42 @@ public class ConfigApiController implements ConfigApi {
         if(! vfModuleId.equals(genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam.getVfModuleId())) {
             throw new RestProtocolException("bad-attribute", "vf-module-id mismatch", HttpStatus.BAD_REQUEST.value());
         }
-        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            log.info("Something with header");
-        } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
+
 
         HttpStatus responseStatus = HttpStatus.NO_CONTENT;
-        ConfigServices service;
-        GenericResourceApiServicedataServiceData svcData;
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
 
         if((services == null) || (services.isEmpty())) {
             log.error("service-instance-id ({}) not found in SDN.", serviceInstanceId);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else {
-            service = services.get(0);
-        }
+        } 
 
+
+        GenericResourceApiServicedataServicedataVnfsVnf vnf;
         try {
-            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
-        } catch(JsonProcessingException e) {
-            log.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
+        } catch (JsonProcessingException e1) {
+            log.error("Could not parse service data", e1);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e1,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
-        GenericResourceApiServicedataServicedataVnfs vnfs = svcData.getVnfs();
-        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf =
-                vnfs.getVnf()
-                        .stream()
-                        .filter(targetVnf -> targetVnf.getVnfId().equals(vnfId))
-                        .findFirst();
-
-        if(! vnf.isPresent()) {
+        if(vnf == null) {
             log.error("vnf-id ({}) not found in SDN.", vnfId);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.get().getVnfData();
-        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules existingVfModules = vnfData.getVfModules();
-        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules newVfModules = new GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules();
+        // See if this is the first vf module being added
+        List<ConfigVfModules> configVfModules = configVfModulesRepository.findBySvcInstanceIdAndVnfId(serviceInstanceId, vnfId);
 
-        if (existingVfModules == null || existingVfModules.getVfModule().isEmpty()) {
-            log.info("No existing vf-module found. Creating the first vf-module for vnf [{}]", vnfId);
-            newVfModules.addVfModuleItem(genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam);
+        if ((configVfModules == null) || configVfModules.isEmpty()) {
             responseStatus = HttpStatus.CREATED;
         }
-        else {
-            ArrayList<String> vfModuleIds = new ArrayList<>();
-            for (GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule vf : existingVfModules.getVfModule()) {
-                vfModuleIds.add(vf.getVfModuleId());
-            }
-            log.info("[{}] vf-module(s) {} found in vnf [{}]", existingVfModules.getVfModule().size(), vfModuleIds, vnfId);
-            if (!vfModuleIds.isEmpty() && vfModuleIds.contains(vfModuleId)) {
-                log.info("Overwriting vf-module [{}] in vnf [{}]",  vfModuleId, vnfId);
-            } else {
-                log.info("Adding vf-module [{}] to vnf [{}]", vfModuleId, vnfId);
-            }
-            existingVfModules.getVfModule()
-                    .stream()
-                    .filter(vf -> ! vf.getVfModuleId().equals(vfModuleId))
-                    .forEach(newVfModules::addVfModuleItem);
-            newVfModules.addVfModuleItem(genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam);
-            responseStatus = HttpStatus.OK;
-        }
-        vnfData.setVfModules(newVfModules);
-        // Map and save the new data
+
+        // Add vf module
         try {
-            service.setSvcData(objectMapper.writeValueAsString(svcData));
-            configServicesRepository.save(service);
+            serviceDataHelper.saveVfModule(serviceInstanceId, vnfId, genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam, null);
             return new ResponseEntity<>(responseStatus);
         } catch(JsonProcessingException e) {
             log.error("Error mapping object to JSON", e);
@@ -2167,13 +1915,7 @@ public class ConfigApiController implements ConfigApi {
     configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVfModulesVfModuleVfModuleIdVfModuleDataVfModuleTopologyGet(
             String serviceInstanceId, String vnfId, String vfModuleId) throws RestException {
         log.info("GET | vf-module-topology for ({})", vfModuleId);
-        if(getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            if (getAcceptHeader().get().contains("application/json")) {
-                log.info("Something with header");
-            }
-        } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
+
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
         if((services == null) || (services.isEmpty())) {
             throw new RestApplicationException("data-missing",
@@ -2181,12 +1923,19 @@ public class ConfigApiController implements ConfigApi {
                     HttpStatus.NOT_FOUND.value());
         }
 
-        Optional<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> vfModule =
-                getVfModuleObject(services.get(0), vnfId, vfModuleId);
-        if(vfModule.isPresent()
-                && vfModule.get().getVfModuleData() != null
-                && vfModule.get().getVfModuleData().getVfModuleTopology() != null) {
-            return new ResponseEntity<>(vfModule.get().getVfModuleData().getVfModuleTopology(), HttpStatus.OK);
+        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule vfModule;
+        try {
+            vfModule = serviceDataHelper.getVfModule(serviceInstanceId, vnfId, vfModuleId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        if (vfModule != null
+                && vfModule.getVfModuleData() != null
+                && vfModule.getVfModuleData().getVfModuleTopology() != null) {
+            return new ResponseEntity<>(vfModule.getVfModuleData().getVfModuleTopology(), HttpStatus.OK);
         } else {
             log.info("No information found for {}", vfModuleId);
             throw new RestApplicationException("data-missing",
@@ -2201,78 +1950,20 @@ public class ConfigApiController implements ConfigApi {
 
         log.info("DELETE | vf-module Data for ({})", vfModuleId);
 
-        if (getObjectMapper().isPresent() && getAcceptHeader().isPresent()) {
-            log.info("Something with header.");
-        } else {
-            log.warn("ObjectMapper or HttpServletRequest not configured in default ConfigApi interface so no example is generated");
-        }
 
-        ConfigServices service;
-        GenericResourceApiServicedataServiceData svcData;
+ 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
 
         if((services == null) || (services.isEmpty())) {
             log.error("service-instance-id ({}) not found in SDN.", serviceInstanceId);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else {
-            service = services.get(0);
-        }
+        } 
 
-        try {
-            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
-        } catch(JsonProcessingException e) {
-            log.error("Error", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
-        GenericResourceApiServicedataServicedataVnfs vnfs = svcData.getVnfs();
-        Optional<GenericResourceApiServicedataServicedataVnfsVnf> vnf =
-                vnfs.getVnf()
-                        .stream()
-                        .filter(targetVnf -> targetVnf.getVnfId().equals(vnfId))
-                        .findFirst();
 
-        if(! vnf.isPresent()) {
-            log.error("vnf-id ({}) not found in SDN.", vnfId);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.get().getVnfData();
-        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules existingVfModules = vnfData.getVfModules();
-        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules newVfModules = new GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules();
-
-        if (existingVfModules == null || existingVfModules.getVfModule().isEmpty()) {
-            log.info("No existing vf-module found. Creating the first vf-module for vnf [{}]", vnfId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-
-        ArrayList<String> vfModuleIds = new ArrayList<>();
-        for (GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule vf : existingVfModules.getVfModule()) {
-            vfModuleIds.add(vf.getVfModuleId());
-        }
-        log.info("[{}] vf-module(s) {} found in vnf [{}]", existingVfModules.getVfModule().size(), vfModuleIds, vnfId);
-        if (!vfModuleIds.isEmpty() && vfModuleIds.contains(vfModuleId)) {
-            log.info("Deleting vf-module [{}] from vnf [{}]",  vfModuleId, vnfId);
-        } else {
-            log.info("vf-module [{}] not found in vnf [{}]", vfModuleId, vnfId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        existingVfModules.getVfModule()
-                .stream()
-                .filter(vf -> ! vf.getVfModuleId().equals(vfModuleId))
-                .forEach(newVfModules::addVfModuleItem);
-        vnfData.setVfModules(newVfModules);
-        log.info("vf-module [{}] deleted from vnf [{}]", vfModuleId, vnfId);
-
-        // Map and save the new data
-        try {
-            service.setSvcData(objectMapper.writeValueAsString(svcData));
-            configServicesRepository.save(service);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch(JsonProcessingException e) {
-            log.error("Error mapping object to JSON", e);
-            // Should probably be a 500 INTERNAL_SERVICE_ERROR
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        serviceDataHelper.deleteVfModule(serviceInstanceId, vnfId, vfModuleId);
+        return new ResponseEntity<>(HttpStatus.OK);
+        
     }
 }
+
