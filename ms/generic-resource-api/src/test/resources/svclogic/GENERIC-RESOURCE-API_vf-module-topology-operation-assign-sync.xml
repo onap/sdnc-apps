@@ -1,6 +1,6 @@
 <service-logic
     xmlns='http://www.onap.org/sdnc/svclogic'
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='${project.version}'>
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='aai-disabled'>
     <method rpc='vf-module-topology-operation-assign-sync' mode='sync'>
         <block atomic="true">
             <execute plugin='org.onap.ccsdk.sli.plugins.prop.PropertiesNode' method='readProperties' >
@@ -155,53 +155,6 @@
                             <parameter name='tmp.vf-module-topology.tenant' value='`$vf-module-topology-operation-input.vf-module-request-input.tenant`' />
                             <parameter name='tmp.vf-module-topology.aic-cloud-region' value='`$vf-module-topology-operation-input.vf-module-request-input.aic-cloud-region`' />
                         </set>
-                        <get-resource plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-		resource="cloud-region" 
-		key="cloud-region.cloud-owner = $prop.cloud-region.cloud-owner AND 
-		     cloud-region.cloud-region-id = $vf-module-topology-operation-input.vf-module-request-input.aic-cloud-region"
-        pfx='aai.cloud-region' local-only='false' >
-                            <outcome value='not-found'>
-                                <return status='failure'>
-                                    <parameter name='ack-final' value='Y'/>
-                                    <parameter name="error-code" value="500" />
-                                    <parameter name="error-message" value="Cloud region not found in AAI" />
-                                </return>
-                            </outcome>
-                            <outcome value='failure'>
-                                <return status='failure'>
-                                    <parameter name='ack-final' value='Y'/>
-                                    <parameter name="error-code" value="500" />
-                                    <parameter name="error-message" value="Error retrieving cloud region from AAI" />
-                                </return>
-                            </outcome>
-                        </get-resource>
-                        <for index='idx' start='0' end='`$aai.cloud-region.relationship-list.relationship_length`' >
-                            <switch test='`$aai.cloud-region.relationship-list.relationship[$idx].related-to`'>
-                                <outcome value='complex'>
-                                    <block atomic="true">
-                                        <execute plugin='org.onap.ccsdk.sli.core.slipluginutils.SliStringUtils' method='split'>
-                                            <parameter name='ctx_memory_result_key' value='aai-uid-split' />
-                                            <parameter name='original_string' value='`$aai.cloud-region.relationship-list.relationship[$idx].related-link`' />
-                                            <parameter name='regex' value='/' />
-                                        </execute>
-                                        <set>
-                                            <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-data.vf-module-topology.aic-clli'
-   value='`$aai-uid-split[$aai-uid-split_length - 1]`' />
-                                        </set>
-                                        <break/>
-                                    </block>
-                                </outcome>
-                            </switch>
-                        </for>
-                        <switch test='`$service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-data.vf-module-topology.aic-clli`'>
-                            <outcome value=''>
-                                <return status='failure'>
-                                    <parameter name='ack-final' value='Y'/>
-                                    <parameter name="error-code" value="500" />
-                                    <parameter name="error-message" value="`'Unable to find aic-clli in AAI for aic-cloud-region ' + $vf-module-topology-operation-input.vf-module-request-input.aic-cloud-region`" />
-                                </return>
-                            </outcome>
-                        </switch>
                         <switch test='`$vf-module-topology-operation-input.vf-module-information.onap-model-information.model-invariant-uuid`'>
                             <outcome value=''>
                                 <set>
@@ -275,7 +228,7 @@
                             </outcome>
                             <outcome value='Other'>
                                 <execute plugin='org.onap.ccsdk.sli.plugins.restapicall.RestapiCallNode' method='sendRequest' >
-                                    <parameter name='restapiUrl' value="`$prop.controller.url + $prop.restapi.preloadinformation + $vf-module-topology-operation-input.vf-module-request-input.vf-module-name + '/vf-module'`" />
+                                    <parameter name='restapiUrl' value="`$prop.controller.url + $prop.restapi.preloadinformation + $vf-module-topology-operation-input.vf-module-request-input.vf-module-name + '/vf-module/'`" />
                                     <parameter name='restapiUser' value='`$prop.controller.user`' />
                                     <parameter name='restapiPassword' value='`$prop.controller.pwd`' />
                                     <parameter name='format' value='json' />
@@ -649,38 +602,6 @@
  + $vf-module-topology-operation-input.service-information.service-instance-id
  + '/service-data/service-topology/'`"/>
                         </set>
-                        <update plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService"
-   resource="vf-module"
-   key="vf-module.vf-module-id = $service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-id
-      AND generic-vnf.vnf-id = $service-data.vnfs.vnf[$vnf-index].vnf-id"
-   force="true" pfx="tmp.AnAI-data">
-                            <parameter name="vf-module-name" value="`$tmp.vf-module-topology.vf-module-topology-identifier.vf-module-name`" />
-                            <parameter name="model-invariant-id" value="`$tmp.vf-module-topology.onap-model-information.model-invariant-uuid`" />
-                            <parameter name="model-version-id" value="`$tmp.vf-module-topology.onap-model-information.model-uuid`" />
-                            <parameter name="model-customization-id" value="`$tmp.vf-module-topology.onap-model-information.model-customization-uuid`" />
-                            <parameter name="selflink" value="`$vf-module-object-path`" />
-                            <parameter name="automated-assignment" value="`$automated-assignment`" />
-                            <outcome value='failure'>
-                                <block atomic="true">
-                                    <call module='GENERIC-RESOURCE-API' rpc='vf-module-topology-assign-rollback' mode='sync' ></call>
-                                    <return status='failure'>
-                                        <parameter name='ack-final' value='Y'/>
-                                        <parameter name="error-code" value="500" />
-                                        <parameter name="error-message" value="Error updating vf-module in AAI" />
-                                    </return>
-                                </block>
-                            </outcome>
-                            <outcome value='not-found'>
-                                <block atomic="true">
-                                    <call module='GENERIC-RESOURCE-API' rpc='vf-module-topology-assign-rollback' mode='sync' ></call>
-                                    <return status='failure'>
-                                        <parameter name='ack-final' value='Y'/>
-                                        <parameter name="error-code" value="500" />
-                                        <parameter name="error-message" value="`'No vf-module found in AAI for vf module ID ' + $service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-id`" />
-                                    </return>
-                                </block>
-                            </outcome>
-                        </update>
                         <for silentFailure='true' index='vm-type-index' start='0' end='`$tmp.vf-module-topology.vf-module-assignments.vms.vm_length`' >
                             <block atomic="true">
                                 <for silentFailure='true' index='vnfc-index' start='0' end='`$tmp.vf-module-topology.vf-module-assignments.vms.vm[$vm-type-index].vm-names.vnfc-names_length`' >
@@ -1408,7 +1329,6 @@ key="INSERT INTO VIPR_CONFIGURATION (vnf_id, vnf_name, ecomp_service_instance_id
                             <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-data.vf-module-request-input.'
    value='$vf-module-topology-operation-input.vf-module-request-input.' />
                         </set>
-                        <call module='GENERIC-RESOURCE-API' rpc='gw-vfmodule-update' mode='sync' ></call>
                         <set>
                             <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-data.vf-module-level-oper-status.order-status'
   value='PendingCreate' />

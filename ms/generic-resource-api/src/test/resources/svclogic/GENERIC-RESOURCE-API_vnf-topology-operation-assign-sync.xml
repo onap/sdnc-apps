@@ -1,6 +1,6 @@
 <service-logic
     xmlns='http://www.onap.org/sdnc/svclogic'
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='${project.version}'>
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='aai-disabled'>
     <method rpc='vnf-topology-operation-assign-sync' mode='sync'>
         <block atomic="true">
             <execute plugin='org.onap.ccsdk.sli.plugins.prop.PropertiesNode' method='readProperties' >
@@ -109,102 +109,6 @@
                         <set>
                             <parameter name='tmp.vnf-network-collection_length' value='0' />
                         </set>
-                        <for silentFailure='true' index='inst-group-index' start='0' end='`$vnf-topology-operation-input.vnf-request-input.vnf-network-instance-group-ids_length`' >
-                            <block atomic="true">
-                                <get-resource plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-		resource="instance-group" 
-		key="instance-group.id = $vnf-topology-operation-input.vnf-request-input.vnf-network-instance-group-ids[$inst-group-index].vnf-network-instance-group-id"
-        pfx='aai.instance-group' local-only='false' >
-                                    <outcome value='not-found'>
-                                        <return status='failure'>
-                                            <parameter name='ack-final' value='Y'/>
-                                            <parameter name="error-code" value="500" />
-                                            <parameter name="error-message" value="`'Cannot find instance group id ' +
-      $vnf-topology-operation-input.vnf-request-input.vnf-network-instance-group-ids[$inst-group-index].vnf-network-instance-group-id
-      + ' in AAI'`" />
-                                        </return>
-                                    </outcome>
-                                    <outcome value='failure'>
-                                        <return status='failure'>
-                                            <parameter name='ack-final' value='Y'/>
-                                            <parameter name="error-code" value="500" />
-                                            <parameter name="error-message" value="Error retrieving instance-group from AAI" />
-                                        </return>
-                                    </outcome>
-                                </get-resource>
-                                <for index='rel-index' start='0' end='`$aai.instance-group.relationship-list.relationship_length`' >
-                                    <switch test='`$aai.instance-group.relationship-list.relationship[$rel-index].related-to`'>
-                                        <outcome value='collection'>
-                                            <get-resource plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-		resource="collection" 
-		key="collection.collection-id = $aai.instance-group.relationship-list.relationship[$rel-index].relationship-data[0].relationship-value"
-        pfx='aai.collection' local-only='false' >
-                                                <outcome value='not-found'>
-                                                    <return status='failure'>
-                                                        <parameter name='ack-final' value='Y'/>
-                                                        <parameter name="error-code" value="500" />
-                                                        <parameter name="error-message" value="`'Cannot find collection ' +
-      $aai.instance-group.relationship-list.relationship[$rel-index].relationship-data[0].relationship-value
-      + ' in AAI'`" />
-                                                    </return>
-                                                </outcome>
-                                                <outcome value='failure'>
-                                                    <return status='failure'>
-                                                        <parameter name='ack-final' value='Y'/>
-                                                        <parameter name="error-code" value="500" />
-                                                        <parameter name="error-message" value="System error retrieving collection from AAI" />
-                                                    </return>
-                                                </outcome>
-                                                <outcome value='success'>
-                                                    <block atomic="true">
-                                                        <set>
-                                                            <parameter name='found-network-instance-group' value='false' />
-                                                        </set>
-                                                        <for silentFailure='true' index='nig-index' start='0' end='`$service-data.network-instance-groups.network-instance-group_length`' >
-                                                            <switch test='`$vnf-topology-operation-input.vnf-request-input.vnf-network-instance-group-ids[$inst-group-index].vnf-network-instance-group-id
-  == $service-data.network-instance-groups.network-instance-group[$nig-index].network-instance-group-id`'>
-                                                                <outcome value='true'>
-                                                                    <block>
-                                                                        <set>
-                                                                            <parameter name='found-network-instance-group' value='true' />
-                                                                        </set>
-                                                                        <break/>
-                                                                    </block>
-                                                                </outcome>
-                                                            </switch>
-                                                        </for>
-                                                        <switch test='`$found-network-instance-group`'>
-                                                            <outcome value='false'>
-                                                                <return status='failure'>
-                                                                    <parameter name='ack-final' value='Y'/>
-                                                                    <parameter name="error-code" value="500" />
-                                                                    <parameter name="error-message" value="`'Could not find network instance group ' +
-      $vnf-topology-operation-input.vnf-request-input.vnf-network-instance-group-ids[$inst-group-index].vnf-network-instance-group-id
-      + ' in MD-SAL'`" />
-                                                                </return>
-                                                            </outcome>
-                                                        </switch>
-                                                        <set>
-                                                            <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-network-collections.vnf-network-collection[$tmp.vnf-network-collection_length].network-instance-group-function'
-  value='`$aai.instance-group.instance-group-function`' />
-                                                            <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-network-collections.vnf-network-collection[$tmp.vnf-network-collection_length].network-instance-group-id'
-  value='`$aai.instance-group.id`' />
-                                                            <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-network-collections.vnf-network-collection[$tmp.vnf-network-collection_length].network-collection-service-instance-id'
-  value='`$service-data.network-instance-groups.network-instance-group[$nig-index].service-instance-id`' />
-                                                            <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-network-collections.vnf-network-collection[$tmp.vnf-network-collection_length].network-collection-customization-uuid'
-  value='`$aai.collection.collection-customization-id`' />
-                                                        </set>
-                                                        <set>
-                                                            <parameter name='tmp.vnf-network-collection_length' value='`$tmp.vnf-network-collection_length + 1`' />
-                                                        </set>
-                                                    </block>
-                                                </outcome>
-                                            </get-resource>
-                                        </outcome>
-                                    </switch>
-                                </for>
-                            </block>
-                        </for>
                         <set>
                             <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-network-collections.vnf-network-collection_length'
   value='`$tmp.vnf-network-collection_length`' />
@@ -378,84 +282,6 @@
                             <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.onap-model-information.model-customization-uuid'
   value='`$vnf-topology-operation-input.vnf-information.onap-model-information.model-customization-uuid`' />
                         </set>
-                        <get-resource plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-		resource="cloud-region" 
-		key="cloud-region.cloud-owner = $prop.cloud-region.cloud-owner AND 
-		     cloud-region.cloud-region-id = $vnf-topology-operation-input.vnf-request-input.aic-cloud-region AND
-		     depth='all'"
-        pfx='aai.cloud-region' local-only='false' >
-                            <outcome value='not-found'>
-                                <block>
-                                    <block atomic="true">
-                                        <set>
-                                            <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                            <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                            <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                        </set>
-                                        <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                    </block>
-                                    <return status='failure'>
-                                        <parameter name='ack-final' value='Y'/>
-                                        <parameter name="error-code" value="500" />
-                                        <parameter name="error-message" value="Cloud region not found in AAI" />
-                                    </return>
-                                </block>
-                            </outcome>
-                            <outcome value='failure'>
-                                <block>
-                                    <block atomic="true">
-                                        <set>
-                                            <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                            <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                            <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                        </set>
-                                        <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                    </block>
-                                    <return status='failure'>
-                                        <parameter name='ack-final' value='Y'/>
-                                        <parameter name="error-code" value="500" />
-                                        <parameter name="error-message" value="Error retrieving cloud region from AAI" />
-                                    </return>
-                                </block>
-                            </outcome>
-                        </get-resource>
-                        <for index='idx' start='0' end='`$aai.cloud-region.relationship-list.relationship_length`' >
-                            <switch test='`$aai.cloud-region.relationship-list.relationship[$idx].related-to`'>
-                                <outcome value='complex'>
-                                    <block atomic="true">
-                                        <execute plugin='org.onap.ccsdk.sli.core.slipluginutils.SliStringUtils' method='split'>
-                                            <parameter name='ctx_memory_result_key' value='aai-uid-split' />
-                                            <parameter name='original_string' value='`$aai.cloud-region.relationship-list.relationship[$idx].related-link`' />
-                                            <parameter name='regex' value='/' />
-                                        </execute>
-                                        <set>
-                                            <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.aic-clli'
-  value='`$aai-uid-split[$aai-uid-split_length - 1]`' />
-                                        </set>
-                                        <break/>
-                                    </block>
-                                </outcome>
-                            </switch>
-                        </for>
-                        <switch test='`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.aic-clli`'>
-                            <outcome value=''>
-                                <block>
-                                    <block atomic="true">
-                                        <set>
-                                            <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                            <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                            <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                        </set>
-                                        <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                    </block>
-                                    <return status='failure'>
-                                        <parameter name='ack-final' value='Y'/>
-                                        <parameter name="error-code" value="500" />
-                                        <parameter name="error-message" value="`'Unable to find aic-clli in AAI for aic-cloud-region ' + $vnf-topology-operation-input.vnf-request-input.aic-cloud-region`" />
-                                    </return>
-                                </block>
-                            </outcome>
-                        </switch>
                         <get-resource plugin='org.onap.ccsdk.sli.adaptors.resource.sql.SqlResource' resource='SQL'
   key='SELECT * from VF_TO_NETWORK_ROLE_MAPPING WHERE vf_customization_uuid = $vnf-topology-operation-input.vnf-information.onap-model-information.model-customization-uuid'
   pfx='db.vf-network-role-mapping[]'>
@@ -980,141 +806,12 @@
                             <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-parameters-data.'
   value='vnf-topology-operation-input.vnf-request-input.vnf-input-parameters.' />
                         </set>
-                        <switch test='`$aai.cloud-region.availability-zones.availability-zone_length`'>
-                            <outcome value=''>
-                                <switch test='`$db.vf-model.avail-zone-max-count &gt; 0`'>
-                                    <outcome value='true'>
-                                        <block>
-                                            <block atomic="true">
-                                                <set>
-                                                    <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                                    <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                                    <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                                </set>
-                                                <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                            </block>
-                                            <return status='failure'>
-                                                <parameter name='ack-final' value='Y'/>
-                                                <parameter name="error-code" value="500" />
-                                                <parameter name="error-message" value="`'No availability zones found in AAI for cloud region '
-       + $vnf-topology-operation-input.vnf-request-input.aic-cloud-region`" />
-                                            </return>
-                                        </block>
-                                    </outcome>
-                                    <outcome value='false'>
-                                        <set>
-                                            <parameter name='aai.cloud-region.availability-zones.availability-zone_length' value='0' />
-                                        </set>
-                                    </outcome>
-                                </switch>
-                            </outcome>
-                        </switch>
-                        <for index='idx' start='0' end='`$aai.cloud-region.availability-zones.availability-zone_length`' >
-                            <block atomic="true">
-                                <set>
-                                    <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-resource-assignments.availability-zones.availability-zone[$idx]'
-  value='`$aai.cloud-region.availability-zones.availability-zone[$idx].availability-zone-name`' />
-                                </set>
-                                <save plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService"
-   resource="generic-vnf:relationship-list"
-   key="generic-vnf.vnf-id = $service-data.vnfs.vnf[$vnf-index].vnf-id"
-   force="true" pfx="tmp.AnAI-data">
-                                    <parameter name="relationship-list.relationship[0].related-to" value="availability-zone" />
-                                    <parameter name="relationship-list.relationship[0].relationship-data[0].relationship-key" value="cloud-region.cloud-owner" />
-                                    <parameter name="relationship-list.relationship[0].relationship-data[0].relationship-value" value="`$prop.cloud-region.cloud-owner`" />
-                                    <parameter name="relationship-list.relationship[0].relationship-data[1].relationship-key" value="cloud-region.cloud-region-id" />
-                                    <parameter name="relationship-list.relationship[0].relationship-data[1].relationship-value" value="`$vnf-topology-operation-input.vnf-request-input.aic-cloud-region`" />
-                                    <parameter name="relationship-list.relationship[0].relationship-data[2].relationship-key" value="availability-zone.availability-zone-name" />
-                                    <parameter name="relationship-list.relationship[0].relationship-data[2].relationship-value" value="`$aai.cloud-region.availability-zones.availability-zone[$idx].availability-zone-name`" />
-                                    <outcome value='failure'>
-                                        <block>
-                                            <block atomic="true">
-                                                <set>
-                                                    <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                                    <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                                    <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                                </set>
-                                                <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                            </block>
-                                            <return status='failure'>
-                                                <parameter name='ack-final' value='Y'/>
-                                                <parameter name="error-code" value="500" />
-                                                <parameter name="error-message" value="Error updating generic-vnf in AAI" />
-                                            </return>
-                                        </block>
-                                    </outcome>
-                                    <outcome value='not-found'>
-                                        <block>
-                                            <block atomic="true">
-                                                <set>
-                                                    <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                                    <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                                    <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                                </set>
-                                                <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                            </block>
-                                            <return status='failure'>
-                                                <parameter name='ack-final' value='Y'/>
-                                                <parameter name="error-code" value="500" />
-                                                <parameter name="error-message" value="`'No generic-vnf found in AAI for vnf ID ' + $service-data.vnfs.vnf[$vnf-index].vnf-id`" />
-                                            </return>
-                                        </block>
-                                    </outcome>
-                                </save>
-                            </block>
-                        </for>
                         <set>
                             <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-resource-assignments.availability-zones.max-count'
    value='`$db.vf-model.avail-zone-max-count`' />
                             <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-resource-assignments.availability-zones.availability-zone_length'
    value='`$aai.cloud-region.availability-zones.availability-zone_length`' />
                         </set>
-                        <for index='vnf-nw-index' start='0' end='`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-resource-assignments.vnf-networks.vnf-network_length`' >
-                            <block atomic="true">
-                                <save plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService"
-   resource="generic-vnf:relationship-list"
-   key="generic-vnf.vnf-id = $service-data.vnfs.vnf[$vnf-index].vnf-id"
-   force="true" pfx="tmp.AnAI-data">
-                                    <parameter name="relationship-list.relationship[0].related-to" value="l3-network" />
-                                    <parameter name="relationship-list.relationship[0].relationship-data[0].relationship-key" value="l3-network.network-id" />
-                                    <parameter name="relationship-list.relationship[0].relationship-data[0].relationship-value" value="`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-resource-assignments.vnf-networks.vnf-network[$vnf-nw-index].network-id`" />
-                                    <outcome value='failure'>
-                                        <block>
-                                            <block atomic="true">
-                                                <set>
-                                                    <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                                    <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                                    <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                                </set>
-                                                <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                            </block>
-                                            <return status='failure'>
-                                                <parameter name='ack-final' value='Y'/>
-                                                <parameter name="error-code" value="500" />
-                                                <parameter name="error-message" value="Error updating generic-vnf in AAI" />
-                                            </return>
-                                        </block>
-                                    </outcome>
-                                    <outcome value='not-found'>
-                                        <block>
-                                            <block atomic="true">
-                                                <set>
-                                                    <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                                    <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                                    <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                                </set>
-                                                <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                            </block>
-                                            <return status='failure'>
-                                                <parameter name='ack-final' value='Y'/>
-                                                <parameter name="error-code" value="500" />
-                                                <parameter name="error-message" value="`'No generic-vnf found in AAI for vnf ID ' + $service-data.vnfs.vnf[$vnf-index].vnf-id`" />
-                                            </return>
-                                        </block>
-                                    </outcome>
-                                </save>
-                            </block>
-                        </for>
                         <set>
                             <parameter name='vnf-object-path'
  value="`'restconf/config/GENERIC-RESOURCE-API:services/service/'
@@ -1127,54 +824,6 @@
  + $vnf-topology-operation-input.service-information.service-instance-id
  + '/service-data/service-topology/'`"/>
                         </set>
-                        <update plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService"
-   resource="generic-vnf"
-   key="generic-vnf.vnf-id = $service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-topology-identifier-structure.vnf-id"
-   force="true" pfx="tmp.AnAI-data">
-                            <parameter name="vnf-name" value="`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-topology-identifier-structure.vnf-name`" />
-                            <parameter name="prov-status" value="PREPROV" />
-                            <!-- <parameter name="operational-status" value="out-of-service-path" /> -->
-                            <parameter name="equipment-role" value="`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-topology-identifier-structure.nf-role`" />
-                            <parameter name="model-invariant-id" value="`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.onap-model-information.model-invariant-uuid`" />
-                            <parameter name="model-version-id" value="`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.onap-model-information.model-uuid`" />
-                            <parameter name="model-customization-id" value="`$service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.onap-model-information.model-customization-uuid`" />
-                            <parameter name="in-maint" value="true" />
-                            <parameter name="selflink" value="`$vnf-object-path`" />
-                            <outcome value='failure'>
-                                <block>
-                                    <block atomic="true">
-                                        <set>
-                                            <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                            <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                            <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                        </set>
-                                        <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                    </block>
-                                    <return status='failure'>
-                                        <parameter name='ack-final' value='Y'/>
-                                        <parameter name="error-code" value="500" />
-                                        <parameter name="error-message" value="Error updating selflink in generic-vnf in AAI" />
-                                    </return>
-                                </block>
-                            </outcome>
-                            <outcome value='not-found'>
-                                <block>
-                                    <block atomic="true">
-                                        <set>
-                                            <parameter name='naming-policy-generate-name-input.naming-type' value='VNF' />
-                                            <parameter name='naming-policy-generate-name-input.context-id' value='`$vnf-topology-operation-input.vnf-information.vnf-id`' />
-                                            <parameter name='naming-policy-generate-name-input.action' value='DELETE' />
-                                        </set>
-                                        <call module='GENERIC-RESOURCE-API' rpc='naming-policy-generate-name' mode='sync' ></call>
-                                    </block>
-                                    <return status='failure'>
-                                        <parameter name='ack-final' value='Y'/>
-                                        <parameter name="error-code" value="500" />
-                                        <parameter name="error-message" value="`'No generic-vnf found in AAI for vnf ID ' + $service-data.vnfs.vnf[$vnf-index].vnf-id`" />
-                                    </return>
-                                </block>
-                            </outcome>
-                        </update>
                         <for silentFailure='true' index='inst-group-index' start='0' end='`$vnf-topology-operation-input.vnf-request-input.vnf-network-instance-group-ids_length`' >
                             <block atomic="true">
                                 <save plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService"

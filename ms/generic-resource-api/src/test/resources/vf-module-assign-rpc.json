@@ -18,8 +18,8 @@
       },
       "subscription-service-type" : "Mobility",
       "service-id" : "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
-      "global-customer-id" : "a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb",
-      "service-instance-id" : "service1"
+      "global-customer-id" : "cust123",
+      "service-instance-id" : "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
     },
     "vf-module-information" : {
       "onap-model-information" : {
@@ -49,8 +49,8 @@
         "model-invariant-uuid" : "0017cd47-7f1b-49fb-874d-6add86ececb1"
       },
       "vnf-id" : "fae319cc-68d6-496f-be1e-a09e133c71d4",
-      "vnf-name" : "zrdm61asmsf01",
-      "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
+      "vnf-name" : "Python_ONAP_SDK_vnf_instance_2aff902a-4714-4d08-942d-d97b3a3b87c2",
+      "vnf-type" : "service-nginx-ingress-1/nginx-ingress-1 0"
     }
   }
 }

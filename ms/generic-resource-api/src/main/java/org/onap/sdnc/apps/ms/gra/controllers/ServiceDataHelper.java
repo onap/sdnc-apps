@@ -30,9 +30,11 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServ
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @ComponentScan(basePackages = { "org.onap.sdnc.apps.ms.gra.*", "org.onap.ccsdk.apps.services" })
+
 public class ServiceDataHelper {
 
     @Autowired
@@ -65,41 +67,58 @@ public class ServiceDataHelper {
         private List<ConfigVnfs> vnfsToRemove = new LinkedList<ConfigVnfs>();
         private List<ConfigVfModules> vfModulesToRemove = new LinkedList<ConfigVfModules>();
 
+        // Deferred saves not working for now - do all immediate
         public void save(ConfigServices service) {
-            servicesToSave.add(service);
+            // servicesToSave.add(service);
+            configServicesRepository.save(service);
         }
 
         public void save(ConfigNetworks network) {
-            networksToSave.add(network);
+            // networksToSave.add(network);
+            configNetworksRepository.save(network);
         }
 
         public void save(ConfigVnfs vnf) {
-            vnfsToSave.add(vnf);
+            // vnfsToSave.add(vnf);
+            configVnfsRepository.save(vnf);
         }
 
         public void save(ConfigVfModules vfModule) {
-            vfModulesToSave.add(vfModule);
+            // vfModulesToSave.add(vfModule);
+            configVfModulesRepository.save(vfModule);
         }
 
         public void remove(ConfigServices service) {
-            servicesToRemove.add(service);
+            // servicesToRemove.add(service);
+            configServicesRepository.delete(service);
         }
 
         public void remove(ConfigNetworks network) {
-            networksToRemove.add(network);
+            // networksToRemove.add(network);
+            configNetworksRepository.delete(network);
         }
 
         public void remove(ConfigVnfs vnf) {
-            vnfsToRemove.add(vnf);
+            // vnfsToRemove.add(vnf);
+            configVnfsRepository.delete(vnf);
         }
 
         public void remove(ConfigVfModules vfModule) {
-            vfModulesToRemove.add(vfModule);
+            // vfModulesToRemove.add(vfModule);
+            configVfModulesRepository.delete(vfModule);
         }
 
 
         public void commit() {
  
+            long numServicesBefore = configServicesRepository.count();
+            long numNetworksBefore = configNetworksRepository.count();
+            long numVnfsBefore = configVnfsRepository.count();
+            long numVfModulesBefore = configVfModulesRepository.count();
+
+            // Commit is a no-op for now
+            return;
+            /*
             for (ConfigServices service : servicesToSave) {
                 configServicesRepository.save(service);
             }
@@ -124,6 +143,13 @@ public class ServiceDataHelper {
             for (ConfigVfModules vfModule : vfModulesToSave) {
                 configVfModulesRepository.delete(vfModule);
             }
+            long numServicesAfter = configServicesRepository.count();
+            long numNetworksAfter = configNetworksRepository.count();
+            long numVnfsAfter = configVnfsRepository.count();
+            long numVfModulesAfter = configVfModulesRepository.count();
+
+            System.out.print("Done");
+            */
         }
     }
 
@@ -373,6 +399,7 @@ public class ServiceDataHelper {
         } else {
             configVnfsRepository.save(configVnf);
         }
+
     }
 
     public void saveNetwork(String svcInstanceId, GenericResourceApiServicedataServicedataNetworksNetwork network, ServiceDataTransaction transaction) throws JsonProcessingException {

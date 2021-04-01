@@ -1,6 +1,6 @@
 <service-logic
     xmlns='http://www.onap.org/sdnc/svclogic'
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='${project.version}'>
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='aai-disabled'>
     <method rpc='network-topology-operation-assign-from-preload' mode='sync'>
         <block atomic="true">
             <switch test="`$tmp.nidx`">
@@ -77,18 +77,6 @@
             <set>
                 <parameter name="tmp.error-message" value=""/>
             </set>
-            <get-resource plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-		key="l3-network.network-name = $tmp.network-instance-name" 
-		local-only="false" 
-		pfx="aai.l3-network">
-                <outcome value='failure'>
-                    <return status='failure'>
-                        <parameter name="error-code" value="500" />
-                        <parameter name="error-message" value="'Error searching for l3-network with network-name =' + $tmp.network-instance-name + 'from AnAI'" />
-                    </return>
-                </outcome>
-            </get-resource>
             <set>
                 <parameter name='tmp.l3-network.network-name' value="`$tmp.network-instance-name`" />
                 <parameter name='tmp.l3-network.network-type' value="`$preload-data.preload-network-topology-information.network-topology-identifier-structure.network-type`" />
@@ -173,9 +161,6 @@
                                     <parameter name="ctxVariable" value="tmp.return.generate.gateway-address" />
                                     <outcome value='failure'>
                                         <block atomic='true'>
-                                            <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                             <return status='failure'>
                                                 <parameter name='error-code' value='500'/>
                                                 <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -195,9 +180,6 @@
                     <call module="VNF-API" rpc="generate-subnets-subnet-id" mode="sync" >
                         <outcome value='failure'>
                             <block atomic='true'>
-                                <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                 <return status='failure'>
                                     <parameter name='error-code' value='500'/>
                                     <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -230,9 +212,6 @@
                                     <parameter name="tmp.error-message" value="`'An error occurred while saving subnet in AnAI where subnet-id = ' + $tmp.return.generate-subnets-subnet-id.uuid`"/>
                                 </set>
                                 <block atomic='true'>
-                                    <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                     <return status='failure'>
                                         <parameter name='error-code' value='500'/>
                                         <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -247,9 +226,6 @@
                                     <parameter name="tmp.error-message" value="`'An error occurred while saving subnet in AnAI where subnet-id = ' + $tmp.return.generate-subnets-subnet-id.uuid`"/>
                                 </set>
                                 <block atomic='true'>
-                                    <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                     <return status='failure'>
                                         <parameter name='error-code' value='500'/>
                                         <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -273,9 +249,6 @@
                             <call module="GENERIC-RESOURCE-API" rpc="generate-host-routes-host-route-id" mode="sync" >
                                 <outcome value='failure'>
                                     <block atomic='true'>
-                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                         <return status='failure'>
                                             <parameter name='error-code' value='500'/>
                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -299,9 +272,6 @@
                                             <parameter name="tmp.error-message" value="`'An error occurred while saving host-route in AnAI where host-route-id = ' + $tmp.return.generate-host-routes-host-route-id.uuid`"/>
                                         </set>
                                         <block atomic='true'>
-                                            <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                             <return status='failure'>
                                                 <parameter name='error-code' value='500'/>
                                                 <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -316,9 +286,6 @@
                                             <parameter name="tmp.error-message" value="`'An error occurred while saving host-route in AnAI where host-route-id = ' + $tmp.return.generate-host-routes-host-route-id.uuid`"/>
                                         </set>
                                         <block atomic='true'>
-                                            <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                             <return status='failure'>
                                                 <parameter name='error-code' value='500'/>
                                                 <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -331,59 +298,6 @@
                     </for>
                 </block>
             </for>
-            <save plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network:relationship-list" 
-	key="l3-network.network-id = $tmp.l3-network.network-id" 
-	force="true" 
-	local-only="false">
-                <!-- create relationship-list -->
-                <parameter name="relationship-list.relationship[0].related-to" value="tenant" />
-                <parameter name="relationship-list.relationship[0].relationship-data[0].relationship-key" value="cloud-region.cloud-owner" />
-                <parameter name="relationship-list.relationship[0].relationship-data[0].relationship-value" value="`$prop.cloud-region.cloud-owner`" />
-                <parameter name="relationship-list.relationship[0].relationship-data[1].relationship-key" value="cloud-region.cloud-region-id" />
-                <parameter name="relationship-list.relationship[0].relationship-data[1].relationship-value" value="`$network-topology-operation-input.network-request-input.aic-cloud-region`" />
-                <parameter name="relationship-list.relationship[0].relationship-data[2].relationship-key" value="tenant.tenant-id" />
-                <parameter name="relationship-list.relationship[0].relationship-data[2].relationship-value" value="`$network-topology-operation-input.network-request-input.tenant`" />
-                <parameter name="relationship-list.relationship[1].related-to" value="cloud-region" />
-                <parameter name="relationship-list.relationship[1].relationship-data[0].relationship-key" value="cloud-region.cloud-owner" />
-                <parameter name="relationship-list.relationship[1].relationship-data[0].relationship-value" value="`$prop.cloud-region.cloud-owner`" />
-                <parameter name="relationship-list.relationship[1].relationship-data[1].relationship-key" value="cloud-region.cloud-region-id" />
-                <parameter name="relationship-list.relationship[1].relationship-data[1].relationship-value" value="`$network-topology-operation-input.network-request-input.aic-cloud-region`" />
-                <outcome value='failure'>
-                    <block atomic='true'>
-                        <set>
-                            <parameter name="error-code" value="500"/>
-                            <parameter name="tmp.error-message" value="`'An error occurred while saving tenant and cloud-region relationship for l3-network in AnAI where network-id = ' + $tmp.l3-network.network-id`"/>
-                        </set>
-                        <block atomic='true'>
-                            <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
-                            <return status='failure'>
-                                <parameter name='error-code' value='500'/>
-                                <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
-                            </return>
-                        </block>
-                    </block>
-                </outcome>
-                <outcome value='not-found'>
-                    <block atomic='true'>
-                        <set>
-                            <parameter name="error-code" value="500"/>
-                            <parameter name="tmp.error-message" value="`'An error occurred while saving tenant and cloud-region relationship for l3-network in AnAI where network-id = ' + $tmp.l3-network.network-id`"/>
-                        </set>
-                        <block atomic='true'>
-                            <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
-                            <return status='failure'>
-                                <parameter name='error-code' value='500'/>
-                                <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
-                            </return>
-                        </block>
-                    </block>
-                </outcome>
-            </save>
             <switch test="`$preload-data.preload-network-topology-information.vpn-bindings_length`">
                 <outcome value=''>
                     <set>
@@ -420,9 +334,6 @@
                                                         <parameter name="tmp.error-message" value="`'Failed to query vpn-bindings from AnAI where vpn-binding-id  = ' + $tmp.vpn-binding-id + '.'`"/>
                                                     </set>
                                                     <block atomic='true'>
-                                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                         <return status='failure'>
                                                             <parameter name='error-code' value='500'/>
                                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -439,9 +350,6 @@
                                                 <parameter name="tmp.error-message" value="`'Failed to query vpn-bindings from AnAI where vpn-binding-id = ' + $preload-data.preload-network-topology-information.vpn-bindings[$i].vpn-binding-id`"/>
                                             </set>
                                             <block atomic='true'>
-                                                <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                 <return status='failure'>
                                                     <parameter name='error-code' value='500'/>
                                                     <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -456,9 +364,6 @@
                                                 <parameter name="tmp.error-message" value="`'Failed to query vpn-bindings from AnAI where vpn-binding-id = ' + $preload-data.preload-network-topology-information.vpn-bindings[$i].vpn-binding-id`"/>
                                             </set>
                                             <block atomic='true'>
-                                                <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                 <return status='failure'>
                                                     <parameter name='error-code' value='500'/>
                                                     <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -482,9 +387,6 @@
                                                 <parameter name="tmp.error-message" value="`'An error occurred while saving vpn-binding relationship for l3-network in AnAI where vpn-id = ' + $tmp.vpn-binding-id`"/>
                                             </set>
                                             <block atomic='true'>
-                                                <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                 <return status='failure'>
                                                     <parameter name='error-code' value='500'/>
                                                     <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -499,9 +401,6 @@
                                                 <parameter name="tmp.error-message" value="`'An error occurred while saving vpn-binding relationship for l3-network in AnAI where vpn-id = ' + $tmp.vpn-binding-id`"/>
                                             </set>
                                             <block atomic='true'>
-                                                <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                 <return status='failure'>
                                                     <parameter name='error-code' value='500'/>
                                                     <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -542,9 +441,6 @@
                                         <parameter name="tmp.error-message" value="`'Failed to query network-policy n AnAI where network-policy-fqdn = ' + $preload-data.preload-network-topology-information.network-policy[$i].network-policy-fqdn`"/>
                                     </set>
                                     <block atomic='true'>
-                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                         <return status='failure'>
                                             <parameter name='error-code' value='500'/>
                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -559,9 +455,6 @@
                                         <parameter name="tmp.error-message" value="`'Failed to query network-policy n AnAI where network-policy-fqdn = ' + $preload-data.preload-network-topology-information.network-policy[$i].network-policy-fqdn`"/>
                                     </set>
                                     <block atomic='true'>
-                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                         <return status='failure'>
                                             <parameter name='error-code' value='500'/>
                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -578,9 +471,6 @@
                                                 <parameter name="tmp.error-message" value="`'Failed to query newtork-policy from AnAI where network-policy-fqdn = ' + $preload-data.preload-network-topology-information.network-policy[$i].network-policy-fqdn + '. It is likely that the same network-policy-fqdn points to more than one network-policy objects in AnAI.'`"/>
                                             </set>
                                             <block atomic='true'>
-                                                <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                 <return status='failure'>
                                                     <parameter name='error-code' value='500'/>
                                                     <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -602,9 +492,6 @@
                                                         <parameter name="tmp.error-message" value="`'An error occurred while saving network-policy relationship for l3-network in AnAI where network-policy-id = ' + $tmp.AnAI.network-policy.network-policy-id`"/>
                                                     </set>
                                                     <block atomic='true'>
-                                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                         <return status='failure'>
                                                             <parameter name='error-code' value='500'/>
                                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -619,9 +506,6 @@
                                                         <parameter name="tmp.error-message" value="`'An error occurred while saving network-policy relationship for l3-network in AnAI where network-policy-id = ' + $tmp.AnAI.network-policy.network-policy-id`"/>
                                                     </set>
                                                     <block atomic='true'>
-                                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                         <return status='failure'>
                                                             <parameter name='error-code' value='500'/>
                                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -658,9 +542,6 @@
                                         <parameter name="tmp.error-message" value="`'Failed to query network-policy n AnAI where network-policy-fqdn = ' + $preload-data.preload-network-topology-information.network-policy[$i].network-policy-fqdn`"/>
                                     </set>
                                     <block atomic='true'>
-                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                         <return status='failure'>
                                             <parameter name='error-code' value='500'/>
                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -675,9 +556,6 @@
                                         <parameter name="tmp.error-message" value="`'Failed to query network-policy n AnAI where network-policy-fqdn = ' + $preload-data.preload-network-topology-information.network-policy[$i].network-policy-fqdn`"/>
                                     </set>
                                     <block atomic='true'>
-                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                         <return status='failure'>
                                             <parameter name='error-code' value='500'/>
                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -694,9 +572,6 @@
                                                 <parameter name="tmp.error-message" value="`'Failed to query route-table-reference from AnAI where route-table-reference-fqdn = ' + $preload-data.preload-network-topology-information.route-table-reference[$i].route-table-reference-fqdn + '. It is likely that the same route-table-reference-fqdn points to more than one route-table-reference objects in AnAI.'`"/>
                                             </set>
                                             <block atomic='true'>
-                                                <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                 <return status='failure'>
                                                     <parameter name='error-code' value='500'/>
                                                     <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -718,9 +593,6 @@
                                                         <parameter name="tmp.error-message" value="`'An error occurred while saving route-table-reference relationship for l3-network in AnAI where route-table-reference-id = ' + $tmp.AnAI.route-table-reference.route-table-reference-id`"/>
                                                     </set>
                                                     <block atomic='true'>
-                                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                         <return status='failure'>
                                                             <parameter name='error-code' value='500'/>
                                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -735,9 +607,6 @@
                                                         <parameter name="tmp.error-message" value="`'An error occurred while saving route-table-reference relationship for l3-network in AnAI where route-table-reference-id = ' + $tmp.AnAI.route-table-reference.route-table-reference-id`"/>
                                                     </set>
                                                     <block atomic='true'>
-                                                        <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                                         <return status='failure'>
                                                             <parameter name='error-code' value='500'/>
                                                             <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -766,9 +635,6 @@
                                     <parameter name="tmp.error-message" value="`'An error occurred while updating l3-network is-bound-to-vpn in AnAI where network-id = ' + $tmp.return.generate-l3network-network-id.uuid`"/>
                                 </set>
                                 <block atomic='true'>
-                                    <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                     <return status='failure'>
                                         <parameter name='error-code' value='500'/>
                                         <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -783,9 +649,6 @@
                                     <parameter name="tmp.error-message" value="`'An error occurred while updating l3-network is-bound-to-vpn in AnAI where network-id = ' + $tmp.return.generate-l3network-network-id.uuid`"/>
                                 </set>
                                 <block atomic='true'>
-                                    <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
                                     <return status='failure'>
                                         <parameter name='error-code' value='500'/>
                                         <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
@@ -796,51 +659,6 @@
                     </update>
                 </outcome>
             </switch>
-            <save plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network:relationship-list" 
-	key="l3-network.network-id = $tmp.l3-network.network-id" >
-                <parameter name="relationship-list.relationship[0].related-to" value="service-instance" />
-                <parameter name="relationship-list.relationship[0].relationship-data[0].relationship-key" value="customer.global-customer-id" />
-                <parameter name="relationship-list.relationship[0].relationship-data[0].relationship-value" value="`$service-data.service-information.global-customer-id`" />
-                <parameter name="relationship-list.relationship[0].relationship-data[1].relationship-key" value="service-subscription.service-type" />
-                <parameter name="relationship-list.relationship[0].relationship-data[1].relationship-value" value="`$service-data.service-information.subscription-service-type`" />
-                <parameter name="relationship-list.relationship[0].relationship-data[2].relationship-key" value="service-instance.service-instance-id" />
-                <parameter name="relationship-list.relationship[0].relationship-data[2].relationship-value" value="`$service-data.service-information.service-instance-id`" />
-                <outcome value='failure'>
-                    <block atomic='true'>
-                        <set>
-                            <parameter name="error-code" value="500"/>
-                            <parameter name="tmp.error-message" value="`'An error occurred while saving service-instance relationship for l3-network in AnAI where service-instance-id = ' + $network-topology-operation-input.service-information.service-instance-id`"/>
-                        </set>
-                        <block atomic='true'>
-                            <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
-                            <return status='failure'>
-                                <parameter name='error-code' value='500'/>
-                                <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
-                            </return>
-                        </block>
-                    </block>
-                </outcome>
-                <outcome value='not-found'>
-                    <block atomic='true'>
-                        <set>
-                            <parameter name="error-code" value="500"/>
-                            <parameter name="tmp.error-message" value="`'An error occurred while saving service-instance relationship for l3-network in AnAI where service-instance-id = ' + $network-topology-operation-input.service-information.service-instance-id`"/>
-                        </set>
-                        <block atomic='true'>
-                            <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $tmp.return.generate-l3network-network-id.uuid"></delete>
-                            <return status='failure'>
-                                <parameter name='error-code' value='500'/>
-                                <parameter name='error-message' value="`'Error writing to l3-netework - ' + $tmp.error-message`"/>
-                            </return>
-                        </block>
-                    </block>
-                </outcome>
-            </save>
             <set>
                 <parameter name='network-topology.network-topology-identifier-structure.' value='`$tmp.l3-network.`' />
                 <parameter name='network-topology.tenant' value='`$network-topology-operation-input.network-request-input.tenant`' />

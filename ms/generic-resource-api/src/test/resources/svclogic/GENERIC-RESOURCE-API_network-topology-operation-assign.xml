@@ -1,36 +1,19 @@
 <service-logic
     xmlns='http://www.onap.org/sdnc/svclogic'
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='${project.version}'>
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='aai-disabled'>
     <method rpc='network-topology-operation-assign' mode='sync'>
         <block atomic="true">
             <execute plugin='org.onap.ccsdk.sli.plugins.prop.PropertiesNode' method='readProperties' >
                 <parameter name='fileName' value='%SDNC_CONFIG_DIR%/generic-resource-api-dg.properties' />
                 <parameter name='contextPrefix' value='prop' />
             </execute>
-            <get-resource plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-		resource="tenant" 
-		key="cloud-region.cloud-owner = $prop.cloud-region.cloud-owner AND 
-		     cloud-region.cloud-region-id = $network-topology-operation-input.network-request-input.aic-cloud-region AND
-		     tenant.tenant-id = $network-topology-operation-input.network-request-input.tenant"
-        pfx='aai.tenant' local-only='false' >
-                <outcome value='success'>
-                    <block atomic="true"></block>
+            <switch test="`$network-topology-operation-input.network-request-input.cloud-owner != ''`">
+                <outcome value='true'>
+                    <set>
+                        <parameter name='prop.cloud-region.cloud-owner' value='`$network-topology-operation-input.network-request-input.cloud-owner`' />
+                    </set>
                 </outcome>
-                <outcome value='not-found'>
-                    <return status='failure'>
-                        <parameter name='ack-final' value='Y'/>
-                        <parameter name="error-code" value="500" />
-                        <parameter name="error-message" value="Tenant not found in AAI" />
-                    </return>
-                </outcome>
-                <outcome value='Other'>
-                    <return status='failure'>
-                        <parameter name='ack-final' value='Y'/>
-                        <parameter name="error-code" value="500" />
-                        <parameter name="error-message" value="Tenant not found in AAI" />
-                    </return>
-                </outcome>
-            </get-resource>
+            </switch>
             <switch test='`$network-topology-operation-input.network-information.network-id`'>
                 <outcome value=''>
                     <call module='GENERIC-RESOURCE-API' rpc='generate-l3network-network-id' mode='sync' ></call>

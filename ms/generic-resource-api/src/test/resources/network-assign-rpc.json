@@ -22,8 +22,8 @@
           "model-uuid": "00e50cbd-ef0f-4b28-821e-f2b583752dd3",
           "model-version": "1920"
         },
-        "service-id": "service1",
-        "service-instance-id": "service1",
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
         "subscriber-name": "test",
         "subscription-service-type": "test"
       },

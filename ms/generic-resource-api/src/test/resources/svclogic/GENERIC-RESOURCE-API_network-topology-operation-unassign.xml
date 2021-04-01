@@ -1,40 +1,10 @@
 <service-logic
     xmlns='http://www.onap.org/sdnc/svclogic'
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='${project.version}'>
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='aai-disabled'>
     <method rpc='network-topology-operation-unassign' mode='sync'>
         <block atomic="true">
             <switch test='`$service-data.networks.network[$nidx].network-data.network-information.from-preload`'>
-                <outcome value='true'>
-                    <block atomic="true">
-                        <get-resource plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-		key="l3-network.network-id = $network-topology-operation-input.network-information.network-id" 
-		local-only="false" 
-		pfx="aai.l3-network">
-                            <outcome value='success'>
-                                <block atomic="true">
-                                    <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $network-topology-operation-input.network-information.network-id">
-                                        <outcome value='failure'>
-                                            <return status="failure">
-                                                <parameter name="error-code" value="500"/>
-                                                <parameter name="error-message" value="An error occured while deleting network from AAI" />
-                                            </return>
-                                        </outcome>
-                                    </delete>
-                                </block>
-                            </outcome>
-                            <outcome value='not-found'></outcome>
-                            <outcome value='failure'>
-                                <return status='failure'>
-                                    <parameter name="error-code" value="500" />
-                                    <parameter name="error-message" value="'Error retrieving l3-network with network-id=' + $network-topology-operation-input.network-request-information.network-id + 'from AnAI'" />
-                                </return>
-                            </outcome>
-                        </get-resource>
-                    </block>
-                </outcome>
+                <outcome value='true'></outcome>
                 <outcome value='Other'>
                     <switch test='`$network-data.network-topology.network-topology-identifier-structure.network-instance-group-id`'>
                         <outcome value=''>
@@ -368,16 +338,6 @@
                                         </block>
                                     </outcome>
                                 </switch>
-                                <delete plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService" 
-	resource="l3-network" 
-	key="l3-network.network-id = $network-topology-operation-input.network-information.network-id">
-                                    <outcome value='failure'>
-                                        <return status="failure">
-                                            <parameter name="error-code" value="500"/>
-                                            <parameter name="error-message" value="An error occured while deleting network from AAI" />
-                                        </return>
-                                    </outcome>
-                                </delete>
                                 <set>
                                     <parameter name='naming-policy-generate-name-input.context-id' value='`$network-topology-operation-input.network-information.network-id`' />
                                     <parameter name='naming-policy-generate-name-input.naming-type' value='NETWORK' />

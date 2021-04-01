@@ -1,6 +1,6 @@
 <service-logic
     xmlns='http://www.onap.org/sdnc/svclogic'
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='${project.version}'>
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='aai-disabled'>
     <method rpc='vf-module-topology-operation-activate' mode='sync'>
         <block atomic="true">
             <execute plugin='org.onap.ccsdk.sli.plugins.prop.PropertiesNode' method='readProperties' >
@@ -104,27 +104,6 @@
                     </call>
                 </outcome>
             </switch>
-            <update plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService"
-   resource="vf-module"
-   key="vf-module.vf-module-id = $service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-id
-      AND generic-vnf.vnf-id = $service-data.vnfs.vnf[$vnf-index].vnf-id"
-   force="true" pfx="tmp.AnAI-data">
-                <parameter name="orchestration-status" value="Active" />
-                <outcome value='failure'>
-                    <return status='failure'>
-                        <parameter name='ack-final' value='Y'/>
-                        <parameter name="error-code" value="500" />
-                        <parameter name="error-message" value="Error updating vf-module in AAI" />
-                    </return>
-                </outcome>
-                <outcome value='not-found'>
-                    <return status='failure'>
-                        <parameter name='ack-final' value='Y'/>
-                        <parameter name="error-code" value="500" />
-                        <parameter name="error-message" value="`'No vf-module found in AAI for vf module ID ' + $service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-id`" />
-                    </return>
-                </outcome>
-            </update>
             <for silentFailure='true' index='vm-type-index' start='0'
   end='`$service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-data.vf-module-topology.vf-module-assignments.vms.vm_length`' >
                 <for silentFailure='true' index='vnfc-index' start='0' end='`$service-data.vnfs.vnf[$vnf-index].vnf-data.vf-modules.vf-module[$vf-module-index].vf-module-data.vf-module-topology.vf-module-assignments.vms.vm[$vm-type-index].vm-names.vnfc-names_length`' >

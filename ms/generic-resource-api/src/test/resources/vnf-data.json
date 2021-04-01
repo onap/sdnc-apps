@@ -14,7 +14,7 @@
       "svc-request-id": "9c06a7c6-be3a-4530-bdd8-c65b58f123a5"
     },
     "service-information": {
-      "global-customer-id": "226fbb03-baf2-42bb-8311-03643a801238",
+      "global-customer-id": "cust123",
       "onap-model-information": {
         "model-customization-uuid": "602c6bcc-6cfa-41cb-a8a7-968b38d5935f",
         "model-invariant-uuid": "bdb4f943-c9be-4742-b976-a34607f3687e",
@@ -22,8 +22,8 @@
         "model-uuid": "86c76b5d-fa8d-4034-b79a-1cc4326021a9",
         "model-version": "3.0"
       },
-      "service-id": "98f189dd-2971-46f5-b4f1-1a9a323f39a4",
-      "service-instance-id": "98f189dd-2971-46f5-b4f1-1a9a323f39a4",
+      "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+      "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
       "subscriber-name": "unit-test",
       "subscription-service-type": "unit-test"
     },
@@ -32,7 +32,6 @@
         {
           "vf-module-data": {
             "request-information": {
-              "notification-url": "https://dev.null",
               "order-number": "Order-123",
               "order-version": "Order-v22",
               "request-action": "CreateNetworkInstance",
@@ -41,11 +40,10 @@
             },
             "sdnc-request-header": {
               "svc-action": "assign",
-              "svc-notification-url": "https://dev.null",
               "svc-request-id": "9c06a7c6-be3a-4530-bdd8-c65b58f123a5"
             },
             "service-information": {
-              "global-customer-id": "226fbb03-baf2-42bb-8311-03643a801238",
+              "global-customer-id": "cust123",
               "onap-model-information": {
                 "model-customization-uuid": "602c6bcc-6cfa-41cb-a8a7-968b38d5935f",
                 "model-invariant-uuid": "bdb4f943-c9be-4742-b976-a34607f3687e",
@@ -53,8 +51,8 @@
                 "model-uuid": "86c76b5d-fa8d-4034-b79a-1cc4326021a9",
                 "model-version": "3.0"
               },
-              "service-id": "98f189dd-2971-46f5-b4f1-1a9a323f39a4",
-              "service-instance-id": "98f189dd-2971-46f5-b4f1-1a9a323f39a4",
+              "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+              "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
               "subscriber-name": "unit-test",
               "subscription-service-type": "unit-test"
             },
@@ -67,7 +65,7 @@
                 "model-uuid": "86c76b5d-fa8d-4034-b79a-1cc4326021a9",
                 "model-version": "3.0"
               },
-              "vf-module-id": "9270c447-3caf-4e12-85aa-3578b0fa61d5",
+              "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d",
               "vf-module-type": "some-vf-module-type"
             },
             "vf-module-level-oper-status": {
@@ -431,7 +429,7 @@
                 ]
               },
               "vf-module-topology-identifier": {
-                "vf-module-id": "9270c447-3caf-4e12-85aa-3578b0fa61d5",
+                "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d",
                 "vf-module-name": "some-vf-module-name",
                 "vf-module-type": "some-vf-module-type"
               }
@@ -444,12 +442,12 @@
                 "model-uuid": "86c76b5d-fa8d-4034-b79a-1cc4326021a9",
                 "model-version": "3.0"
               },
-              "vnf-id": "2a3bfc93-cd4c-4845-8919-434b2d999ada",
+              "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
               "vnf-name": "mytestvnf",
               "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
             }
           },
-          "vf-module-id": "9270c447-3caf-4e12-85aa-3578b0fa61d5"
+          "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d"
         }
       ]
     },
@@ -461,7 +459,7 @@
         "model-uuid": "86c76b5d-fa8d-4034-b79a-1cc4326021a9",
         "model-version": "3.0"
       },
-      "vnf-id": "2a3bfc93-cd4c-4845-8919-434b2d999ada",
+      "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
       "vnf-name": "mytestvnf",
       "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
     },
@@ -593,11 +591,11 @@
         "nf-function": "string",
         "nf-role": "string",
         "nf-type": "string",
-        "vnf-id": "2a3bfc93-cd4c-4845-8919-434b2d999ada",
+        "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
         "vnf-name": "mytestvnf",
         "vnf-type" : "SMSF-NC2-578-SVC/SMSF-NC2-578"
       }
     }
   },
-  "vnf-id": "2a3bfc93-cd4c-4845-8919-434b2d999ada"
+  "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4"
 }

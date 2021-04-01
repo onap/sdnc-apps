@@ -40,6 +40,7 @@ import org.onap.ccsdk.apps.services.RestException;
 import org.onap.ccsdk.apps.services.SvcLogicFactory;
 import org.onap.ccsdk.sli.core.sli.SvcLogicContext;
 import org.onap.ccsdk.sli.core.sli.SvcLogicException;
+import org.onap.ccsdk.sli.core.sli.SvcLogicLoader;
 import org.onap.ccsdk.sli.core.sli.provider.base.SvcLogicServiceBase;
 import org.onap.sdnc.apps.ms.gra.data.ConfigContrailRouteAllottedResourcesRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigNetworksRepository;
@@ -128,6 +129,9 @@ public class OperationsApiController implements OperationsApi {
 
     @Autowired
     protected SvcLogicServiceBase svc;
+
+    @Autowired
+    protected SvcLogicLoader svcLogicLoader;
 
     @Autowired
     private ConfigPreloadDataRepository configPreloadDataRepository;

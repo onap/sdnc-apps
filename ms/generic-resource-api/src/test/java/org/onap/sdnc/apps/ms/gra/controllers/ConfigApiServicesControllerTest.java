@@ -16,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.sdnc.apps.ms.gra.GenericResourceMsApp;
+import org.onap.sdnc.apps.ms.gra.controllers.ServiceDataHelper.ServiceDataTransaction;
 import org.onap.sdnc.apps.ms.gra.data.*;
 import org.onap.sdnc.apps.ms.gra.swagger.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ConfigApiServicesControllerTest {
 
+    private final static String TEST_SVC_INSTANCE_ID = "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca";
+    private final static String TEST_VNF_ID = "fae319cc-68d6-496f-be1e-a09e133c71d4";
+    private final static String TEST_VF_MODULE_ID = "45841173-3729-4a1d-a811-a3bde399e22d";
     private final static String CONFIG_SERVICES_URL = "/config/GENERIC-RESOURCE-API:services/";
     private final static String CONFIG_SERVICES_SERVICE_URL = "/config/GENERIC-RESOURCE-API:services/service/";
     private final static String CONFIG_CR_ARS_CR_AR_URL = "/config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/";
@@ -72,6 +76,64 @@ public class ConfigApiServicesControllerTest {
    
     }
 
+    @Test
+    public void serviceDataLoadTest() throws Exception {
+        // Clear service data
+        clearServicesData();
+        assertEquals(0, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(0, configVnfsRepository.count());
+        assertEquals(0, configVfModulesRepository.count());
+
+        // Add service data - just service
+        loadServicesData("src/test/resources/service1-service.json");
+        assertEquals(1, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(0, configVnfsRepository.count());
+        assertEquals(0, configVfModulesRepository.count());
+
+        // Clear service data
+        clearServicesData();
+        assertEquals(0, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(0, configVnfsRepository.count());
+        assertEquals(0, configVfModulesRepository.count());
+
+       // Add service data - service, vnf, vf-module
+       loadServicesData("src/test/resources/service1.json");
+       assertEquals(1, configServicesRepository.count());
+       assertEquals(0, configNetworksRepository.count());
+       assertEquals(1, configVnfsRepository.count());
+       assertEquals(1, configVfModulesRepository.count());
+
+   
+
+    }
+
+    @Test
+    public void VnfDataLoadTest() throws Exception {
+        // Clear service data
+        clearServicesData();
+        assertEquals(0, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(0, configVnfsRepository.count());
+        assertEquals(0, configVfModulesRepository.count());
+
+        // Add vnf data
+        loadVnfData("src/test/resources/vnf-data.json");
+        assertEquals(1, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(1, configVnfsRepository.count());
+        assertEquals(1, configVfModulesRepository.count());
+
+        // Clear service data
+        clearServicesData();
+        assertEquals(0, configServicesRepository.count());
+        assertEquals(0, configNetworksRepository.count());
+        assertEquals(0, configVnfsRepository.count());
+        assertEquals(0, configVfModulesRepository.count());
+
+    }
 
     @Test
     public void configGENERICRESOURCEAPIservicesDelete() throws Exception {
@@ -169,7 +231,7 @@ public class ConfigApiServicesControllerTest {
         clearServicesData();
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -179,7 +241,7 @@ public class ConfigApiServicesControllerTest {
         assertEquals(1, configServicesRepository.count());
 
         // Test with data
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -195,13 +257,13 @@ public class ConfigApiServicesControllerTest {
         loadServicesData("src/test/resources/service1.json");
         assert(configServicesRepository.count() > 0);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         // Test with no data
         clearServicesData();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -214,13 +276,13 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-serviceitem.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
 
         // Test with existing data - should return 409
-        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(409, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
@@ -238,13 +300,13 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-serviceitem.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
 
         // Test with existing data - should return 409
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
@@ -259,7 +321,7 @@ public class ConfigApiServicesControllerTest {
         clearServicesData();
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -269,11 +331,11 @@ public class ConfigApiServicesControllerTest {
         assertEquals(1, configServicesRepository.count());
 
         // Test with data
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
-        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId("service1");
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
         assertEquals(1, services.size());
         assertEquals(null, services.get(0).getSvcData());
 
@@ -289,13 +351,13 @@ public class ConfigApiServicesControllerTest {
         loadServicesData("src/test/resources/service1.json");
         assert(configServicesRepository.count() > 0);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         // Test with no data
         clearServicesData();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -308,26 +370,26 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-servicedata.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
 
         // Test with empty service data
         ConfigServices service = new ConfigServices();
-        service.setSvcInstanceId("service1");
+        service.setSvcInstanceId(TEST_SVC_INSTANCE_ID);
         configServicesRepository.save(service);
         assertEquals(1, configServicesRepository.count());
-        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
-        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId("service1");
+        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
         assertEquals(1, updatedService.size());
         assertNotEquals(null, updatedService.get(0).getSvcData());
 
         // Test with existing data - should return 409
-        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(409, mvcResult.getResponse().getStatus());
 
@@ -343,25 +405,25 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-servicedata.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
 
         // Test with empty service data
         ConfigServices service = new ConfigServices();
-        service.setSvcInstanceId("service1");
+        service.setSvcInstanceId(TEST_SVC_INSTANCE_ID);
         configServicesRepository.save(service);
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
-        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId("service1");
+        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
         assertEquals(1, updatedService.size());
         assertNotEquals(null, updatedService.get(0).getSvcData());
 
         // Test with existing data - should return 204
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
 
@@ -375,7 +437,7 @@ public class ConfigApiServicesControllerTest {
         clearServicesData();
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -385,11 +447,11 @@ public class ConfigApiServicesControllerTest {
         assertEquals(1, configServicesRepository.count());
 
         // Test with data
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
-        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId("service1");
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
         assertEquals(1, services.size());
         assertEquals(null, services.get(0).getServiceStatus());
     }
@@ -403,13 +465,13 @@ public class ConfigApiServicesControllerTest {
         loadServicesData("src/test/resources/service1.json");
         assert(configServicesRepository.count() > 0);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         // Test with no data
         clearServicesData();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -422,25 +484,25 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-servicestatus.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
 
         // Test with empty service data
         ConfigServices service = new ConfigServices();
-        service.setSvcInstanceId("service1");
+        service.setSvcInstanceId(TEST_SVC_INSTANCE_ID);
         configServicesRepository.save(service);
-        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
-        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId("service1");
+        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
         assertEquals(1, updatedService.size());
         assertNotEquals(null, updatedService.get(0).getServiceStatus());
 
         // Test with existing data - should return 409
-        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(409, mvcResult.getResponse().getStatus());
 
@@ -456,25 +518,25 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-servicestatus.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
 
         // Test with empty service status
         ConfigServices service = new ConfigServices();
-        service.setSvcInstanceId("service1");
+        service.setSvcInstanceId(TEST_SVC_INSTANCE_ID);
         configServicesRepository.save(service);
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
-        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId("service1");
+        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
         assertEquals(1, updatedService.size());
         assertNotEquals(null, updatedService.get(0).getServiceStatus());
 
         // Test with existing data - should return 204
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-status/").contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
 
@@ -491,13 +553,13 @@ public class ConfigApiServicesControllerTest {
         loadServicesData("src/test/resources/service1.json");
         assert(configServicesRepository.count() > 0);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/service-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/service-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         // Test with no data
         clearServicesData();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/service-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/service-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
                 .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -508,7 +570,7 @@ public class ConfigApiServicesControllerTest {
         clearServicesData();
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                                       .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -518,36 +580,31 @@ public class ConfigApiServicesControllerTest {
         assertEquals(1, configServicesRepository.count());
 
         // Test with data
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                             .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
 
-        clearServicesData();
-        loadVnfData("src/test/resources/vnf-data.json");
-        assertEquals(1, configServicesRepository.count());
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c/").contentType(MediaType.APPLICATION_JSON).content(""))
-                            .andReturn();
-        assertEquals(404, mvcResult.getResponse().getStatus());
+        // Test with bad data
 
         clearServicesData();
         createBadVnfData(true, true);
         assertEquals(1, configServicesRepository.count());
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                             .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
 
         clearServicesData();
         createBadVnfData(false, false);
         assertEquals(1, configServicesRepository.count());
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                             .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
 
         clearServicesData();
         createBadVnfData(false, true);
         assertEquals(1, configServicesRepository.count());
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                             .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -558,7 +615,7 @@ public class ConfigApiServicesControllerTest {
         clearServicesData();
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                                       .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -568,14 +625,14 @@ public class ConfigApiServicesControllerTest {
         assertEquals(1, configServicesRepository.count());
 
         // Test with data
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                             .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         clearServicesData();
         createBadVnfData(false, false);
         assertEquals(1, configServicesRepository.count());
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(""))
                             .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -585,15 +642,16 @@ public class ConfigApiServicesControllerTest {
         // Clean up data
         clearServicesData();
         assertEquals(0, configServicesRepository.count());
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-data.json")))
+        assertEquals(0, configVnfsRepository.count());
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-data.json")))
                                       .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
-        assertEquals(1, configServicesRepository.count());
+        assertEquals(1, configVnfsRepository.count());
 
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-data.json")))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-data.json")))
                             .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
-        assertEquals(1, configServicesRepository.count());
+        assertEquals(1, configVnfsRepository.count());
     }
 
     @Test
@@ -602,7 +660,7 @@ public class ConfigApiServicesControllerTest {
         clearServicesData();
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vnf-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
                                       .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
         assertEquals(0, configServicesRepository.count());
@@ -612,14 +670,14 @@ public class ConfigApiServicesControllerTest {
         assertEquals(1, configServicesRepository.count());
 
         // Test with data
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vnf-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
                             .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         clearServicesData();
         createBadVnfData(false, false);
         assertEquals(1, configServicesRepository.count());
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/test-siid/service-data/vnfs/vnf/2a3bfc93-cd4c-4845-8919-434b2d999ada/vnf-data/vnf-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vnf-topology/").contentType(MediaType.APPLICATION_JSON).content(""))
                             .andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -899,7 +957,7 @@ public class ConfigApiServicesControllerTest {
         String content = readFileContent("src/test/resources/service1-vfmodule-item.json");
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/vf-1/")
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/"+TEST_VF_MODULE_ID+"/")
                 .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
         assertEquals(400, mvcResult.getResponse().getStatus());
 
@@ -908,7 +966,7 @@ public class ConfigApiServicesControllerTest {
         loadServicesData("src/test/resources/service1.json");
         assertEquals(1, configServicesRepository.count());
 
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/vf-1/")
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/"+TEST_VF_MODULE_ID+"/")
                 .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configServicesRepository.count());
@@ -923,7 +981,7 @@ public class ConfigApiServicesControllerTest {
         clearServicesData();
 
         // Test with no data
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/")
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/")
                 .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
 
         assertEquals(400, mvcResult.getResponse().getStatus());
@@ -934,7 +992,7 @@ public class ConfigApiServicesControllerTest {
         assertEquals(1, configServicesRepository.count());
 
         // Test with data
-        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/")
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/")
                 .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
 
         assertEquals(200, mvcResult.getResponse().getStatus());
@@ -949,20 +1007,20 @@ public class ConfigApiServicesControllerTest {
         loadServicesData("src/test/resources/service1.json");
         assert(configServicesRepository.count() > 0);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/")
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/")
                 .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
 
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         // Test with bad vf-module-id in input
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/dummyid/")
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/dummyid/")
                 .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
 
         assertEquals(404, mvcResult.getResponse().getStatus());
 
         // Test with no data
         clearServicesData();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/")
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/")
                 .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
 
         assertEquals(404, mvcResult.getResponse().getStatus());
@@ -977,19 +1035,19 @@ public class ConfigApiServicesControllerTest {
         loadServicesData("src/test/resources/service1.json");
         assert(configServicesRepository.count() > 0);
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/vf-module-data/vf-module-topology/").contentType(MediaType.APPLICATION_JSON)
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/vf-module-data/vf-module-topology/").contentType(MediaType.APPLICATION_JSON)
                 .content("")).andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
 
         // Test with existing service and vnf but with dummy vf-module-id in input
         clearServicesData();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/dummy/vf-module-data/vf-module-topology/").contentType(MediaType.APPLICATION_JSON)
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/dummy/vf-module-data/vf-module-topology/").contentType(MediaType.APPLICATION_JSON)
                 .content("")).andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
 
         // Test with no data
         clearServicesData();
-        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+"service1/service-data/vnfs/vnf/fae319cc-68d6-496f-be1e-a09e133c71d4/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/vf-module-data/vf-module-topology/").contentType(MediaType.APPLICATION_JSON)
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/vnf-data/vf-modules/vf-module/269bda16-f40c-41a9-baef-e8905ab2b70e/vf-module-data/vf-module-topology/").contentType(MediaType.APPLICATION_JSON)
                 .content("")).andReturn();
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
@@ -1024,14 +1082,41 @@ public class ConfigApiServicesControllerTest {
         }
     }
 
+    private void loadServicesData(String path, ServiceDataTransaction transaction) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String content = readFileContent(path);
+        GenericResourceApiServiceModelInfrastructure services = objectMapper.readValue(content, GenericResourceApiServiceModelInfrastructure.class);
+
+        for (GenericResourceApiServicemodelinfrastructureService service : services.getService()) {
+            ConfigServices newService = new ConfigServices();
+            newService.setSvcInstanceId(service.getServiceInstanceId());
+            newService.setServiceStatus(service.getServiceStatus());
+            serviceDataHelper.saveService(newService, service.getServiceData(), transaction);
+        }
+        transaction.commit();
+    }
+
     private void loadVnfData(String path) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         String content = readFileContent(path);
         GenericResourceApiServicedataServicedataVnfsVnf vnfData = objectMapper.readValue(content, GenericResourceApiServicedataServicedataVnfsVnf.class);
-        String svcInstanceId = "test-siid";
+        String svcInstanceId = TEST_SVC_INSTANCE_ID;
         ConfigServices newService = new ConfigServices(svcInstanceId);
         configServicesRepository.save(newService);
         serviceDataHelper.saveVnf(svcInstanceId, vnfData, null);
+    }
+
+    private void loadVnfData(String path, ServiceDataTransaction transaction) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String content = readFileContent(path);
+        GenericResourceApiServicedataServicedataVnfsVnf vnfData = objectMapper.readValue(content, GenericResourceApiServicedataServicedataVnfsVnf.class);
+        String svcInstanceId = TEST_SVC_INSTANCE_ID;
+        ConfigServices newService = new ConfigServices(svcInstanceId);
+        configServicesRepository.save(newService);
+        serviceDataHelper.saveVnf(svcInstanceId, vnfData, transaction);
+        if (transaction != null) {
+            transaction.commit();
+        }
     }
 
     private void createBadVnfData(boolean useNullSvc, boolean useNullVnfs) throws IOException {

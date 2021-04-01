@@ -329,8 +329,6 @@
                         <MYSQL_USER>${gratest.mysql.user}</MYSQL_USER>
                         <MYSQL_PASSWORD>${gratest.mysql.password}</MYSQL_PASSWORD>
                     </environmentVariables>
-                    <!-- Temporarily ignore test failures - will remove this once we resolve them all -->
-                    <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
             <plugin>
@@ -570,7 +568,7 @@
                                                 </ports>
                                                 <wait>
                                                     <log>Started GenericResourceMsApp</log>
-                                                    <time>180000</time>
+                                                    <time>240000</time>
                                                 </wait>
                                                 <log>
                                                     <enabled>true</enabled>

@@ -1,6 +1,6 @@
 <service-logic
     xmlns='http://www.onap.org/sdnc/svclogic'
-    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='${project.version}'>
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.onap.org/sdnc/svclogic ./svclogic.xsd' module='GENERIC-RESOURCE-API' version='aai-disabled'>
     <method rpc='vnf-topology-operation-activate' mode='sync'>
         <block atomic="true">
             <switch test='`$vnf-topology-operation-input.request-information.request-action`'>
@@ -42,26 +42,6 @@
                     </return>
                 </outcome>
             </switch>
-            <update plugin="org.onap.ccsdk.sli.adaptors.aai.AAIService"
-   resource="generic-vnf"
-   key="generic-vnf.vnf-id = $service-data.vnfs.vnf[$vnf-index].vnf-data.vnf-topology.vnf-topology-identifier-structure.vnf-id"
-   force="true" pfx="tmp.AnAI-data">
-                <parameter name="prov-status" value="NVTPROV" />
-                <outcome value='failure'>
-                    <return status='failure'>
-                        <parameter name='ack-final' value='Y'/>
-                        <parameter name="error-code" value="500" />
-                        <parameter name="error-message" value="Error updating generic-vnf in AAI" />
-                    </return>
-                </outcome>
-                <outcome value='not-found'>
-                    <return status='failure'>
-                        <parameter name='ack-final' value='Y'/>
-                        <parameter name="error-code" value="500" />
-                        <parameter name="error-message" value="`'No generic-vnf found in AAI for vnf ID ' + $service-data.vnfs.vnf[$vnf-index].vnf-id`" />
-                    </return>
-                </outcome>
-            </update>
             <set>
                 <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.sdnc-request-header.' value='$vnf-topology-operation-input.sdnc-request-header.' />
                 <parameter name='service-data.vnfs.vnf[$vnf-index].vnf-data.request-information.' value='$vnf-topology-operation-input.request-information.' />

@@ -384,7 +384,7 @@ databaseChangeLog:
               nullable: false
         - column:
             name: graph
-            type: blob
+            type: longblob
         - column:
             name: modified_timestamp
             type: timestamp

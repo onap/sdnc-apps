@@ -1,7 +1,7 @@
 {
   "service": [
     {
-      "service-instance-id": "service1",
+      "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
       "service-data": {
         "request-information": {
           "request-id": "f5554477-51c7-4f8e-9183-f8968f3f86bf",
@@ -9,24 +9,24 @@
           "source": "MSO"
         },
         "service-request-input": {
-          "service-instance-name": "NGINX-INGRESS-1"
+          "service-instance-name": "zrdm61asmsf01_svc"
         },
         "service-information": {
-          "service-id": "service1",
+          "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
           "onap-model-information": {
             "model-name": "service-nginx-ingress-1",
             "model-invariant-uuid": "0fe6193d-2d65-4b8e-a4ee-a07821566b5e",
             "model-version": "1.0",
             "model-uuid": "48223a6a-f5e1-4354-95eb-f5ea014fc9df"
           },
-          "service-instance-id": "service1",
+          "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
           "global-customer-id": "Demonstration",
           "subscription-service-type": "service-nginx-ingress-1"
         },
         "service-topology": {
           "service-topology-identifier": {
-            "service-instance-id": "service1",
-            "service-instance-name": "NGINX-INGRESS-1",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+            "service-instance-name": "zrdm61asmsf01_svc",
             "service-type": "service-nginx-ingress-1",
             "global-customer-id": "Demonstration"
           },
@@ -57,14 +57,14 @@
                   "last-action": "CreateVnfInstance"
                 },
                 "service-information": {
-                  "service-id": "service1",
+                  "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
                   "onap-model-information": {
                     "model-name": "service-nginx-ingress-1",
                     "model-invariant-uuid": "0fe6193d-2d65-4b8e-a4ee-a07821566b5e",
                     "model-version": "1.0",
                     "model-uuid": "48223a6a-f5e1-4354-95eb-f5ea014fc9df"
                   },
-                  "service-instance-id": "service1",
+                  "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
                   "global-customer-id": "Demonstration",
                   "subscription-service-type": "service-nginx-ingress-1"
                 },
@@ -126,14 +126,14 @@
                       "vf-module-id": "269bda16-f40c-41a9-baef-e8905ab2b70e",
                       "vf-module-data": {
                         "service-information": {
-                          "service-id": "service1",
+                          "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
                           "onap-model-information": {
                             "model-name": "service-nginx-ingress-1",
                             "model-invariant-uuid": "0fe6193d-2d65-4b8e-a4ee-a07821566b5e",
                             "model-version": "1.0",
                             "model-uuid": "48223a6a-f5e1-4354-95eb-f5ea014fc9df"
                           },
-                          "service-instance-id": "service1",
+                          "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
                           "global-customer-id": "Demonstration",
                           "subscription-service-type": "service-nginx-ingress-1"
                         },

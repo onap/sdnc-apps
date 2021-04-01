@@ -1,422 +1,79 @@
 {
   "vf-module-data": {
+    "vf-module-level-oper-status": {
+      "order-status": "PendingCreate",
+      "last-rpc-action": "assign"
+    },
     "request-information": {
-      "notification-url": "string",
-      "order-number": "string",
-      "order-version": "string",
-      "request-action": "CreateNetworkInstance",
-      "request-id": "string",
-      "source": "string"
+      "request-action": "CreateVfModuleInstance",
+      "source": "simulator",
+      "request-id": "c594915b-cd49-4276-8e6b-536caa5f5285"
     },
     "sdnc-request-header": {
-      "svc-action": "assign",
-      "svc-notification-url": "string",
-      "svc-request-id": "string"
+      "svc-request-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+      "svc-action": "assign"
     },
     "service-information": {
-      "global-customer-id": "string",
       "onap-model-information": {
-        "model-customization-uuid": "string",
-        "model-invariant-uuid": "string",
-        "model-name": "string",
-        "model-uuid": "string",
-        "model-version": "string"
+        "model-name": "vcpesvc_vbng_0412a",
+        "model-version": "3.0",
+        "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+        "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
       },
-      "service-id": "string",
-      "service-instance-id": "string",
-      "subscriber-name": "string",
-      "subscription-service-type": "string"
+      "subscription-service-type": "VIRTUAL USP",
+      "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3cac",
+      "global-customer-id": "cust123",
+      "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
     },
     "vf-module-information": {
-      "from-preload": true,
       "onap-model-information": {
-        "model-customization-uuid": "string",
-        "model-invariant-uuid": "string",
-        "model-name": "string",
-        "model-uuid": "string",
-        "model-version": "string"
+        "model-name": "SmsfNc2578..smsf_base..module-0",
+        "model-version": "3",
+        "model-customization-uuid": "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
+        "model-uuid": "513cc9fc-fff5-4c46-9728-393437536c4d",
+        "model-invariant-uuid": "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
       },
-      "vf-module-id": "vf-1",
-      "vf-module-type": "string"
-    },
-    "vf-module-level-oper-status": {
-      "create-timestamp": "string",
-      "last-action": "CreateNetworkInstance",
-      "last-order-status": "Active",
-      "last-rpc-action": "assign",
-      "last-svc-request-id": "string",
-      "modify-timestamp": "string",
-      "order-status": "Active"
+      "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d",
+      "from-preload": true,
+      "vf-module-type": "SmsfNc2578..smsf_base..module-0"
     },
     "vf-module-request-input": {
-      "aic-clli": "string",
-      "aic-cloud-region": "string",
-      "cloud-owner": "string",
-      "request-version": "string",
-      "tenant": "string",
-      "vf-module-input-parameters": {
-        "param": [
-          {
-            "name": "string",
-            "resource-resolution-data": {
-              "capability-name": "string",
-              "payload": "string",
-              "resource-key": [
-                {
-                  "name": "string",
-                  "value": "string"
-                }
-              ],
-              "status": "string"
-            },
-            "value": "string"
-          }
-        ]
-      },
-      "vf-module-name": "vf-name-1"
-    },
-    "vf-module-topology": {
-      "aic-clli": "string",
-      "aic-cloud-region": "string",
-      "cloud-owner": "string",
-      "onap-model-information": {
-        "model-customization-uuid": "string",
-        "model-invariant-uuid": "string",
-        "model-name": "string",
-        "model-uuid": "string",
-        "model-version": "string"
-      },
-      "sdnc-generated-cloud-resources": true,
-      "tenant": "string",
-      "vf-module-assignments": {
-        "dhcp-subnet-assignments": {
-          "dhcp-subnet-assignment": [
-            {
-              "ip-version": "string",
-              "network-role": "string",
-              "neutron-subnet-id": "string"
-            }
-          ]
-        },
-        "vf-module-status": "string",
-        "vlan-vnfc-instance-groups": {
-          "vlan-vnfc-instance-group": [
-            {
-              "instance-group-function": "string",
-              "instance-group-id": "string",
-              "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
-              "vnfcs": {
-                "vnfc": [
-                  {
-                    "vnfc-name": "string",
-                    "vnic-groups": {
-                      "vnic-group": [
-                        {
-                          "network-instance-group-function": "string",
-                          "vlan-assignment-policy-name": "string",
-                          "vlan-common-ip-addresses": {
-                            "ip-addresses": {
-                              "ipv4-address": "string",
-                              "ipv6-address": "string",
-                              "vipv4-address": "string",
-                              "vipv6-address": "string"
-                            }
-                          },
-                          "vlan-tag-index-next": 0,
-                          "vlan-vnics": {
-                            "vlan-vnic": [
-                              {
-                                "vnic-port-id": "string",
-                                "vnic-sub-interfaces": {
-                                  "sub-interface-network-data": [
-                                    {
-                                      "floating-ips": {
-                                        "floating-ip-v4": [
-                                          "string"
-                                        ],
-                                        "floating-ip-v6": [
-                                          "string"
-                                        ]
-                                      },
-                                      "network-id": "string",
-                                      "network-information-items": {
-                                        "network-information-item": [
-                                          {
-                                            "ip-count": 0,
-                                            "ip-version": "string",
-                                            "network-ips": {
-                                              "network-ip": [
-                                                "string"
-                                              ]
-                                            },
-                                            "use-dhcp": "Y"
-                                          }
-                                        ]
-                                      },
-                                      "network-name": 0,
-                                      "network-role": "string",
-                                      "network-role-tag": "string",
-                                      "neutron-network-id": "string",
-                                      "vlan-tag-id": 0
-                                    }
-                                  ]
-                                }
-                              }
-                            ]
-                          },
-                          "vnic-interface-role": "string"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        "vms": {
-          "vm": [
-            {
-              "nfc-naming-code": "string",
-              "onap-model-information": {
-                "model-customization-uuid": "string",
-                "model-invariant-uuid": "string",
-                "model-name": "string",
-                "model-uuid": "string",
-                "model-version": "string"
-              },
-              "vm-count": 0,
-              "vm-names": {
-                "vm-name": [
-                  "string"
-                ],
-                "vnfc-names": [
-                  {
-                    "vnfc-name": "string",
-                    "vnfc-networks": {
-                      "vnfc-network-data": [
-                        {
-                          "connection-point": {
-                            "connection-point-id": "string",
-                            "port-id": "string",
-                            "vlan-data": [
-                              {
-                                "vlan-role": "string",
-                                "vlan-tag-description": "string",
-                                "vlan-tag-id": "string",
-                                "vlan-uuid": "string"
-                              }
-                            ]
-                          },
-                          "vnfc-network-role": "string",
-                          "vnfc-ports": {
-                            "vnfc-port": [
-                              {
-                                "common-sub-interface-role": "string",
-                                "vnfc-port-id": "string",
-                                "vnic-sub-interfaces": {
-                                  "sub-interface-network-data": [
-                                    {
-                                      "floating-ips": {
-                                        "floating-ip-v4": [
-                                          "string"
-                                        ],
-                                        "floating-ip-v6": [
-                                          "string"
-                                        ]
-                                      },
-                                      "network-id": "string",
-                                      "network-information-items": {
-                                        "network-information-item": [
-                                          {
-                                            "ip-count": 0,
-                                            "ip-version": "string",
-                                            "network-ips": {
-                                              "network-ip": [
-                                                "string"
-                                              ]
-                                            },
-                                            "use-dhcp": "Y"
-                                          }
-                                        ]
-                                      },
-                                      "network-name": 0,
-                                      "network-role": "string",
-                                      "network-role-tag": "string",
-                                      "neutron-network-id": "string",
-                                      "vlan-tag-id": 0
-                                    }
-                                  ]
-                                }
-                              }
-                            ]
-                          },
-                          "vnfc-subnet": [
-                            {
-                              "vnfc-ip-assignments": [
-                                {
-                                  "vnfc-address-family": "ipv4",
-                                  "vnfc-subnet-dhcp": "Y",
-                                  "vnfc-subnet-ip": [
-                                    {
-                                      "ip-type": "FIXED",
-                                      "vnfc-client-key": "string",
-                                      "vnfc-ip-address": "string"
-                                    }
-                                  ],
-                                  "vnfc-subnet-ip-count": 0
-                                }
-                              ],
-                              "vnfc-subnet-role": "string"
-                            }
-                          ],
-                          "vnfc-type": "string"
-                        }
-                      ]
-                    }
-                  }
-                ]
-              },
-              "vm-networks": {
-                "vm-network": [
-                  {
-                    "floating-ips": {
-                      "floating-ip-v4": [
-                        "string"
-                      ],
-                      "floating-ip-v6": [
-                        "string"
-                      ]
-                    },
-                    "interface-route-prefixes": {
-                      "interface-route-prefix": [
-                        "string"
-                      ]
-                    },
-                    "is-trunked": true,
-                    "mac-addresses": {
-                      "mac-address": [
-                        "string"
-                      ]
-                    },
-                    "network-information-items": {
-                      "network-information-item": [
-                        {
-                          "ip-count": 0,
-                          "ip-version": "string",
-                          "network-ips": {
-                            "network-ip": [
-                              "string"
-                            ]
-                          },
-                          "use-dhcp": "Y"
-                        }
-                      ]
-                    },
-                    "network-role": "string",
-                    "network-role-tag": "string",
-                    "related-networks": {
-                      "related-network": [
-                        {
-                          "network-id": "string",
-                          "network-role": "string",
-                          "vlan-tags": {
-                            "is-private": true,
-                            "lower-tag-id": 0,
-                            "upper-tag-id": 0,
-                            "vlan-interface": "string"
-                          }
-                        }
-                      ]
-                    },
-                    "segmentation-id": "string",
-                    "sriov-parameters": {
-                      "application-tags": {
-                        "c-tags": {
-                          "c-tag": [
-                            "string"
-                          ],
-                          "ctag": [
-                            "string"
-                          ]
-                        },
-                        "ctags": {
-                          "c-tag": [
-                            "string"
-                          ],
-                          "ctag": [
-                            "string"
-                          ]
-                        },
-                        "s-tags": {
-                          "s-tag": [
-                            "string"
-                          ],
-                          "stag": [
-                            "string"
-                          ]
-                        },
-                        "stags": {
-                          "s-tag": [
-                            "string"
-                          ],
-                          "stag": [
-                            "string"
-                          ]
-                        }
-                      },
-                      "heat-vlan-filters": {
-                        "heat-vlan-filter": [
-                          "string"
-                        ]
-                      }
-                    }
-                  }
-                ]
-              },
-              "vm-type": "string",
-              "vm-type-tag": "string"
-            }
-          ]
-        }
-      },
-      "vf-module-parameters": {
-        "param": [
-          {
-            "name": "string",
-            "resource-resolution-data": {
-              "capability-name": "string",
-              "payload": "string",
-              "resource-key": [
-                {
-                  "name": "string",
-                  "value": "string"
-                }
-              ],
-              "status": "string"
-            },
-            "value": "string"
-          }
-        ]
-      },
-      "vf-module-topology-identifier": {
-        "vf-module-id": "vf-1",
-        "vf-module-name": "vf-name-1",
-        "vf-module-type": "string"
-      }
+      "aic-cloud-region": "rdm61a",
+      "cloud-owner": "att-nc",
+      "tenant": "4714fe06cc24414c914c51ca0aa1bf84",
+      "vf-module-name": "vfmodule1",
+      "vf-module-input-parameters": {}
     },
     "vnf-information": {
       "onap-model-information": {
-        "model-customization-uuid": "string",
-        "model-invariant-uuid": "string",
-        "model-name": "string",
-        "model-uuid": "string",
-        "model-version": "string"
+        "model-name": "vcpevsp_vgmux_0412 ",
+        "model-version": "1.0",
+        "model-customization-uuid": "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+        "model-uuid": "ba3b8981-9a9c-4945-92aa-486234ec321f",
+        "model-invariant-uuid": "b3dc6465-942c-42af-8464-2bf85b6e504b"
       },
       "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
-      "vnf-name": "Python_ONAP_SDK_vnf_instance_2aff902a-4714-4d08-942d-d97b3a3b87c2",
-      "vnf-type": "service-nginx-ingress-1/nginx-ingress-1 0"
+      "vnf-name": "zrdm61asmsf01",
+      "vnf-type": "SMSF-NC2-578-SVC/SMSF-NC2-578"
+    },
+    "vf-module-topology": {
+      "onap-model-information": {
+        "model-name": "SmsfNc2578..smsf_base..module-0",
+        "model-version": "3",
+        "model-customization-uuid": "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
+        "model-uuid": "513cc9fc-fff5-4c46-9728-393437536c4d",
+        "model-invariant-uuid": "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
+      },
+      "aic-cloud-region": "rdm61a",
+      "tenant": "4714fe06cc24414c914c51ca0aa1bf84",
+      "vf-module-topology-identifier": {
+        "vf-module-name": "vfmodule1",
+        "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d",
+        "vf-module-type": "SmsfNc2578..smsf_base..module-0"
+      },
+      "vf-module-parameters": {},
+      "sdnc-generated-cloud-resources": true
     }
   },
-  "vf-module-id": "vf-1"
+  "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d"
 }

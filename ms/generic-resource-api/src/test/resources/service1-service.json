@@ -1,7 +1,7 @@
 {
     "service": [
         {
-            "service-instance-id": "service1",
+            "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
             "service-data": {
                 "request-information": {
                     "notification-url": "http://dev.null",
@@ -12,10 +12,10 @@
                     "source": "curl"
                 },
                 "service-request-input": {
-                    "service-instance-name": "service-instance-1"
+                    "service-instance-name": "zrdm61asmsf01_svc"
                 },
                 "service-information": {
-                    "service-id": "service1",
+                    "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
                     "onap-model-information": {
                         "model-invariant-uuid": "12341234",
                         "model-name": "vBNG_0202",
@@ -25,13 +25,13 @@
                     },
                     "global-customer-id": "cust123",
                     "subscription-service-type": "test",
-                    "service-instance-id": "service1",
+                    "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
                     "subscriber-name": "test"
                 },
                 "service-topology": {
                     "service-topology-identifier": {
-                        "service-instance-id": "service1",
-                        "service-instance-name": "service-instance-1",
+                        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+                        "service-instance-name": "zrdm61asmsf01_svc",
                         "service-type": "test",
                         "global-customer-id": "cust123"
                     },

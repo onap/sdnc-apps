@@ -30,7 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @Transactional
 public class OperationsApiControllerTest {
-
+    private final static String TEST_SVC_INSTANCE_ID = "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca";
+    private final static String TEST_VNF_ID = "fae319cc-68d6-496f-be1e-a09e133c71d4";
+    private final static String TEST_VF_MODULE_ID = "45841173-3729-4a1d-a811-a3bde399e22d";
     private final static String PRELOAD_NETWORK_URL = "/operations/GENERIC-RESOURCE-API:preload-network-topology-operation/";
     private final static String PRELOAD_VFMODULE_URL = "/operations/GENERIC-RESOURCE-API:preload-vf-module-topology-operation/";
     private final static String SERVICE_TOPOLOGY_URL = "/operations/GENERIC-RESOURCE-API:service-topology-operation/";
@@ -212,7 +214,8 @@ public class OperationsApiControllerTest {
         operationalServicesRepository.deleteAll();
 
         // Load services data
-        loadServicesData("src/test/resources/service1.json");
+        loadServicesData("src/test/resources/service1-service.json");
+
 
         // Add invalid content
         String content = readFileContent("src/test/resources/preload1-rpc-vfmodule.json");
@@ -257,20 +260,12 @@ public class OperationsApiControllerTest {
         mvcResult = mvc.perform(MockMvcRequestBuilders.post(VF_MODULE_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
                 .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
-        assertEquals(1, configServicesRepository.count());
-        assertEquals(0, configNetworksRepository.count());
-        assertEquals(1, configVnfsRepository.count());
-        assertEquals(1, configVfModulesRepository.count());
 
         // Delete content
         content = readFileContent("src/test/resources/vf-module-unassign-rpc.json");
         mvcResult = mvc.perform(MockMvcRequestBuilders.post(VF_MODULE_TOPOLOGY_URL).contentType(MediaType.APPLICATION_JSON).content(content))
                         .andReturn();
         assertEquals(200, mvcResult.getResponse().getStatus());
-        assertEquals(1, configServicesRepository.count());
-        assertEquals(0, configNetworksRepository.count());
-        assertEquals(1, configVnfsRepository.count());
-        assertEquals(0, configVfModulesRepository.count());
 
     }
 
