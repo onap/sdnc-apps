@@ -298,7 +298,7 @@ public class ServiceDataHelper {
         String svcInstanceId = configService.getSvcInstanceId();
         String svcDataAsString = configService.getSvcData();
 
-        if (svcDataAsString != null) {
+        if ((svcDataAsString != null) && !svcDataAsString.isEmpty()) {
             svcData = objectMapper.readValue(svcDataAsString, GenericResourceApiServicedataServiceData.class);
         } else {
             svcData = new GenericResourceApiServicedataServiceData();
@@ -371,17 +371,16 @@ public class ServiceDataHelper {
                 }
             }
 
-            // Remove any vf Modules for this vnf id not in this list
-            for (ConfigVfModules vfModuleToRemove : vfModuleMap.values()) {
-                if (transaction != null) {
-                    transaction.remove(vfModuleToRemove);
-                } else {
-                    configVfModulesRepository.delete(vfModuleToRemove);
-                }
-            }
-
             // Clear vf modules from vnfData before saving to avoid duplication
             vnfData.setVfModules(null);
+        }
+        // Remove any vf Modules for this vnf id not in this list
+        for (ConfigVfModules vfModuleToRemove : vfModuleMap.values()) {
+            if (transaction != null) {
+                transaction.remove(vfModuleToRemove);
+            } else {
+                configVfModulesRepository.delete(vfModuleToRemove);
+            }
         }
 
         // Save Vnf itself
@@ -425,7 +424,8 @@ public class ServiceDataHelper {
 
 
     public void saveService(ConfigServices configService, String svcDataAsString, ServiceDataTransaction transaction) throws JsonMappingException, JsonProcessingException {
-        if (svcDataAsString == null) {
+        if ((svcDataAsString == null) || (svcDataAsString.length() == 0)) {
+            configService.setSvcData(null);
             configServicesRepository.save(configService);
         } else {
             saveService(configService, objectMapper.readValue(svcDataAsString, GenericResourceApiServicedataServiceData.class), transaction);
@@ -438,36 +438,78 @@ public class ServiceDataHelper {
 
     public void saveService(ConfigServices configService, GenericResourceApiServicedataServiceData svcData, ServiceDataTransaction transaction) throws JsonProcessingException {
         
-        if (svcData != null) {
+        if (svcData == null) {
+            configService.setSvcData(null);
+        } else {
             String svcInstanceId = configService.getSvcInstanceId();
 
+            // Make a list of current networks for this service
+            HashMap<String, ConfigNetworks> networkMap = new HashMap<>();
+            List<ConfigNetworks> configNetworkList = configNetworksRepository.findBySvcInstanceId(svcInstanceId);
+            if ((configNetworkList != null) && !configNetworkList.isEmpty()) {
+                for (ConfigNetworks configNetworkItem : configNetworkList) {
+                    networkMap.put(configNetworkItem.getNetworkId(), configNetworkItem);
+                }
+            }
             // Save networks
             GenericResourceApiServicedataServicedataNetworks networks = svcData.getNetworks();
             if (networks != null) {
                 List<GenericResourceApiServicedataServicedataNetworksNetwork> networkList = networks.getNetwork();
                 if ((networkList != null) && !networkList.isEmpty()) {
                     for (GenericResourceApiServicedataServicedataNetworksNetwork networkItem : networkList) {
+                        if (networkMap.containsKey(networkItem.getNetworkId())) {
+                            networkMap.remove(networkItem.getNetworkId());
+                        }
                         saveNetwork(svcInstanceId, networkItem, transaction);
                     }
                 }
             }
+
+            // Remove networks removed from service object
+            for (ConfigNetworks networkToRemove : networkMap.values()) {
+                if (transaction != null) {
+                    transaction.remove(networkToRemove);
+                } else {
+                    configNetworksRepository.delete(networkToRemove);
+                }
+            }
+
             svcData.setNetworks(null);
+            
+            // Remove any networks no longer associated with this svcInstanceId
+            HashMap<String, ConfigVnfs> vnfMap = new HashMap<>();
+            List<ConfigVnfs> configVnfList = configVnfsRepository.findBySvcInstanceId(svcInstanceId);
+            if ((configVnfList != null) && !configVnfList.isEmpty()) {
+                for (ConfigVnfs configVnfItem : configVnfList) {
+                    vnfMap.put(configVnfItem.getVnfId(), configVnfItem);
+                }
+            }            
 
             // Save vnfs / vfModules
+
+            // Save current vnfs associated with this service
             GenericResourceApiServicedataServicedataVnfs vnfs = svcData.getVnfs();
             if (vnfs != null) {
                 List<GenericResourceApiServicedataServicedataVnfsVnf> vnfList = vnfs.getVnf();
                 if ((vnfList != null) && !vnfList.isEmpty()) {
                     for (GenericResourceApiServicedataServicedataVnfsVnf vnfItem : vnfList) {
+                        if (vnfMap.containsKey(vnfItem.getVnfId())) {
+                            vnfMap.remove(vnfItem.getVnfId());
+                        }
                         saveVnf(svcInstanceId, vnfItem, transaction);
                     }
+                }
+            }
+            for (ConfigVnfs vnfToRemove : vnfMap.values()) {
+                if (transaction != null) {
+                    transaction.remove(vnfToRemove);
+                } else {
+                    configVnfsRepository.delete(vnfToRemove);
                 }
             }
             svcData.setVnfs(null);
 
             configService.setSvcData(objectMapper.writeValueAsString(svcData));
-        } else {
-
         }
         if (transaction != null) {
             transaction.save(configService);

@@ -838,7 +838,7 @@ public class OperationsApiController implements OperationsApi {
         try {
             serviceDataHelper.saveService(configService, ctxSvcDataJson);
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to  error saving service data", svcOperation);
+            log.error("exiting {} due to  error saving service data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
