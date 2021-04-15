@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication(scanBasePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.services", "org.onap.ccsdk.apps.filters" })
+@SpringBootApplication(scanBasePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.services" })
 @EnableJpaRepositories(basePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot" })
 @EntityScan(basePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot" })
 @EnableTransactionManagement
@@ -52,36 +52,4 @@ public class GenericResourceMsApp {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(GenericResourceMsApp.class, args);
     }
-
-    @Bean
-    public Realm realm() {
-
-        // If cadi prop files is not defined use local properties realm
-        // src/main/resources/shiro-users.properties
-        if ("none".equals(System.getProperty("cadi_prop_files", "none"))) {
-            log.info("cadi_prop_files undefined, AAF Realm will not be set");
-            PropertiesRealm realm = new PropertiesRealm();
-            return realm;
-        } else {
-            AAFRealm realm = new AAFRealm();
-            return realm;
-        }
-
-    }
-
-    @Bean
-    public ShiroFilterChainDefinition shiroFilterChainDefinition() {
-        DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-
-        // if cadi prop files is not set disable authentication
-        if ("none".equals(System.getProperty("cadi_prop_files", "none"))) {
-            chainDefinition.addPathDefinition("/**", "anon");
-        } else {
-            log.info("Loaded property cadi_prop_files, AAF REALM set");
-            chainDefinition.addPathDefinition("/**", "authcBasic, rest[org.onap.sdnc.odl:odl-api]");
-        }
-
-        return chainDefinition;
-    }
-
 }
