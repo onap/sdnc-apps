@@ -19,8 +19,7 @@
 
     <properties>
         <start-class>org.onap.sdnc.apps.ms.gra.GenericResourceMsApp</start-class>
-        <shiro.version>1.5.0</shiro.version>
-        <aaf-shiro-bundle.version>2.1.13</aaf-shiro-bundle.version>
+        <aaf.cadi.version>2.1.21</aaf.cadi.version>
         <ccsdk.apps.version>1.2.0-SNAPSHOT</ccsdk.apps.version>
         <ccsdk.docker.version>1.1-STAGING-latest</ccsdk.docker.version>
         <sdnc.northbound.version>2.2.0-SNAPSHOT</sdnc.northbound.version>
@@ -50,17 +49,16 @@
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring-boot-web-starter</artifactId>
-            <version>${shiro.version}</version>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+		</dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
@@ -70,11 +68,20 @@
             <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.onap.aaf.cadi</groupId>
-            <artifactId>aaf-cadi-shiro</artifactId>
-            <version>${aaf-shiro-bundle.version}</version>
+            <groupId>org.onap.aaf.authz</groupId>
+            <artifactId>aaf-auth-client</artifactId>
+            <version>${aaf.cadi.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.onap.aaf.authz</groupId>
+            <artifactId>aaf-misc-env</artifactId>
+            <version>${aaf.cadi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.onap.aaf.authz</groupId>
+            <artifactId>aaf-misc-rosetta</artifactId>
+            <version>${aaf.cadi.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -321,7 +328,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <forkMode>always</forkMode>
                     <environmentVariables>
                         <SDNC_CONFIG_DIR>${basedir}/src/test/resources</SDNC_CONFIG_DIR>
                         <SVCLOGIC_PROPERTIES>${basedir}/src/test/resources/svclogic.properties</SVCLOGIC_PROPERTIES>
