@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication(scanBasePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.services", "org.onap.ccsdk.apps.filters" })
+@SpringBootApplication(scanBasePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.services" })
 @EnableJpaRepositories(basePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot" })
 @EntityScan(basePackages = { "org.onap.sdnc.apps.ms.gra", "org.onap.ccsdk.apps.ms.sliboot" })
 @EnableTransactionManagement
