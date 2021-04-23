@@ -3,10 +3,16 @@
 FROM @base.image.name@:@ccsdk.docker.version@ AS stage0
 
 ENV LOG_PATH /var/log/onap/sdnc
+ENV SDNC_CONFIG_DIR /opt/onap/sdnc/config
+ENV TRUSTSTORE @onap.truststore@
+ENV JAVA_SECURITY_DIR /opt/java/openjdk/lib/security
 USER root
 
 # copy deliverables to opt
 COPY opt /opt
+
+# Install ONAP certificates
+RUN keytool -importkeystore -srckeystore ${SDNC_CONFIG_DIR}/${TRUSTSTORE} -srcstorepass changeit -destkeystore ${JAVA_SECURITY_DIR}/cacerts -deststorepass changeit -noprompt
 
 ## END OF STAGE0 ##
 
@@ -27,7 +33,6 @@ USER root
 
 # Install sudo and IP utilities
 RUN apk update && apk --no-cache add sudo iputils openssl
-
 
 # Enable wheel group
 RUN sed -e 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/g' -i /etc/sudoers
