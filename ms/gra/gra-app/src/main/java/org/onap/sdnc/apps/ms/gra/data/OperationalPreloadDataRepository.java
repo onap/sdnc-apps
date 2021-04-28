@@ -21,10 +21,11 @@
 package org.onap.sdnc.apps.ms.gra.data;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
+@Transactional
 public interface OperationalPreloadDataRepository extends CrudRepository<OperationalPreloadData, Long> {
 
     List<OperationalPreloadData> findByPreloadIdAndPreloadType(String preloadId, String preloadType);
