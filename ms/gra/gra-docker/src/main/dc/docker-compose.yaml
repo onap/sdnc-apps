@@ -51,7 +51,7 @@ services:
       aaf-onap-test.osaaf.org: 10.12.5.145
 
   dgbuilder:
-    image: onap/ccsdk-dgbuilder-image:latest
+    image: nexus3.onap.org:10001/onap/ccsdk-dgbuilder-image:latest
     depends_on:
       - db
     container_name:  gra_dgbuilder
