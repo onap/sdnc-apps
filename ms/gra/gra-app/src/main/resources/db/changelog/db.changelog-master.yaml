@@ -315,33 +315,6 @@ databaseChangeLog:
             name: svcData
             type: clob
 - changeSet:
-    id: 20210211-9
-    author: dtimoney@att.com
-    preConditions:
-      - onFail: MARK_RAN
-      - not:
-          - tableExists:
-              tableName: OPERATIONAL_PRELOAD_DATA
-    changes:
-    - createTable:
-        tableName: OPERATIONAL_PRELOAD_DATA
-        columns:
-        - column:
-            name: preloadId
-            type: varchar(100)
-            constraints:
-              nullable: false
-              primaryKey: true
-        - column:
-            constraints:
-              nullable: false
-              primaryKey: true
-            name: preloadType
-            type: varchar(25)
-        - column:
-            name: preloadData
-            type: clob
-- changeSet:
     id: 20210211-10
     author: dtimoney@att.com
     preConditions:

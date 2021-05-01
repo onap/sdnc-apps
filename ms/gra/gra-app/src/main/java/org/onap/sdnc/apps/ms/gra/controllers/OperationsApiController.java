@@ -54,8 +54,6 @@ import org.onap.sdnc.apps.ms.gra.data.ConfigVfModulesRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigVnfsRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalContrailRouteAllottedResourcesRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalPortMirrorConfigurationsRepository;
-import org.onap.sdnc.apps.ms.gra.data.OperationalPreloadData;
-import org.onap.sdnc.apps.ms.gra.data.OperationalPreloadDataRepository;
 import org.onap.sdnc.apps.ms.gra.data.OperationalServices;
 import org.onap.sdnc.apps.ms.gra.data.OperationalServicesRepository;
 import org.onap.sdnc.apps.ms.gra.swagger.OperationsApi;
@@ -135,9 +133,6 @@ public class OperationsApiController implements OperationsApi {
 
     @Autowired
     private ConfigPreloadDataRepository configPreloadDataRepository;
-
-    @Autowired
-    private OperationalPreloadDataRepository operationalPreloadDataRepository;
 
     @Autowired
     private ConfigServicesRepository configServicesRepository;
@@ -259,19 +254,6 @@ public class OperationsApiController implements OperationsApi {
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // Add operational tree data to SvcLogicContext
-        try {
-            preloadData = getOperationalPreloadData(preloadId, preloadType);
-            ctxIn.mergeJson("operational-data", objectMapper.writeValueAsString(preloadData));
-        } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on saved operational preload data", svcOperation);
-            resp.setResponseCode("500");
-            resp.setResponseMessage("internal error");
-            resp.setAckFinalIndicator("Y");
-            retval.setOutput(resp);
-            return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
         // Call DG
         try {
             // Any of these can throw a nullpointer exception
@@ -290,7 +272,6 @@ public class OperationsApiController implements OperationsApi {
                 GenericResourceApiPreloaddataPreloadData preloadToLoad = objectMapper.readValue(ctxJson,
                         GenericResourceApiPreloaddataPreloadData.class);
                 saveConfigPreloadData(preloadId, preloadType, preloadToLoad);
-                saveOperationalPreloadData(preloadId, preloadType, preloadToLoad);
             }
 
         } catch (NullPointerException npe) {
@@ -374,19 +355,6 @@ public class OperationsApiController implements OperationsApi {
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // Add operational tree data to SvcLogicContext
-        try {
-            preloadData = getOperationalPreloadData(preloadId, preloadType);
-            ctxIn.mergeJson("operational-data", objectMapper.writeValueAsString(preloadData));
-        } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on saved operational preload data", svcOperation);
-            resp.setResponseCode("500");
-            resp.setResponseMessage("internal error");
-            resp.setAckFinalIndicator("Y");
-            retval.setOutput(resp);
-            return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
         // Call DG
         try {
             // Any of these can throw a nullpointer exception
@@ -404,7 +372,6 @@ public class OperationsApiController implements OperationsApi {
                 GenericResourceApiPreloaddataPreloadData preloadToLoad = objectMapper.readValue(ctxJson,
                         GenericResourceApiPreloaddataPreloadData.class);
                 saveConfigPreloadData(preloadId, preloadType, preloadToLoad);
-                saveOperationalPreloadData(preloadId, preloadType, preloadToLoad);
             }
 
         } catch (NullPointerException npe) {
@@ -514,20 +481,6 @@ public class OperationsApiController implements OperationsApi {
         }
     }
 
-    private GenericResourceApiPreloaddataPreloadData getOperationalPreloadData(String preloadId, String preloadType)
-            throws JsonProcessingException {
-
-        List<OperationalPreloadData> configPreloadData = operationalPreloadDataRepository
-                .findByPreloadIdAndPreloadType(preloadId, preloadType);
-
-        if (configPreloadData.isEmpty()) {
-            return (null);
-        } else {
-            return (objectMapper.readValue(configPreloadData.get(0).getPreloadData(),
-                    GenericResourceApiPreloaddataPreloadData.class));
-        }
-    }
-
     private void saveConfigPreloadData(String preloadId, String preloadType,
             GenericResourceApiPreloaddataPreloadData preloadData) throws JsonProcessingException {
 
@@ -536,16 +489,6 @@ public class OperationsApiController implements OperationsApi {
                 .save(new ConfigPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadData)));
 
     }
-
-    private void saveOperationalPreloadData(String preloadId, String preloadType,
-            GenericResourceApiPreloaddataPreloadData preloadData) throws JsonProcessingException {
-
-        operationalPreloadDataRepository.deleteByPreloadIdAndPreloadType(preloadId, preloadType);
-        operationalPreloadDataRepository
-                .save(new OperationalPreloadData(preloadId, preloadType, objectMapper.writeValueAsString(preloadData)));
-
-    }
-
 
     @Override
     public ResponseEntity<GenericResourceApiNetworkTopologyOperation> operationsGENERICRESOURCEAPInetworkTopologyOperationPost(

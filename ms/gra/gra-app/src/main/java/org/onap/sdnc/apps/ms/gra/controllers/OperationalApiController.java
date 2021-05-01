@@ -33,9 +33,6 @@ public class OperationalApiController implements OperationalApi {
     private final HttpServletRequest request;
 
     @Autowired
-    private OperationalPreloadDataRepository operationalPreloadDataRepository;
-
-    @Autowired
     private OperationalServicesRepository operationalServicesRepository;
 
     @Autowired
@@ -55,67 +52,6 @@ public class OperationalApiController implements OperationalApi {
     public Optional<HttpServletRequest> getRequest() {
         return Optional.ofNullable(request);
     }
-
-
-    @Override
-    public ResponseEntity<GenericResourceApiPreloadModelInformation> operationalGENERICRESOURCEAPIpreloadInformationGet() {
-        GenericResourceApiPreloadModelInformation genericResourceApiPreloadModelInformation = new GenericResourceApiPreloadModelInformation();
-
-        operationalPreloadDataRepository.findAll().forEach(configPreloadData -> {
-            GenericResourceApiPreloadmodelinformationPreloadList preloadListItem = new GenericResourceApiPreloadmodelinformationPreloadList();
-
-            preloadListItem.setPreloadId(configPreloadData.getPreloadId());
-            preloadListItem.setPreloadType(configPreloadData.getPreloadType());
-            try {
-                preloadListItem.setPreloadData(objectMapper.readValue(configPreloadData.getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
-            } catch (JsonProcessingException e) {
-                log.error("Could not convert preload data", e);
-            }
-            genericResourceApiPreloadModelInformation.addPreloadListItem(preloadListItem);
-        });
-
-
-        return new ResponseEntity<>(genericResourceApiPreloadModelInformation, HttpStatus.OK);
-    }
-
-
-    @Override
-    public ResponseEntity<GenericResourceApiPreloadmodelinformationPreloadList> operationalGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypeGet(String preloadId, String preloadType) {
-        List<OperationalPreloadData> preloadData = operationalPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
-        if (preloadData != null) {
-            if (!preloadData.isEmpty()) {
-                OperationalPreloadData preloadDataItem = preloadData.get(0);
-                GenericResourceApiPreloadmodelinformationPreloadList preloadDataList = new GenericResourceApiPreloadmodelinformationPreloadList();
-                preloadDataList.setPreloadId(preloadDataItem.getPreloadId());
-                preloadDataList.setPreloadType(preloadDataItem.getPreloadType());
-                try {
-                    preloadDataList.setPreloadData(objectMapper.readValue(preloadDataItem.getPreloadData(), GenericResourceApiPreloaddataPreloadData.class));
-                } catch (JsonProcessingException e) {
-                    log.error("Cannot convert preload data", e);
-                }
-                return new ResponseEntity<>(preloadDataList, HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-
-    @Override
-    public ResponseEntity<GenericResourceApiPreloaddataPreloadData> operationalGENERICRESOURCEAPIpreloadInformationPreloadListPreloadIdPreloadTypePreloadDataGet(String preloadId, String preloadType) {
-        List<OperationalPreloadData> preloadData = operationalPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId, preloadType);
-        if (preloadData != null) {
-            if (!preloadData.isEmpty()) {
-                OperationalPreloadData preloadDataItem = preloadData.get(0);
-                try {
-                    return new ResponseEntity<>(objectMapper.readValue(preloadDataItem.getPreloadData(), GenericResourceApiPreloaddataPreloadData.class), HttpStatus.OK);
-                } catch (JsonProcessingException e) {
-                    log.error("Cannot convert preload data", e);
-                }
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
 
     @Override
     public ResponseEntity<GenericResourceApiServiceModelInfrastructure> operationalGENERICRESOURCEAPIservicesGet() {
