@@ -27,6 +27,11 @@ services:
     ports:
       - "8181:8080"
       - "8443:8443"
+    volumes:
+      - ../resources/application.properties:/opt/onap/sdnc/config/application.properties 
+      - ../resources/cadi-example.properties:/opt/onap/sdnc/config/cadi.properties 
+      - ../resources/cadi-log.properties:/opt/onap/sdnc/config/cadi-log.properties 
+      - ../resources/cadi.keyfile:/opt/onap/sdnc/config/cadi.keyfile
     links:
       - db:dbhost
     environment:
@@ -36,7 +41,7 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - SDNC_CONFIG_DIR=/opt/onap/sdnc/config
-      - LOG_LEVEL=INFO
+      - LOG_LEVEL=DEBUG
       - TRUSTSTORE_PASSWORD=changeit
       - CACERT_PASSWORD=changeit
       - SDNC_CERT_DIR=/opt/onap/sdnc/config
