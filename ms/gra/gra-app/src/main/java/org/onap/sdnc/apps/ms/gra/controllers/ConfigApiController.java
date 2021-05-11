@@ -193,13 +193,13 @@ public class ConfigApiController implements ConfigApi {
             portMirrorConfiguration = existingConfiguration.get(0);
         } else {
             portMirrorConfiguration = new ConfigPortMirrorConfigurations();
-            portMirrorConfiguration.setConfigureationId(configurationId);
+            portMirrorConfiguration.setConfigurationId(configurationId);
         }
 
         try {
             portMirrorConfiguration.setPmcData(objectMapper.writeValueAsString(newConfiguration.getConfigurationData()));
         } catch (JsonProcessingException e) {
-            log.error("Could not serialize porr-mirror configuration data for {}", portMirrorConfiguration.getConfigureationId(), e);
+            log.error("Could not serialize porr-mirror configuration data for {}", portMirrorConfiguration.getConfigurationId(), e);
             throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         }

@@ -347,7 +347,7 @@ public class OperationsApiControllerTest {
 
         for (GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration pmConfig : pmConfigurations.getPortMirrorConfiguration()) {
             ConfigPortMirrorConfigurations newPmConfig = new ConfigPortMirrorConfigurations();
-            newPmConfig.setConfigureationId(pmConfig.getConfigurationId());
+            newPmConfig.setConfigurationId(pmConfig.getConfigurationId());
             newPmConfig.setPmcData(objectMapper.writeValueAsString(pmConfig.getConfigurationData()));
             newPmConfig.setPortMirrorConfigurationStatus(pmConfig.getConfigurationStatus());
             configPortMirrorConfigurationsRepository.save(newPmConfig);

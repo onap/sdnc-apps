@@ -59,11 +59,11 @@ public class ConfigPortMirrorConfigurations {
         }
     }
 
-    public String getConfigureationId() {
+    public String getConfigurationId() {
         return configurationId;
     }
 
-    public void setConfigureationId(String configureationId) {
+    public void setConfigurationId(String configureationId) {
         this.configurationId = configureationId;
     }
 
