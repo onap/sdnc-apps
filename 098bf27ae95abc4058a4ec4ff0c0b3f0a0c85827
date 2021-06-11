@@ -16,6 +16,24 @@
       "revId": "098bf27ae95abc4058a4ec4ff0c0b3f0a0c85827",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c3df348_3c27d1c0",
+        "filename": "pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2021-06-11T20:04:05Z",
+      "side": 1,
+      "message": "Good catch - thanks!   Fixed in latest change set",
+      "parentUuid": "99660300_24bbd12e",
+      "revId": "098bf27ae95abc4058a4ec4ff0c0b3f0a0c85827",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
