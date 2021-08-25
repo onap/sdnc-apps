@@ -158,7 +158,6 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>4.3.0</version>
         </dependency>
 
         <!-- this jersey jar is needed for rest api call node to function properly -->
