@@ -18,7 +18,6 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -37,10 +36,10 @@
     
     <properties>
         <aaf.cadi.version>2.1.21</aaf.cadi.version>
-        <ccsdk.apps.version>1.2.0-SNAPSHOT</ccsdk.apps.version>
+        <ccsdk.apps.version>1.2.0</ccsdk.apps.version>
         <ccsdk.docker.version>1.1-STAGING-latest</ccsdk.docker.version>
-        <sdnc.northbound.version>2.2.0-SNAPSHOT</sdnc.northbound.version>
-        <sdnc.oam.version>2.2.0-SNAPSHOT</sdnc.oam.version>
+        <sdnc.northbound.version>2.2.0</sdnc.northbound.version>
+        <sdnc.oam.version>2.2.0</sdnc.oam.version>
         <gratest.mysql.database>testdb</gratest.mysql.database>
         <gratest.mysql.root.password>itsASecret</gratest.mysql.root.password>
         <gratest.mysql.user>testdb</gratest.mysql.user>
