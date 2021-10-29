@@ -182,7 +182,7 @@ public class ConfigApiServicesControllerTest {
         // Clean up data
         clearServicesData();
 
-        String content = readFileContent("src/test/resources/service1.json");
+        String content = readFileContent("src/test/resources/service1-services.json");
 
         // Test with no data
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_URL).contentType(MediaType.APPLICATION_JSON).content(content))
@@ -206,7 +206,7 @@ public class ConfigApiServicesControllerTest {
         // Clean up data
         clearServicesData();
 
-        String content = readFileContent("src/test/resources/service1.json");
+        String content = readFileContent("src/test/resources/service1-services.json");
 
         // Test with no data
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_URL).contentType(MediaType.APPLICATION_JSON).content(content))
@@ -643,12 +643,12 @@ public class ConfigApiServicesControllerTest {
         clearServicesData();
         assertEquals(0, configServicesRepository.count());
         assertEquals(0, configVnfsRepository.count());
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-data.json")))
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf.json")))
                                       .andReturn();
         assertEquals(201, mvcResult.getResponse().getStatus());
         assertEquals(1, configVnfsRepository.count());
 
-        mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf-data.json")))
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put("/config/GENERIC-RESOURCE-API:services/service/"+TEST_SVC_INSTANCE_ID+"/service-data/vnfs/vnf/"+TEST_VNF_ID+"/").contentType(MediaType.APPLICATION_JSON).content(readFileContent("src/test/resources/vnf.json")))
                             .andReturn();
         assertEquals(204, mvcResult.getResponse().getStatus());
         assertEquals(1, configVnfsRepository.count());

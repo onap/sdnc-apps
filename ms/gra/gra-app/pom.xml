@@ -22,16 +22,25 @@
         <liquibase.properties>${project.basedir}/src/main/resources/liquibase.properties</liquibase.properties>
         <maven.compiler.source>1.11</maven.compiler.source>
         <maven.compiler.target>1.11</maven.compiler.target>
+        <sdncp.contrail.version>[43.0.0-SNAPSHOT, 43.0.99999)</sdncp.contrail.version>
+        <sdncp.eipam.version>[43.0.0-SNAPSHOT, 43.0.99999)</sdncp.eipam.version>
+        <sdncp.mso.version>[43.0.0-SNAPSHOT, 43.0.99999)</sdncp.mso.version>
+        <ccsdk.apps.version>[2108.0.0-SNAPSHOT, 2108.0.99999)</ccsdk.apps.version>
     </properties>
 
     <dependencies>
         <dependency>
+            <groupId>org.onap.sdnc.apps</groupId>
+            <artifactId>sanity-test-app</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -46,6 +55,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+        <!-- Needed by logging-analytics payload logging filter -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
+            <version>3.4.4</version>
         </dependency>
         <dependency>
             <groupId>org.onap.aaf.authz</groupId>
@@ -79,6 +94,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
@@ -187,6 +206,23 @@
             <version>1.6.2</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Optional external dependencies -->
+        <dependency>
+            <groupId>com.att.sdnctl.app</groupId>
+            <artifactId>contrail-adaptor.provider</artifactId>
+            <version>${sdncp.contrail.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.att.sdnctl.app</groupId>
+            <artifactId>eipam-provider</artifactId>
+            <version>${sdncp.eipam.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.att.sdnctl.app</groupId>
+            <artifactId>mso-adaptor-provider</artifactId>
+            <version>${sdncp.mso.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -291,7 +327,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.basedir}/target/generated-sources/src/main/java</source>
+                                <source>${basedir}/target/generated-sources/src/main/java</source>
                             </sources>
                         </configuration>
                     </execution>

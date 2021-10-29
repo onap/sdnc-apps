@@ -101,13 +101,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import liquibase.pro.license.keymgr.e;
+import liquibase.pro.packaged.E;
+
 @Controller
 @ComponentScan(basePackages = { "org.onap.sdnc.apps.ms.gra.*", "org.onap.ccsdk.apps.services" })
 @EntityScan("org.onap.sdnc.apps.ms.gra.*")
 @Import(value = SvcLogicFactory.class)
 public class OperationsApiController implements OperationsApi {
 
-    private static final String CALLED_STR = "{} called.";
+    private static final String CALLED_STR = "GRA START: {} called.";
+    private static final String RETURNED_STR = "GRA END: Returned {} for {} [{}] {}.";
     private static final String MODULE_NAME = "GENERIC-RESOURCE-API";
     private static final String SERVICE_OBJECT_PATH_PARAM = "service-object-path";
     private static final String NETWORK_OBJECT_PATH_PARAM = "network-object-path";
@@ -216,6 +220,7 @@ public class OperationsApiController implements OperationsApi {
 
             retval.setOutput(resp);
 
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, "unknown-id:network", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.FORBIDDEN);
         }
 
@@ -233,11 +238,12 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(graInput.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input preload data", svcOperation);
+            log.error("exiting {} due to parse error on input preload data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, preloadId+":network", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -246,11 +252,12 @@ public class OperationsApiController implements OperationsApi {
             preloadData = getConfigPreloadData(preloadId, preloadType);
             ctxIn.mergeJson("preload-data", objectMapper.writeValueAsString(preloadData));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on saved config preload data", svcOperation);
+            log.error("exiting {} due to parse error on saved config preload data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, preloadId+":network", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -295,7 +302,7 @@ public class OperationsApiController implements OperationsApi {
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
         }
-
+        log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, preloadId+":network", resp.getResponseMessage());
         retval.setOutput(resp);
         return (new ResponseEntity<>(retval, HttpStatus.valueOf(Integer.parseInt(resp.getResponseCode()))));
     }
@@ -317,6 +324,7 @@ public class OperationsApiController implements OperationsApi {
 
             retval.setOutput(resp);
 
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, "unknown-id:vf-module", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.FORBIDDEN);
         }
 
@@ -334,11 +342,12 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(graInput.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input preload data", svcOperation);
+            log.error("exiting {} due to parse error on input preload data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, preloadId+":network", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -347,11 +356,12 @@ public class OperationsApiController implements OperationsApi {
             preloadData = getConfigPreloadData(preloadId, preloadType);
             ctxIn.mergeJson("preload-data", objectMapper.writeValueAsString(preloadData));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on saved config preload data", svcOperation);
+            log.error("exiting {} due to parse error on saved config preload data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, preloadId+":network", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -378,20 +388,25 @@ public class OperationsApiController implements OperationsApi {
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+            log.error("Caught NullPointerException", npe);
         } catch (SvcLogicException e) {
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
+            log.error("Caught SvcLogicException", e);
         } catch (JsonMappingException e) {
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
+            log.error("Caught JsonMappingException", e);
         } catch (JsonProcessingException e) {
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
+            log.error("Caught JsonProcessingException", e);
         }
 
+        log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, preloadId+":vf-module", resp.getResponseMessage());
         retval.setOutput(resp);
         return (new ResponseEntity<>(retval, HttpStatus.valueOf(Integer.parseInt(resp.getResponseCode()))));
     }
@@ -508,6 +523,7 @@ public class OperationsApiController implements OperationsApi {
 
             retval.setOutput(resp);
 
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, "unknown-id", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -519,11 +535,12 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -536,11 +553,12 @@ public class OperationsApiController implements OperationsApi {
             try {
                 svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
             } catch (JsonProcessingException e) {
-                log.error("exiting {} due to parse error on service data", svcOperation);
+                log.error("exiting {} due to parse error on service data", svcOperation, e);
                 resp.setResponseCode("500");
                 resp.setResponseMessage("internal error");
                 resp.setAckFinalIndicator("Y");
                 retval.setOutput(resp);
+                log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
                 return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -555,6 +573,7 @@ public class OperationsApiController implements OperationsApi {
 
             retval.setOutput(resp);
 
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -616,10 +635,12 @@ public class OperationsApiController implements OperationsApi {
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+            log.error("Caught NullPointerException", npe);
         } catch (SvcLogicException e) {
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
+            log.error("Caught SvcLogicException", e);
         }
 
         // Update status in config services entry
@@ -634,11 +655,12 @@ public class OperationsApiController implements OperationsApi {
         try {
             serviceDataHelper.saveService(configService, ctxSvcDataJson);
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to  error saving service data", svcOperation);
+            log.error("exiting {} due to  error saving service data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -649,6 +671,7 @@ public class OperationsApiController implements OperationsApi {
         }
         retval.setOutput(resp);
         
+        log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
         return (new ResponseEntity<>(retval, HttpStatus.OK));
     }
 
@@ -671,6 +694,7 @@ public class OperationsApiController implements OperationsApi {
 
             retval.setOutput(resp);
 
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, "unknown-id", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -682,11 +706,12 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -707,6 +732,7 @@ public class OperationsApiController implements OperationsApi {
                 resp.setResponseMessage("internal error");
                 resp.setAckFinalIndicator("Y");
                 retval.setOutput(resp);
+                log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
                 return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else {
@@ -764,10 +790,12 @@ public class OperationsApiController implements OperationsApi {
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+            log.error("Caught NullPointerException", npe);
         } catch (SvcLogicException e) {
             resp.setAckFinalIndicator("true");
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
+            log.error("Caught SvcLogicException", e);
         }
 
         // Update status in config services entry
@@ -786,6 +814,7 @@ public class OperationsApiController implements OperationsApi {
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -795,6 +824,7 @@ public class OperationsApiController implements OperationsApi {
             operationalServicesRepository.save(operService);
         }
         retval.setOutput(resp);
+        log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
         return (new ResponseEntity<>(retval, HttpStatus.OK));
 
     }
@@ -818,6 +848,7 @@ public class OperationsApiController implements OperationsApi {
 
             retval.setOutput(resp);
 
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, "unknown-id", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -835,11 +866,12 @@ public class OperationsApiController implements OperationsApi {
             ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         }
         catch(JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -852,11 +884,12 @@ public class OperationsApiController implements OperationsApi {
            try {
                svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
            } catch (JsonProcessingException e) {
-               log.error("exiting {} due to parse error on service data", svcOperation);
+               log.error("exiting {} due to parse error on service data", svcOperation, e);
                resp.setResponseCode("500");
                resp.setResponseMessage("internal error");
                resp.setAckFinalIndicator("Y");
                retval.setOutput(resp);
+               log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
                return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
            }
        }
@@ -871,6 +904,7 @@ public class OperationsApiController implements OperationsApi {
 
            retval.setOutput(resp);
 
+           log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId, resp.getResponseMessage());
            return new ResponseEntity<>(retval, HttpStatus.OK);
        }
 
@@ -935,11 +969,13 @@ public class OperationsApiController implements OperationsApi {
             resp.setAckFinalIndicator("Y");
             resp.setResponseCode("500");
             resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+            log.info("Caught NullPointerException", npe);
         }
         catch(SvcLogicException e) {
             resp.setAckFinalIndicator("Y");
             resp.setResponseCode("500");
             resp.setResponseMessage(e.getMessage());
+            log.info("Caught SvcLogicException", e);
         }
 
         // Update status in config services entry
@@ -953,11 +989,12 @@ public class OperationsApiController implements OperationsApi {
         try {
             serviceDataHelper.saveService(configService, ctxSvcDataJson);
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to  error saving service data", svcOperation);
+            log.error("exiting {} due to  error saving service data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+vnfId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -977,8 +1014,8 @@ public class OperationsApiController implements OperationsApi {
             new Thread(backgroundThread).start();
         }
 
-        log.info("Returned {} for {} [{}] {}.", resp.getResponseCode(), svcOperation, vnfId, resp.getResponseMessage());
         retval.setOutput(resp);
+        log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+vnfId, resp.getResponseMessage());
         return (new ResponseEntity<>(retval, HttpStatus.OK));
     }
 
@@ -997,7 +1034,7 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(parentOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             return;
         }
 
@@ -1085,7 +1122,7 @@ public class OperationsApiController implements OperationsApi {
                 try {
                     serviceDataHelper.saveService(configService, ctxSvcDataJson);
                 } catch (JsonProcessingException e) {
-                    log.error("exiting {} due to  error saving service data", svcOperation);
+                    log.error("exiting {} due to  error saving service data", svcOperation, e);
                     return;
                 }
 
@@ -1096,7 +1133,7 @@ public class OperationsApiController implements OperationsApi {
             }
         }
         catch(Exception e) {
-            log.error("Caught Exception updating configuration status in SDN for {} [{}] \n", svcOperation, vnfId);
+            log.error("Caught Exception updating configuration status in SDN for {} [{}] \n", svcOperation, vnfId, e);
         }
     }
 
@@ -1119,6 +1156,7 @@ public class OperationsApiController implements OperationsApi {
             resp.setResponseMessage("null or empty service-instance-id");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, "unknown-id", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -1130,6 +1168,7 @@ public class OperationsApiController implements OperationsApi {
             resp.setResponseMessage("null or empty vnf-id");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, "unknown-id", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -1143,11 +1182,12 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+vnfId+":"+vfModuleId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -1160,11 +1200,12 @@ public class OperationsApiController implements OperationsApi {
             try {
                 svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
             } catch (JsonProcessingException e) {
-                log.error("exiting {} due to parse error on service data", svcOperation);
+                log.error("exiting {} due to parse error on service data", svcOperation, e);
                 resp.setResponseCode("500");
                 resp.setResponseMessage("internal error");
                 resp.setAckFinalIndicator("Y");
                 retval.setOutput(resp);
+                log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+vnfId+":"+vfModuleId, resp.getResponseMessage());
                 return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -1179,6 +1220,7 @@ public class OperationsApiController implements OperationsApi {
  
             retval.setOutput(resp);
  
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+vnfId+":"+vfModuleId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -1189,10 +1231,10 @@ public class OperationsApiController implements OperationsApi {
         if (operServices != null && !operServices.isEmpty()) {
             operService = operServices.get(0);
             log.info("Read ({}) data for [{}] operational-data: {}",
-                    "OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS", svcInstanceId, operService.getSvcData().toString());
+                    "OPERATIONAL_GRA_SERVICES", svcInstanceId, operService.getSvcData().toString());
             //ctxIn.mergeJson("operational-data", operService.getSvcData());
         } else {
-            log.info("No operational-data found in OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS for [{}]", svcInstanceId);
+            log.info("No operational-data found in OPERATIONAL_GRA_SERVICES for [{}]", svcInstanceId);
             operService = new OperationalServices(svcInstanceId, null, null);
         }
 
@@ -1264,12 +1306,15 @@ public class OperationsApiController implements OperationsApi {
             resp.setAckFinalIndicator("Y");
             resp.setResponseCode("500");
             resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+            log.error("exiting {} due to error updating service data", svcOperation, npe);
         } catch (SvcLogicException e) {
             resp.setAckFinalIndicator("Y");
+            log.error("exiting {} due to error updating service data", svcOperation, e);
         } catch (JsonProcessingException e) {
             resp.setAckFinalIndicator("Y");
             resp.setResponseCode("500");
             resp.setResponseMessage("Internal error");
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+vnfId+":"+vfModuleId, resp.getResponseMessage());
             log.error("exiting {} due to error updating service data", svcOperation, e);
         }
 
@@ -1284,6 +1329,7 @@ public class OperationsApiController implements OperationsApi {
             new Thread(backgroundThread).start();
         }
         retval.setOutput(resp);
+        log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+vnfId+":"+vfModuleId, resp.getResponseMessage());
         return (new ResponseEntity<>(retval, HttpStatus.OK));
     }
 
@@ -1300,7 +1346,7 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(parentOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             return;
         }
 
@@ -1313,7 +1359,7 @@ public class OperationsApiController implements OperationsApi {
             try {
                 svcData = serviceDataHelper.getServiceDataAsString(svcInstanceId);
             } catch (JsonProcessingException e) {
-                log.error("exiting {} due to parse error on service data", svcOperation);
+                log.error("exiting {} due to parse error on service data", svcOperation, e);
                 return;
             }
         }
@@ -1332,10 +1378,10 @@ public class OperationsApiController implements OperationsApi {
         if (operServices != null && !operServices.isEmpty()) {
             operService = operServices.get(0);
             log.info("Read ({}) data for [{}] operational-data: {}",
-                    "OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS", svcInstanceId, operService.getSvcData().toString());
+                    "OPERATIONAL_GRA_SERVICES", svcInstanceId, operService.getSvcData().toString());
             //ctxIn.mergeJson("operational-data", operService.getSvcData());
         } else {
-            log.info("No operational-data found in OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS for [{}]", svcInstanceId);
+            log.info("No operational-data found in OPERATIONAL_GRA_SERVICES for [{}]", svcInstanceId);
             operService = new OperationalServices(svcInstanceId, null, null);
         }
 
@@ -1381,7 +1427,7 @@ public class OperationsApiController implements OperationsApi {
             try {
                 serviceDataHelper.saveService(configService, ctxSvcDataJson);
             } catch (JsonProcessingException e) {
-                log.error("exiting {} due to  error saving service data", svcOperation);
+                log.error("exiting {} due to  error saving service data", svcOperation, e);
                 return;
             }
 
@@ -1390,7 +1436,7 @@ public class OperationsApiController implements OperationsApi {
             operationalServicesRepository.save(operService);
 
         } catch (Exception ex) {
-            log.error("Caught Exception updating service status in SDN for {} [{}] \n", svcOperation, svcInstanceId);
+            log.error("Caught Exception updating service status in SDN for {} [{}] \n", svcOperation, svcInstanceId, ex);
         }
         log.info("Returned {} for {} [{}] {}.", respStatus, svcOperation, svcInstanceId, errorMessage);
     }
@@ -1413,6 +1459,7 @@ public class OperationsApiController implements OperationsApi {
             resp.setResponseMessage("null or empty configuration-id");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, "unknown-id", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -1424,6 +1471,7 @@ public class OperationsApiController implements OperationsApi {
             resp.setResponseMessage("null or empty service-instance-id");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, "unknown-id", resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -1436,11 +1484,12 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             resp.setResponseCode("500");
             resp.setResponseMessage("internal error");
             resp.setAckFinalIndicator("Y");
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+configurationId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -1459,6 +1508,7 @@ public class OperationsApiController implements OperationsApi {
             resp.setAckFinalIndicator("Y");
 
             retval.setOutput(resp);
+            log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+configurationId, resp.getResponseMessage());
             return new ResponseEntity<>(retval, HttpStatus.OK);
         }
 
@@ -1563,8 +1613,10 @@ public class OperationsApiController implements OperationsApi {
             resp.setAckFinalIndicator("Y");
             resp.setResponseCode("500");
             resp.setResponseMessage("Check that you populated module, rpc and or mode correctly.");
+            log.error("Caught NullPointerException", npe);
         } catch (SvcLogicException e) {
             resp.setAckFinalIndicator("Y");
+            log.error("Caught SvcLogicException", e);
         }
 
         if (ackFinal.equals("N")) {
@@ -1577,7 +1629,8 @@ public class OperationsApiController implements OperationsApi {
             };
             new Thread(backgroundThread).start();
         }
-        log.info("Returned {} for {} [{}] {}.", respStatus, svcOperation, configurationId, errorMessage);
+
+        log.info(RETURNED_STR, resp.getResponseCode(), svcOperation, svcInstanceId+":"+configurationId, resp.getResponseMessage());
         return (new ResponseEntity<>(retval, HttpStatus.OK));
     }
 
@@ -1597,7 +1650,7 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(parentOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             return;
         }
 
@@ -1675,7 +1728,7 @@ public class OperationsApiController implements OperationsApi {
             //operationalPortMirrorConfigurationsRepository.save(operPortMirrorConfiguration);
 
         } catch (Exception e) {
-            log.error("Caught Exception updating configuration status in SDN for {} [{}] \n", svcOperation, configurationId);
+            log.error("Caught Exception updating configuration status in SDN for {} [{}] \n", svcOperation, configurationId, e);
         }
         log.info("Returned SUCCESS for {} [{}]", svcOperation, configurationId);
     }
@@ -1701,7 +1754,7 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             return new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -1735,6 +1788,7 @@ public class OperationsApiController implements OperationsApi {
             retval.setOutput(vnfgetresourcerequestOutput);
 
         } catch (Exception e) {
+            log.error("Caught exception", e);
             return (new ResponseEntity<>(retval, HttpStatus.INTERNAL_SERVER_ERROR));
         }
         return (new ResponseEntity<>(retval, HttpStatus.OK));
@@ -1764,7 +1818,7 @@ public class OperationsApiController implements OperationsApi {
         try {
             ctxIn.mergeJson(svcOperation + "-input", objectMapper.writeValueAsString(input.getInput()));
         } catch (JsonProcessingException e) {
-            log.error("exiting {} due to parse error on input data", svcOperation);
+            log.error("exiting {} due to parse error on input data", svcOperation, e);
             resp.setErrorCode("500");
             resp.setErrorMsg("internal error");
             retval.setOutput(resp);
@@ -1789,9 +1843,11 @@ public class OperationsApiController implements OperationsApi {
         } catch (NullPointerException npe) {
             resp.setErrorCode("500");
             resp.setErrorMsg("Check that you populated module, rpc and or mode correctly.");
+            log.error("Caught NullPointerException", npe);
         } catch (SvcLogicException e) {
             resp.setErrorCode("500");
             resp.setErrorMsg(e.getMessage());
+            log.error("Caught SvcLogicException", e);
         }
 
         retval.setOutput(resp);

@@ -1,0 +1,152 @@
+{
+	"port-mirror-configuration": {
+		"configuration-id": ${pm.configuration-id},
+		"configuration-data": {
+			"configuration-operation-information": {
+				"sdnc-request-header": {
+					"svc-request-id": ${pm.configuration-data.configuration-operation-information.sdnc-request-header.svc-request-id},
+					"svc-action": ${pm.configuration-data.configuration-operation-information.sdnc-request-header.svc-action},
+					"svc-notification-url": ${pm.configuration-data.configuration-operation-information.sdnc-request-header.svc-notification-url}
+				},
+				"request-information": {
+					"request-id": ${pm.configuration-data.configuration-operation-information.request-information.request-id},
+					"request-action": ${pm.configuration-data.configuration-operation-information.request-information.request-action},
+					"source": ${pm.configuration-data.configuration-operation-information.request-information.source},
+					"notification-url": ${pm.configuration-data.configuration-operation-information.request-information.notification-url},
+					"order-number": ${pm.configuration-data.configuration-operation-information.request-information.order-number},
+					"order-version": ${pm.configuration-data.configuration-operation-information.request-information.order-version}
+				},
+				"service-information": {
+					"service-id": ${pm.configuration-data.configuration-operation-information.service-information.service-id},
+					"subscription-service-type": ${pm.configuration-data.configuration-operation-information.service-information.subscription-service-type},
+					"onap-model-information": {
+						"model-invariant-uuid": ${pm.configuration-data.configuration-operation-information.service-information.onap-model-information.model-invariant-uuid},
+						"model-customization-uuid": ${pm.configuration-data.configuration-operation-information.service-information.onap-model-information.model-customization-uuid},
+						"model-uuid": ${pm.configuration-data.configuration-operation-information.service-information.onap-model-information.model-uuid},
+						"model-version": ${pm.configuration-data.configuration-operation-information.service-information.onap-model-information.model-version},
+						"model-name": ${pm.configuration-data.configuration-operation-information.service-information.onap-model-information.model-name}
+					},
+					"service-instance-id": ${pm.configuration-data.configuration-operation-information.service-information.service-instance-id},
+					"global-customer-id": ${pm.configuration-data.configuration-operation-information.service-information.global-customer-id},
+					"subscriber-name": ${pm.configuration-data.configuration-operation-information.service-information.subscriber-name}
+				},
+				"configuration-information": {
+					"configuration-id": ${pm.configuration-data.configuration-operation-information.configuration-information.configuration-id},
+					"configuration-type": ${pm.configuration-data.configuration-operation-information.configuration-information.configuration-type},
+					"configuration-sub-type": ${pm.configuration-data.configuration-operation-information.configuration-information.configuration-sub-type},
+					"onap-model-information": {
+						"model-invariant-uuid": ${pm.configuration-data.configuration-operation-information.configuration-information.onap-model-information.model-invariant-uuid},
+						"model-customization-uuid": ${pm.configuration-data.configuration-operation-information.configuration-information.onap-model-information.model-customization-uuid},
+						"model-uuid": ${pm.configuration-data.configuration-operation-information.configuration-information.onap-model-information.model-uuid},
+						"model-version": ${pm.configuration-data.configuration-operation-information.configuration-information.onap-model-information.model-version},
+						"model-name": ${pm.configuration-data.configuration-operation-information.configuration-information.onap-model-information.model-name}
+					}
+				},
+				"port-mirror-configuration-request-input": {
+					"source-port": {
+						"sevice-instance-id": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.source-port.service-instance-id},
+						"vnf-information": {
+							"vnf-id": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.source-port.vnf-information.vnf-id},
+							"vnf-type": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.source-port.vnf-information.vnf-type}
+						}
+					},
+					"dest-port": {
+						"sevice-instance-id": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.dest-port.service-instance-id},
+						"vnf-information": {
+							"vnf-id": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.dest-port.vnf-information.vnf-id},
+							"vnf-type": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.dest-port.vnf-information.vnf-type}
+						},
+						"pnf-information": {
+							"pnf-name": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.dest-port.pnf-information.pnf-name},
+							"pnf-type": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.dest-port.pnf-information.pnf-type}
+						}
+					},
+					"tenant": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.tenant},
+					"aic-cloud-region": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.aic-cloud-region},
+					"aic-clli": ${pm.configuration-data.configuration-operation-information.port-mirror-configuration-request-input.aic-clli}
+				}
+			},
+			"port-mirror-configuration-topology": {
+				"configuration-identifiers": {
+					"configuration-id": ${pm.configuration-data.port-mirror-configuration-topology.configuration-identifiers.configuration-id},
+					"configuration-name": ${pm.configuration-data.port-mirror-configuration-topology.configuration-identifiers.configuration-name},
+					"configuration-type": ${pm.configuration-data.port-mirror-configuration-topology.configuration-identifiers.configuration-type},
+					"configuration-sub-type": ${pm.configuration-data.port-mirror-configuration-topology.configuration-identifiers.configuration-sub-type},
+					"parent-service-instance-id": ${pm.configuration-data.port-mirror-configuration-topology.configuration-identifiers.parent-service-instance-id}
+				},
+				"onap-model-information": {
+					"model-invariant-uuid": ${pm.configuration-data.port-mirror-configuration-topology.onap-model-information.model-invariant-uuid},
+					"model-customization-uuid": ${pm.configuration-data.port-mirror-configuration-topology.onap-model-information.model-customization-uuid},
+					"model-uuid": ${pm.configuration-data.port-mirror-configuration-topology.onap-model-information.model-uuid},
+					"model-version" ${pm.configuration-data.port-mirror-configuration-topology.onap-model-information.model-version},
+					"model-name": ${pm.configuration-data.port-mirror-configuration-topology.onap-model-information.model-name}
+				},
+				"port-mirror-configuration-assignments": {
+					"vnics-group-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.vnics-group-id},
+					"owning-entity": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.owning-entity},
+					"tenant-context": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.tenant-context},
+					"tenant": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.tenant},
+					"tenant-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.tenant-id},
+					"cloud-region-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.cloud-region-id},
+					"cloud-owner": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.cloud-owner},
+					"dest-network-fqdn": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.dest-network-fqdn},
+					"source-network-fqdn": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-network-fqdn},
+					"source-capacity": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-capacity},
+					"source-vnf-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-vnf-id},
+					"dest-vnf-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.dest-vnf-id},
+					"dest-pnf-name": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.dest-pnf-name},
+					"dest-p-interface": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.dest-p-interface},
+					"dest-pnf-port-policy-name": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.dest-pnf-port-policy-name},
+					"probe-type": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.probe-type},
+					"route-allotted-resource-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.route-allotted-resource-id},
+					"source-vnfc-instance-group-id": {
+						"service-instance-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-vnfc-instance-group-id.service-instance-id},
+						"nfc-function": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-vnfc-instance-group-id.nfc-function},
+						"instance-group-role": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-vnfc-instance-group-id.instance-group-role},
+						"configuration-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-vnfc-instance-group-id.configuration-id}
+					},
+					"dest-vnfc-instance-group-id": {
+						"service-instance-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.dest-vnfc-instance-group-id.service-instance-id},
+						"nfc-function": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.dest-vnfc-instance-group-id.nfc-function},
+						"instance-group-role": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.dest-vnfc-instance-group-id.instance-group-role},
+						"configuration-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-vnfc-instance-group-id.configuration-id}
+					},
+					"source-to-dest-maps": {
+						"source-to-dest-map": [
+		${repeat:pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map_length:
+							{
+							"source-port-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].source-port-id},
+							"source-port-name": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].source-port-name},
+							"dest-port-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].dest-port-id},
+							"dest-port-name": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].dest-port-name},
+							"link-name": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].link-name},
+							"source-vserver-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].source-vserver-id},
+							"dest-vserver-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].dest-vserver-id},
+							"dest-ip-addresses": {
+								"ip-addresses": {
+									"ipv4-address": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].dest-ip-addresses.ip-addresses.ipv4-address},
+									"ipv6-address": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].dest-ip-addresses.ip-addresses.ipv6-address},
+									"vipv4-address": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].dest-ip-addresses.ip-addresses.vipv4-address},
+									"vipv6-address": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.source-to-dest-maps.source-to-dest-map[${1}].dest-ip-addresses.ip-addresses.vipv6-address}
+								}
+							}
+							},
+		}
+						]
+					},
+					"port-mirror-configuration-instance-id": ${pm.configuration-data.port-mirror-configuration-topology.port-mirror-configuration-assignments.port-mirror-configuration-instance-id}
+				}
+			},
+			"configuration-oper-status": {
+				"order-status": ${pm.configuration-data.configuration-oper-status.order-status},
+				"last-rpc-action": ${pm.configuration-data.configuration-oper-status.last-rpc-action},
+				"last-action": ${pm.configuration-data.configuration-oper-status.last-action},
+				"last-svc-request-id": ${pm.configuration-data.configuration-oper-status.last-svc-request-id},
+				"last-order-status": ${pm.configuration-data.configuration-oper-status.last-order-status},
+				"create-timestamp": ${pm.configuration-data.configuration-oper-status.create-timestamp},
+				"modify-timestamp": ${pm.configuration-data.configuration-oper-status.modify-timestamp}
+			}
+		}
+	}
+}
+

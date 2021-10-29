@@ -517,3 +517,124 @@ databaseChangeLog:
         - column:
             name: vfModuleData
             type: clob
+- changeSet:
+    id: 20210620-1
+    author: dtimoney@att.com
+    changes:
+    - modifyDataType:
+        - tableName: CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES
+        - columnName: allottedResourceStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS
+        - columnName: portMirrorConfigurationStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: OPERATIONAL_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES
+        - columnName: allottedResourceStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS
+        - columnName: portMirrorConfigurationStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: CONFIG_GRA_SERVICES
+        - columnName: serviceStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: OPERATIONAL_GRA_SERVICES
+        - columnName: serviceStatusResponseMessage
+        - newDataType: varchar(2000)
+
+- changeSet:
+    id: 210806-1
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - tableExists:
+          tableName: PRE_LOAD_VNF_DATA
+    changes:
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_DATA
+        - columnName: preload_data 
+        - newDataType: clob
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_DATA
+        - columnName: eipam_payload
+        - newDataType: clob
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_DATA
+        - columnName: gr_api_data
+        - newDataType: clob
+- changeSet:
+    id: 210806-2
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - tableExists:
+          tableName: PRE_LOAD_VNF_NETWORK_DATA
+    changes:
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_NETWORK_DATA
+        - columnName: preload_data 
+        - newDataType: clob
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_NETWORK_DATA
+        - columnName: eipam_payload
+        - newDataType: clob
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_NETWORK_DATA
+        - columnName: gr_api_data
+        - newDataType: clob
+- changeSet:
+    id: 20210816-1
+    author: kc1472@att.com
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: KEYSTONE_IDENTITY_SERVICE
+    changes:
+    - createTable:
+        tableName: KEYSTONE_IDENTITY_SERVICE
+        columns:
+        - column:
+            name: cloudRegion
+            type: varchar(255)
+            constraints:
+                nullable: false
+                primaryKey: true
+        - column:
+            name: keystoneUrl
+            type: varchar(255)
+            constraints:
+                nullable: false
+        - column:
+            name: mechId
+            type: varchar(255)
+            constraints:
+                nullable: false
+        - column:
+            name: encryptedPassword
+            type: varchar(255)
+            constraints:
+                nullable: false
+        - column:
+            name: modifiedTimeStamp
+            type: timestamp
+            constraints:
+                nullable: false
+            defaultValueComputed: CURRENT_TIMESTAMP
+
+- changeSet:
+    id: 20211026-1
+    author: la505a@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - tableExists:
+          tableName: SERVICE_MODEL
+    changes:
+    - modifyDataType:
+        - tableName: SERVICE_MODEL
+        - columnName: filename
+        - newDataType: varchar(255)
