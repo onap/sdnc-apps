@@ -55328,4 +55328,73 @@ databaseChangeLog:
             name: vm_count
             valueNumeric: 1
         tableName: VF_MODULE_TO_VFC_MAPPING
+- changeSet:
+    id: 20210620-1
+    author: dtimoney@att.com
+    changes:
+    - modifyDataType:
+        - tableName: CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES
+        - columnName: allottedResourceStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS
+        - columnName: portMirrorConfigurationStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: OPERATIONAL_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES
+        - columnName: allottedResourceStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: OPERATIONAL_GRA_PORT_MIRROR_CONFIGURATIONS
+        - columnName: portMirrorConfigurationStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: CONFIG_GRA_SERVICES
+        - columnName: serviceStatusResponseMessage
+        - newDataType: varchar(2000)
+    - modifyDataType:
+        - tableName: OPERATIONAL_GRA_SERVICES
+        - columnName: serviceStatusResponseMessage
+        - newDataType: varchar(2000)
 
+- changeSet:
+    id: 210806-1
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - tableExists:
+          tableName: PRE_LOAD_VNF_DATA
+    changes:
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_DATA
+        - columnName: preload_data 
+        - newDataType: clob
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_DATA
+        - columnName: eipam_payload
+        - newDataType: clob
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_DATA
+        - columnName: gr_api_data
+        - newDataType: clob
+- changeSet:
+    id: 210806-2
+    author: dtimoney@att.com
+    preConditions:
+      - onFail: MARK_RAN
+      - tableExists:
+          tableName: PRE_LOAD_VNF_NETWORK_DATA
+    changes:
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_NETWORK_DATA
+        - columnName: preload_data 
+        - newDataType: clob
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_NETWORK_DATA
+        - columnName: eipam_payload
+        - newDataType: clob
+    - modifyDataType:
+        - tableName: PRE_LOAD_VNF_NETWORK_DATA
+        - columnName: gr_api_data
+        - newDataType: clob
+    

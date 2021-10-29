@@ -1,0 +1,12 @@
+{
+	"oper-status": {
+		"order-status": ${vnf-level-oper-status.order-status},
+		"last-rpc-action": ${vnf-level-oper-status.last-rpc-action},
+		"last-action": ${vnf-level-oper-status.last-action},
+		"last-svc-request-id": ${vnf-level-oper-status.last-svc-request-id},
+		"last-order-status": ${vnf-level-oper-status.last-order-status},
+		"create-timestamp": ${vnf-level-oper-status.create-timestamp},
+		"modify-timestamp": ${vnf-level-oper-status.modify-timestamp}
+	}
+}
+

@@ -1,0 +1,27 @@
+{
+        "network": {
+		"network-id": ${mdsal-nign.network[0].network-id},
+		"vpn-bindings": [
+		${repeat:mdsal-nign.network[0].vpn-bindings_length:
+		{
+			"vpn-binding-id": ${mdsal-nign.network[0].vpn-bindings[${1}].vpn-binding-id},
+			"vpn-name": ${mdsal-nign.network[0].vpn-bindings[${1}].vpn-name},
+			"global-route-target": ${mdsal-nign.network[0].vpn-bindings[${1}].global-route-target},
+			"route-target-role": ${mdsal-nign.network[0].vpn-bindings[${1}].route-target-role},
+			"aic-zone": ${mdsal-nign.network[0].vpn-bindings[${1}].aic-zone}
+		}
+		}
+		],
+		"vlan-tag-id": ${mdsal-nign.network[0].vlan-tag-id},
+		"network-status": ${mdsal-nign.network[0].network-status},
+		"customer-bonding-requests": {
+			"customer-bonding-request": [
+			${repeat:mdsal-nign.network[0].customer-bonding-requests.customer-bonding-request_length:
+			{
+				"configuration-id": ${mdsal-nign.network[0].customer-bonding-requests.customer-bonding-request[${1}].configuration-id}
+			},
+			}
+			]
+		}
+        }
+}

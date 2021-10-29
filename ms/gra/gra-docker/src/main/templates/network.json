@@ -1,0 +1,145 @@
+{
+    "network": {
+      "network-id": ${network-data.network-information.network-id},
+      "network-data": {
+        "network-provided-allotted-resources": {
+          "network-provided-ar-id": [
+${repeat:network-data.network-provided-allotted-resources.network-provided-ar-id_length:
+            ${network-data.network-provided-allotted-resources.network-provided-ar-id[${1}]},
+}
+          ]
+        },
+        "network-level-oper-status": {
+          "order-status": ${network-data.network-level-oper-status.order-status},
+          "last-rpc-action": ${network-data.network-level-oper-status.last-rpc-action},
+          "last-action": ${network-data.network-level-oper-status.last-action},
+          "last-svc-request-id": ${network-data.network-level-oper-status.last-svc-request-id},
+          "last-order-status": ${network-data.network-level-oper-status.last-order-status},
+          "create-timestamp": ${network-data.network-level-oper-status.create-timestamp},
+          "modify-timestamp": ${network-data.network-level-oper-status.modify-timestamp}
+        },
+        "sdnc-request-header": {
+          "svc-request-id": ${network-data.sdnc-request-header.svc-request-id},
+          "svc-action": ${network-data.sdnc-request-header.svc-action},
+          "svc-notification-url": ${network-data.sdnc-request-header.svc-notification-url}
+        },
+        "request-information": {
+          "request-id": ${network-data.request-information.request-id},
+          "request-action": ${network-data.request-information.request-action},
+          "source": ${network-data.request-information.source},
+          "notification-url": ${network-data.request-information.notification-url},
+          "order-number": ${network-data.request-information.order-number},
+          "order-version": ${network-data.request-information.order-version}
+        },
+        "network-request-input": {
+          "network-name": ${network-data.network-request-input.network-name},
+          "network-input-parameters": {
+            "param": [
+${repeat:network-data.network-request.network-input-parameters.param_length:
+              {
+                "name": ${network-data.network-request-inputnetwork-input-parameters.param[${1}].name},
+                "value": ${network-data.network-request-inputnetwork-input-parameters.param[${1}].value},
+                "resource-resolution-data": {
+                  "resource-key": [
+${repeat:network-data.network-request.network-input-parameters.param[${1}].resource-resolution-data.resource_key_length:
+                    {
+                      "name": ${network-data.network-request.network-input-parameters.param[${1}].resource-resolution-data.resource_key[${2}].name},
+                      "value": ${network-data.network-request.network-input-parameters.param[${1}].resource-resolution-data.resource_key[${2}].value}
+                    }
+}
+                  ],
+                  "status": ${network-data.network-request-inputnetwork-input-parameters.param[${1}].status},
+                  "capability-name": ${network-data.network-request-inputnetwork-input-parameters.param[${1}].capability-name}
+                }
+              },
+}
+            ]
+          },
+          "network-instance-group-id": ${network-data.network-request-input.network-instance-group-id},
+          "tenant": ${network-data.network-request-input.tenant},
+          "aic-cloud-region": ${network-data.network-request-input.aic-cloud-region},
+          "cloud-owner": ${network-data.network-request-input.cloud-owner},
+          "aic-clli": ${network-data.network-request-input.aic-clli}
+        },
+        "network-information": {
+          "network-id": ${network-data.network-information.network-id},
+          "network-type": ${network-data.network-information.network-type},
+          "network-technology": ${network-data.network-information.network-technology},
+          "from-preload": ${network-data.network-information.from-preload},
+          "onap-model-information": {
+            "model-invariant-uuid": ${network-data.network-topology.onap-model-information.model-invariant-uuid},
+            "model-customization-uuid": ${network-data.network-topology.onap-model-information.model-customization-uuid},
+            "model-uuid": ${network-data.network-topology.onap-model-information.model-uuid},
+            "model-version": ${network-data.network-topology.onap-model-information.model-version},
+            "model-name": ${network-data.network-topology.onap-model-information.model-name}
+          }
+        },
+        "service-information": {
+          "service-id": ${network-data.service-information.service-id},
+          "subscription-service-type": ${network-data.service-information.subscription-service-type},
+          "service-instance-id": ${network-data.service-information.service-instance-id},
+          "global-customer-id": ${network-data.service-information.global-customer-id},
+          "subscriber-name": ${network-data.service-information.subscriber-name},
+          "onap-model-information": {
+            "model-invariant-uuid": ${network-data.service-information.onap-model-information.model-invariant-uuid},
+            "model-customization-uuid": ${network-data.onap-model-information.model-customization-uuid},
+            "model-uuid": ${network-data.onap-model-information.model-uuid},
+            "model-version": ${network-data.onap-model-information.model-version},
+            "model-name": ${network-data.onap-model-information.model-name}
+          }
+        },
+        "network-topology": {
+          "tenant": ${network-data.network-topology.tenant},
+          "aic-cloud-region": ${network-data.network-topology.aic-cloud-region},
+          "cloud-owner": ${network-data.network-topology.cloud-owner},
+          "aic-clli": ${network-data.network-topology.aic-clli},
+          "network-parameters": {
+            "network-parameter": [
+${repeat:network-data.network-topology.network-parameters.network-parameter_length:
+              {
+                "network-parameter-name": ${network-data.network-topology.network-parameters.network-parameter[${1}].network-parameter-name},
+                "network-parameter-value": ${network-data.network-topology.network-parameters.network-parameter[${1}].network-parameter-value}
+              },
+}
+            ]
+          },
+          "onap-model-information": {
+            "model-invariant-uuid": ${network-data.network-topology.onap-model-information.model-invariant-uuid},
+            "model-customization-uuid": ${network-data.network-topology.onap-model-information.model-customization-uuid},
+            "model-uuid": ${network-data.network-topology.onap-model-information.model-uuid},
+            "model-version": ${network-data.network-topology.onap-model-information.model-version},
+            "model-name": ${network-data.network-topology.onap-model-information.model-name}
+          },
+          "network-assignments": {},
+          "network-topology-identifier-structure": {
+            "network-id": ${network-data.network-topology.network-topology-identifier-structure.network-id},
+            "network-name": ${network-data.network-topology.network-topology-identifier-structure.network-name},
+            "network-role": ${network-data.network-topology.network-topology-identifier-structure.network-role},
+            "network-type": ${network-data.network-topology.network-topology-identifier-structure.network-type},
+            "network-instance-group-id": ${network-data.network-topology.network-topology-identifier-structure.network-instance-group-id},
+            "network-technology": ${network-data.network-topology.network-topology-identifier-structure.network-technology},
+            "eipam-v4-address-plan": ${network-data.network-topology.network-topology-identifier-structure.eipam-v4-address-plan},
+            "eipam-v6-address-plan": ${network-data.network-topology.network-topology-identifier-structure.eipam-v6-address-plan},
+            "is-trunked": ${network-data.network-topology.network-topology-identifier-structure.is-trunked},
+            "segmentation-id": ${network-data.network-topology.network-topology-identifier-structure.segmentation-id},
+            "related-networks": {
+              "related-network": [
+${repeat:network-data.network-topology.network-topology-identifier-structure.related-networks.related-network_length:
+                {
+                  "network-id": ${network-data.network-topology.network-topology-identifier-structure.related-networks.related-network[${1}].network-id},
+                  "network-role": ${network-data.network-topology.network-topology-identifier-structure.related-networks.related-network[${1}].network-role},
+                  "vlan-tags": {
+                    "vlan-interface": ${network-data.network-topology.network-topology-identifier-structure.related-networks.related-network[${1}].vlan-tags.vlan-interface},
+                    "upper-tag-id": ${network-data.network-topology.network-topology-identifier-structure.related-networks.related-network[${1}].vlan-tags.upper-tag-id},
+                    "lower-tag-id": ${network-data.network-topology.network-topology-identifier-structure.related-networks.related-network[${1}].vlan-tags.lower-tag-id},
+                    "is-private": ${network-data.network-topology.network-topology-identifier-structure.related-networks.related-network[${1}].vlan-tags.is-private}
+                  }
+                },
+}
+              ]
+            }
+          }
+        }
+      }
+    }
+}

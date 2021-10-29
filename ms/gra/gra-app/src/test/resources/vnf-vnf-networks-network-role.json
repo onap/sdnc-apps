@@ -1,34 +1,40 @@
 {
-    "contrail-network-fqdn": "string",
-    "is-trunked": true,
-    "network-id": "69f09279-8af1-4475-83cf-7e357c579dbf",
-    "network-name": "test-network-name",
-    "network-role": "test-network-role",
-    "neutron-id": "812562dd-9d91-4ba6-9c3e-e52bf1cd4cc6",
-    "related-networks": {
-        "related-network": [{
-            "network-id": "69f09279-8af1-4475-83cf-7e357c579dbf",
-            "network-role": "test-network-role",
-            "vlan-tags": {
-                "is-private": true,
-                "lower-tag-id": 0,
-                "upper-tag-id": 0,
-                "vlan-interface": "string"
-            }
-        }]
-    },
-    "segmentation-id": "string",
-    "subnets-data": {
-        "subnet-data": [{
-            "cidr-mask": "string",
-            "dhcp-enabled": "Y",
-            "gateway-address": "string",
-            "ip-version": "string",
-            "network-start-address": "string",
-            "sdnc-subnet-id": "string",
-            "subnet-id": "string",
-            "subnet-name": "string",
-            "subnet-role": "string"
-        }]
+    "vnf-network": {
+        "contrail-network-fqdn": "string",
+        "is-trunked": true,
+        "network-id": "69f09279-8af1-4475-83cf-7e357c579dbf",
+        "network-name": "test-network-name",
+        "network-role": "test-network-role",
+        "neutron-id": "812562dd-9d91-4ba6-9c3e-e52bf1cd4cc6",
+        "related-networks": {
+            "related-network": [
+                {
+                    "network-id": "69f09279-8af1-4475-83cf-7e357c579dbf",
+                    "network-role": "test-network-role",
+                    "vlan-tags": {
+                        "is-private": true,
+                        "lower-tag-id": 0,
+                        "upper-tag-id": 0,
+                        "vlan-interface": "string"
+                    }
+                }
+            ]
+        },
+        "segmentation-id": "string",
+        "subnets-data": {
+            "subnet-data": [
+                {
+                    "cidr-mask": "string",
+                    "dhcp-enabled": "Y",
+                    "gateway-address": "string",
+                    "ip-version": "string",
+                    "network-start-address": "string",
+                    "sdnc-subnet-id": "string",
+                    "subnet-id": "string",
+                    "subnet-name": "string",
+                    "subnet-role": "string"
+                }
+            ]
+        }
     }
 }

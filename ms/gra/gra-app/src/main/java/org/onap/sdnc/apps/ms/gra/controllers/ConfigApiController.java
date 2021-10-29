@@ -31,7 +31,9 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.onap.ccsdk.apps.services.RestApplicationException;
 import org.onap.ccsdk.apps.services.RestException;
@@ -50,11 +52,25 @@ import org.onap.sdnc.apps.ms.gra.data.ConfigVfModules;
 import org.onap.sdnc.apps.ms.gra.data.ConfigVfModulesRepository;
 import org.onap.sdnc.apps.ms.gra.data.ConfigVnfsRepository;
 import org.onap.sdnc.apps.ms.gra.swagger.ConfigApi;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiAggregateroutesAggregateRoutes;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiContrailRouteAllottedResources;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiContrailroutetopologyContrailRouteTopology;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworkInstanceGroup;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworkinstancegroupNetworkInstanceGroup;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworkinstancegroupNetworkinstancegroupAggregateRoutePolicy;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetworkCustomerBondingRequests;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetworkCustomerbondingrequestsCustomerBondingRequest;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworkinstancegroupNetworkinstancegroupSubnetAssignmentPolicy;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworkinstancegroupNetworkinstancegroupVpnBindingPolicy;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworktopologyNetworkTopology;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiNetworktopologyidentifierstructureNetworkTopologyIdentifierStructure;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiOnapmodelinformationOnapModelInformation;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiOperStatusData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPortMirrorConfigurations;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPortmirrorconfigurationtopologyPortMirrorConfigurationTopology;
@@ -62,19 +78,28 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadModelInf
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloaddataPreloadData;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadmodelinformationPreloadList;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadnetworktopologyinformationPreloadNetworkTopologyInformation;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRelatedNetwork;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRelatednetworkRelatedNetwork;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceModelInfrastructure;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServiceData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataNetworks;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataNetworksNetwork;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataNetworksNetworkNetworkData;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataNetworksNetworkNetworkdataNetworkProvidedAllottedResources;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnf;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnfVnfData;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicemodelinfrastructureService;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicestatusServiceStatus;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicetopologyServiceTopology;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiSubnetsSubnets;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVfmoduletopologyVfModuleTopology;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVlantagsVlanTags;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnfNetworkData;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnfresourceassignmentsVnfResourceAssignments;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnftopologyVnfTopology;
+import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVpnbindingsVpnBindings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,19 +127,19 @@ public class ConfigApiController implements ConfigApi {
 
     @Autowired
     private ConfigNetworksRepository configNetworksRepository;
-    
+
     @Autowired
     private ConfigVnfsRepository configVnfsRepository;
 
     @Autowired
     private ConfigVfModulesRepository configVfModulesRepository;
-    
+
     @Autowired
     private ConfigPortMirrorConfigurationsRepository configPortMirrorConfigurationsRepository;
 
     @Autowired
     private ConfigContrailRouteAllottedResourcesRepository configContrailRouteAllottedResourcesRepository;
-    
+
     @Autowired
     private ServiceDataHelper serviceDataHelper;
 
@@ -143,22 +168,25 @@ public class ConfigApiController implements ConfigApi {
     }
 
     /**
-     * Extracts port-mirror configuration data from CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS for a given, configuration-id
+     * Extracts port-mirror configuration data from
+     * CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS for a given, configuration-id
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:port-mirror-configurations/port-mirror-configuration/{configuration-id}/
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:port-mirror-configurations/port-mirror-configuration/{configuration-id}/
+     * 
      * @param configurationId the configuration ID for a port-mirror
      * @return HttpStatus.OK (200) if the data is found.
      * @throws RestException if the data does not exist.
      */
-    public ResponseEntity<GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration>
-                configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdGet(
-                    String configurationId) throws RestApplicationException {
+    public ResponseEntity<GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration> configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdGet(
+            String configurationId) throws RestApplicationException {
         GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration retval = null;
 
-        List<ConfigPortMirrorConfigurations> pmConfigurations = configPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+        List<ConfigPortMirrorConfigurations> pmConfigurations = configPortMirrorConfigurationsRepository
+                .findByConfigurationId(configurationId);
 
         if (pmConfigurations.isEmpty()) {
-            log.info("No configuration data found with id [{}]",configurationId);
+            log.info("No configuration data found with id [{}]", configurationId);
             throw new RestApplicationException("data-missing",
                     "Request could not be completed because the relevant data model content does not exist",
                     HttpStatus.NOT_FOUND.value());
@@ -168,10 +196,13 @@ public class ConfigApiController implements ConfigApi {
             retval.setConfigurationId(configurationId);
             retval.setConfigurationStatus(pmConfiguration.getPortMirrorConfigurationStatus());
             try {
-                retval.setConfigurationData(objectMapper.readValue(pmConfiguration.getPmcData(), GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData.class));
+                retval.setConfigurationData(objectMapper.readValue(pmConfiguration.getPmcData(),
+                        GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData.class));
             } catch (JsonProcessingException e) {
                 log.error("Could not deserialize service data for service instance id {}", configurationId, e);
-                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         }
         return new ResponseEntity<>(retval, HttpStatus.OK);
@@ -179,15 +210,17 @@ public class ConfigApiController implements ConfigApi {
 
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdPut(
-            String configurationId, @Valid GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration newConfiguration)
-                throws RestApplicationException {
+            String configurationId,
+            @Valid GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration newConfiguration)
+            throws RestApplicationException {
 
         boolean dataExists = false;
 
         String newConfigurationId = newConfiguration.getConfigurationId();
 
         ConfigPortMirrorConfigurations portMirrorConfiguration = null;
-        List<ConfigPortMirrorConfigurations> existingConfiguration = configPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+        List<ConfigPortMirrorConfigurations> existingConfiguration = configPortMirrorConfigurationsRepository
+                .findByConfigurationId(configurationId);
         if ((existingConfiguration != null) && !existingConfiguration.isEmpty()) {
             dataExists = true;
             portMirrorConfiguration = existingConfiguration.get(0);
@@ -197,10 +230,14 @@ public class ConfigApiController implements ConfigApi {
         }
 
         try {
-            portMirrorConfiguration.setPmcData(objectMapper.writeValueAsString(newConfiguration.getConfigurationData()));
+            portMirrorConfiguration
+                    .setPmcData(objectMapper.writeValueAsString(newConfiguration.getConfigurationData()));
         } catch (JsonProcessingException e) {
-            log.error("Could not serialize porr-mirror configuration data for {}", portMirrorConfiguration.getConfigurationId(), e);
-            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            log.error("Could not serialize porr-mirror configuration data for {}",
+                    portMirrorConfiguration.getConfigurationId(), e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         }
         portMirrorConfiguration.setPortMirrorConfigurationStatus(newConfiguration.getConfigurationStatus());
@@ -214,13 +251,14 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<GenericResourceApiPortmirrorconfigurationtopologyPortMirrorConfigurationTopology>
-            configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdConfigurationDataPortMirrorConfigurationTopologyGet(
-                    String configurationId) throws RestApplicationException, RestProtocolException {
-        @Valid GenericResourceApiPortmirrorconfigurationtopologyPortMirrorConfigurationTopology portMirrorConfigurationTopology = null;
+    public ResponseEntity<GenericResourceApiPortmirrorconfigurationtopologyPortMirrorConfigurationTopology> configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdConfigurationDataPortMirrorConfigurationTopologyGet(
+            String configurationId) throws RestApplicationException, RestProtocolException {
+        @Valid
+        GenericResourceApiPortmirrorconfigurationtopologyPortMirrorConfigurationTopology portMirrorConfigurationTopology = null;
         GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData portMirrorConfigurationData = null;
 
-        List<ConfigPortMirrorConfigurations> configPortMirrorConfigurations = configPortMirrorConfigurationsRepository.findByConfigurationId(configurationId);
+        List<ConfigPortMirrorConfigurations> configPortMirrorConfigurations = configPortMirrorConfigurationsRepository
+                .findByConfigurationId(configurationId);
         if ((configPortMirrorConfigurations == null) || (configPortMirrorConfigurations.isEmpty())) {
             log.info("No configuration data found with id [{}]", configurationId);
             throw new RestApplicationException("data-missing",
@@ -229,51 +267,180 @@ public class ConfigApiController implements ConfigApi {
         }
 
         try {
-            if ( configPortMirrorConfigurations.get(0).getPmcData().isEmpty()) {
-                throw new RestProtocolException("data-missing", "No configuration-data entry found", HttpStatus.NOT_FOUND.value());
+            if (configPortMirrorConfigurations.get(0).getPmcData().isEmpty()) {
+                throw new RestProtocolException("data-missing", "No configuration-data entry found",
+                        HttpStatus.NOT_FOUND.value());
             } else {
-                portMirrorConfigurationData = objectMapper.readValue(configPortMirrorConfigurations.get(0).getPmcData(), GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData.class);
+                portMirrorConfigurationData = objectMapper.readValue(configPortMirrorConfigurations.get(0).getPmcData(),
+                        GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData.class);
                 portMirrorConfigurationTopology = portMirrorConfigurationData.getPortMirrorConfigurationTopology();
             }
             if (portMirrorConfigurationTopology == null) {
-                throw new RestProtocolException("data-missing", "No service-topology entry found", HttpStatus.NOT_FOUND.value());
+                throw new RestProtocolException("data-missing", "No service-topology entry found",
+                        HttpStatus.NOT_FOUND.value());
             }
             return new ResponseEntity<>(portMirrorConfigurationTopology, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             log.error("Could not parse service data", e);
-            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 
-
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdDelete(String configurationId) {
+    public ResponseEntity<Void> configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdDelete(
+            String configurationId) {
         configPortMirrorConfigurationsRepository.deleteByConfigurationId(configurationId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIportMirrorConfigurationsPost(
+            @Valid GenericResourceApiPortMirrorConfigurations genericResourceApiPortMirrorConfigurationsBodyParam)
+            throws RestException {
+        boolean dataExists = false;
+
+        for (GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration portMirrorConfigItem : genericResourceApiPortMirrorConfigurationsBodyParam
+                .getPortMirrorConfiguration()) {
+            String configurationId = portMirrorConfigItem.getConfigurationId();
+            List<ConfigPortMirrorConfigurations> existingConfiguration = configPortMirrorConfigurationsRepository
+                    .findByConfigurationId(configurationId);
+            if ((existingConfiguration != null) && !existingConfiguration.isEmpty()) {
+
+                log.error("Port mirror configuration data already exists for {}", configurationId);
+                throw new RestProtocolException("data-exists",
+                        "Data already exists for configuration-id " + configurationId, HttpStatus.CONFLICT.value());
+            }
+            ConfigPortMirrorConfigurations portMirrorConfiguration = null;
+
+            if ((existingConfiguration != null) && !existingConfiguration.isEmpty()) {
+                dataExists = true;
+                portMirrorConfiguration = existingConfiguration.get(0);
+            } else {
+                portMirrorConfiguration = new ConfigPortMirrorConfigurations();
+                portMirrorConfiguration.setConfigurationId(configurationId);
+            }
+
+            try {
+                portMirrorConfiguration
+                        .setPmcData(objectMapper.writeValueAsString(portMirrorConfigItem.getConfigurationData()));
+            } catch (JsonProcessingException e) {
+                log.error("Could not serialize port-mirror configuration data for {}",
+                        portMirrorConfiguration.getConfigurationId(), e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+            }
+            portMirrorConfiguration.setPortMirrorConfigurationStatus(portMirrorConfigItem.getConfigurationStatus());
+            configPortMirrorConfigurationsRepository.save(portMirrorConfiguration);
+
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    
+    @Override
+    public ResponseEntity<GenericResourceApiPortMirrorConfigurations> configGENERICRESOURCEAPIportMirrorConfigurationsGet()
+            throws RestException {
+
+        if (configPortMirrorConfigurationsRepository.count() == 0) {
+            throw new RestApplicationException("data-missing",
+              "Request could not be completed because the relevant data model content does not exist",
+               HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiPortMirrorConfigurations retval = new GenericResourceApiPortMirrorConfigurations();
+
+        for (ConfigPortMirrorConfigurations pmConfiguration : configPortMirrorConfigurationsRepository.findAll()) {
+            GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration pmItem = new GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration();
+            pmItem.setConfigurationId(pmConfiguration.getConfigurationId());
+            pmItem.setConfigurationStatus(pmConfiguration.getPortMirrorConfigurationStatus());
+            try {
+                pmItem.setConfigurationData(objectMapper.readValue(pmConfiguration.getPmcData(),
+                        GenericResourceApiPortmirrorconfigurationsPortmirrorconfigurationConfigurationData.class));
+                retval.addPortMirrorConfigurationItem(pmItem);
+            } catch (JsonProcessingException e) {
+                log.error("Could not deserialize service data for service instance id {}", pmConfiguration.getConfigurationId(), e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+
+        return new ResponseEntity<>(retval, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIportMirrorConfigurationsPut(
+            @Valid GenericResourceApiPortMirrorConfigurations genericResourceApiPortMirrorConfigurationsBodyParam)
+            throws RestException {
+        boolean dataExists = false;
+
+        for (GenericResourceApiPortmirrorconfigurationsPortMirrorConfiguration portMirrorConfigItem : genericResourceApiPortMirrorConfigurationsBodyParam
+                .getPortMirrorConfiguration()) {
+            String configurationId = portMirrorConfigItem.getConfigurationId();
+            List<ConfigPortMirrorConfigurations> existingConfiguration = configPortMirrorConfigurationsRepository
+                    .findByConfigurationId(configurationId);
+
+            ConfigPortMirrorConfigurations portMirrorConfiguration = null;
+
+            if ((existingConfiguration != null) && !existingConfiguration.isEmpty()) {
+                dataExists = true;
+                portMirrorConfiguration = existingConfiguration.get(0);
+            } else {
+                portMirrorConfiguration = new ConfigPortMirrorConfigurations();
+                portMirrorConfiguration.setConfigurationId(configurationId);
+            }
+
+            try {
+                portMirrorConfiguration
+                        .setPmcData(objectMapper.writeValueAsString(portMirrorConfigItem.getConfigurationData()));
+            } catch (JsonProcessingException e) {
+                log.error("Could not serialize port-mirror configuration data for {}",
+                        portMirrorConfiguration.getConfigurationId(), e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+            }
+            portMirrorConfiguration.setPortMirrorConfigurationStatus(portMirrorConfigItem.getConfigurationStatus());
+            configPortMirrorConfigurationsRepository.save(portMirrorConfiguration);
+
+        }
+
+        if (dataExists) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+    }
+
     /**
-     * Extracts contrail-route-allotted-resource data from CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
+     * Extracts contrail-route-allotted-resource data from
+     * CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}
+     * 
      * @param allottedResourceId the allotted-resource-id for a contrail-route
      * @return HttpStatus.OK (200) if the data is found.
      * @throws RestException if the data does not exist.
      */
-    public ResponseEntity<GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource>
-                configGENERICRESOURCEAPIcontrailRouteAllottedResourcesContrailRouteAllottedResourceAllottedResourceIdGet(
-                        String allottedResourceId) throws RestApplicationException {
+    public ResponseEntity<GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource> configGENERICRESOURCEAPIcontrailRouteAllottedResourcesContrailRouteAllottedResourceAllottedResourceIdGet(
+            String allottedResourceId) throws RestApplicationException {
         GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource retval = null;
 
-        List<ConfigContrailRouteAllottedResources> allottedResources = configContrailRouteAllottedResourcesRepository.findByAllottedResourceId(allottedResourceId);
+        List<ConfigContrailRouteAllottedResources> allottedResources = configContrailRouteAllottedResourcesRepository
+                .findByAllottedResourceId(allottedResourceId);
 
         if (allottedResources.isEmpty()) {
             log.info("No contrail-route-allotted-resource found with id [{}]", allottedResourceId);
             throw new RestApplicationException("data-missing",
                     "Request could not be completed because the relevant data model content does not exist",
                     HttpStatus.NOT_FOUND.value());
-        }
-        else {
+        } else {
             ConfigContrailRouteAllottedResources allottedResource = allottedResources.get(0);
             retval = new GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource();
             retval.setAllottedResourceId(allottedResourceId);
@@ -283,23 +450,29 @@ public class ConfigApiController implements ConfigApi {
                         GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData.class));
             } catch (JsonProcessingException e) {
                 log.error("Could not deserialize service data for service instance id {}", allottedResourceId, e);
-                throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         }
         return new ResponseEntity<>(retval, HttpStatus.OK);
     }
 
     /**
-     * PUT contrail-route-allotted-resource data from CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
+     * PUT contrail-route-allotted-resource data from
+     * CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}
+     * 
      * @param allottedResourceId the allotted-resource-id for a contrail-route
      * @return HttpStatus.OK (200) if the data is found.
      * @throws RestException if the data does not exist.
      */
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIcontrailRouteAllottedResourcesContrailRouteAllottedResourceAllottedResourceIdPut(
-            String allottedResourceId, @Valid GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource newAllottedResource)
+            String allottedResourceId,
+            @Valid GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource newAllottedResource)
             throws RestApplicationException {
 
         boolean dataExists = false;
@@ -307,8 +480,8 @@ public class ConfigApiController implements ConfigApi {
         String newAllottedResourceId = newAllottedResource.getAllottedResourceId();
 
         ConfigContrailRouteAllottedResources allottedResource = null;
-        List<ConfigContrailRouteAllottedResources> existingAllottedResource =
-                configContrailRouteAllottedResourcesRepository.findByAllottedResourceId(allottedResourceId);
+        List<ConfigContrailRouteAllottedResources> existingAllottedResource = configContrailRouteAllottedResourcesRepository
+                .findByAllottedResourceId(allottedResourceId);
 
         if ((existingAllottedResource != null) && !existingAllottedResource.isEmpty()) {
             dataExists = true;
@@ -321,8 +494,11 @@ public class ConfigApiController implements ConfigApi {
         try {
             allottedResource.setArData(objectMapper.writeValueAsString(newAllottedResource.getAllottedResourceData()));
         } catch (JsonProcessingException e) {
-            log.error("Could not serialize porr-mirror configuration data for {}", allottedResource.getAllottedResourceId(), e);
-            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            log.error("Could not serialize port-mirror configuration data for {}",
+                    allottedResource.getAllottedResourceId(), e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         }
         allottedResource.setAllottedResourceStatus(newAllottedResource.getAllottedResourceStatus());
@@ -336,33 +512,37 @@ public class ConfigApiController implements ConfigApi {
     }
 
     /**
-     * Extracts contrail-route-topology data from CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
+     * Extracts contrail-route-topology data from
+     * CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}/allotted-resource-data/contrail-route-topology/
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}/allotted-resource-data/contrail-route-topology/
+     * 
      * @param allottedResourceId the allotted-resource-id for a contrail-route
      * @return HttpStatus.OK (200) if the data is found.
      * @throws RestException if the data does not exist.
      */
     @Override
-    public ResponseEntity<GenericResourceApiContrailroutetopologyContrailRouteTopology>
-            configGENERICRESOURCEAPIcontrailRouteAllottedResourcesContrailRouteAllottedResourceAllottedResourceIdAllottedResourceDataContrailRouteTopologyGet(
-                String allottedResourceId) throws RestApplicationException, RestProtocolException {
-        @Valid GenericResourceApiContrailroutetopologyContrailRouteTopology contrailRouteTopology = null;
+    public ResponseEntity<GenericResourceApiContrailroutetopologyContrailRouteTopology> configGENERICRESOURCEAPIcontrailRouteAllottedResourcesContrailRouteAllottedResourceAllottedResourceIdAllottedResourceDataContrailRouteTopologyGet(
+            String allottedResourceId) throws RestApplicationException, RestProtocolException {
+        @Valid
+        GenericResourceApiContrailroutetopologyContrailRouteTopology contrailRouteTopology = null;
         GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData allottedResourceData = null;
 
-        List<ConfigContrailRouteAllottedResources> configContrailRouteAllottedResources =
-                configContrailRouteAllottedResourcesRepository.findByAllottedResourceId(allottedResourceId);
+        List<ConfigContrailRouteAllottedResources> configContrailRouteAllottedResources = configContrailRouteAllottedResourcesRepository
+                .findByAllottedResourceId(allottedResourceId);
 
         if ((configContrailRouteAllottedResources == null) || (configContrailRouteAllottedResources.isEmpty())) {
-            log.info("No contrail-route-allotted-resoure data found with id [{}]", allottedResourceId);
+            log.info("No contrail-route-allotted-resource data found with id [{}]", allottedResourceId);
             throw new RestApplicationException("data-missing",
                     "Request could not be completed because the relevant data model content does not exist",
                     HttpStatus.NOT_FOUND.value());
         }
 
         try {
-            if ( configContrailRouteAllottedResources.get(0).getArData().isEmpty()) {
-                throw new RestProtocolException("data-missing", "No allotted-resource-data entry found", HttpStatus.NOT_FOUND.value());
+            if (configContrailRouteAllottedResources.get(0).getArData().isEmpty()) {
+                throw new RestProtocolException("data-missing", "No allotted-resource-data entry found",
+                        HttpStatus.NOT_FOUND.value());
             } else {
                 allottedResourceData = objectMapper.readValue(configContrailRouteAllottedResources.get(0).getArData(),
                         GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData.class);
@@ -370,20 +550,25 @@ public class ConfigApiController implements ConfigApi {
                 contrailRouteTopology = allottedResourceData.getContrailRouteTopology();
             }
             if (contrailRouteTopology == null) {
-                throw new RestProtocolException("data-missing", "No contrail-route-topology entry found", HttpStatus.NOT_FOUND.value());
+                throw new RestProtocolException("data-missing", "No contrail-route-topology entry found",
+                        HttpStatus.NOT_FOUND.value());
             }
             return new ResponseEntity<>(contrailRouteTopology, HttpStatus.OK);
         } catch (JsonProcessingException e) {
             log.error("Could not parse port-mirror-configuration data", e);
-            throw new RestApplicationException("data-conversion", "Request could not be completed due to internal error", e, HttpStatus.INTERNAL_SERVER_ERROR.value());
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
 
-
     /**
-     * DELETE allotted-resource data from CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
+     * DELETE allotted-resource data from
+     * CONFIG_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES for a given allottedResourceId
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/{allotted-resource-id}
+     * 
      * @param allottedResourceId the allotted-resource-id for a contrail-route
      * @return HttpStatus.NO_CONTENT (204) if the data is found.
      */
@@ -394,6 +579,124 @@ public class ConfigApiController implements ConfigApi {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    
+
+    @Override
+    public ResponseEntity<GenericResourceApiContrailRouteAllottedResources> configGENERICRESOURCEAPIcontrailRouteAllottedResourcesGet()
+            throws RestException {
+                
+        if (configContrailRouteAllottedResourcesRepository.count() == 0) {
+             throw new RestApplicationException("data-missing",
+                "Request could not be completed because the relevant data model content does not exist",
+                HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiContrailRouteAllottedResources retval = new GenericResourceApiContrailRouteAllottedResources();
+        
+        for (ConfigContrailRouteAllottedResources allottedResource : configContrailRouteAllottedResourcesRepository.findAll()) {
+
+            GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource curItem = new GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource();
+            curItem.setAllottedResourceId(allottedResource.getAllottedResourceId());
+            curItem.setAllottedResourceStatus(allottedResource.getAllottedResourceStatus());
+            try {
+                curItem.setAllottedResourceData(objectMapper.readValue(allottedResource.getArData(),
+                        GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData.class));
+                retval.addContrailRouteAllottedResourceItem(curItem);
+            } catch (JsonProcessingException e) {
+                log.error("Could not deserialize service data for service instance id {}", allottedResource.getAllottedResourceId(), e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+
+        return new ResponseEntity<>(retval, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIcontrailRouteAllottedResourcesPost(
+            @Valid GenericResourceApiContrailRouteAllottedResources genericResourceApiContrailRouteAllottedResourcesBodyParam)
+            throws RestException {
+        for (GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource contrailItem : genericResourceApiContrailRouteAllottedResourcesBodyParam
+                .getContrailRouteAllottedResource()) {
+            String allottedResourceId = contrailItem.getAllottedResourceId();
+            List<ConfigContrailRouteAllottedResources> existingResources = configContrailRouteAllottedResourcesRepository
+                    .findByAllottedResourceId(allottedResourceId);
+
+            ConfigContrailRouteAllottedResources allottedResource = null;
+
+            if ((existingResources != null) && !existingResources.isEmpty()) {
+                log.error("Contrail route allotted resource data already exists for {}", allottedResourceId);
+                throw new RestProtocolException("data-exists",
+                        "Data already exists for allotted-resource-id " + allottedResourceId,
+                        HttpStatus.CONFLICT.value());
+            } else {
+                allottedResource = new ConfigContrailRouteAllottedResources();
+                allottedResource.setAllottedResourceId(allottedResourceId);
+            }
+
+            try {
+                allottedResource.setArData(objectMapper.writeValueAsString(contrailItem.getAllottedResourceData()));
+            } catch (JsonProcessingException e) {
+                log.error("Could not serialize porr-mirror configuration data for {}",
+                        allottedResource.getAllottedResourceId(), e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+            }
+            allottedResource.setAllottedResourceStatus(contrailItem.getAllottedResourceStatus());
+            configContrailRouteAllottedResourcesRepository.save(allottedResource);
+
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIcontrailRouteAllottedResourcesPut(
+            @Valid GenericResourceApiContrailRouteAllottedResources genericResourceApiContrailRouteAllottedResourcesBodyParam)
+            throws RestException {
+        boolean dataExists = false;
+
+        for (GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource contrailItem : genericResourceApiContrailRouteAllottedResourcesBodyParam
+                .getContrailRouteAllottedResource()) {
+            String allottedResourceId = contrailItem.getAllottedResourceId();
+            List<ConfigContrailRouteAllottedResources> existingResources = configContrailRouteAllottedResourcesRepository
+                    .findByAllottedResourceId(allottedResourceId);
+
+            ConfigContrailRouteAllottedResources allottedResource = null;
+
+            if ((existingResources != null) && !existingResources.isEmpty()) {
+                dataExists = true;
+                allottedResource = existingResources.get(0);
+            } else {
+                allottedResource = new ConfigContrailRouteAllottedResources();
+                allottedResource.setAllottedResourceId(allottedResourceId);
+            }
+
+            try {
+                allottedResource.setArData(objectMapper.writeValueAsString(contrailItem.getAllottedResourceData()));
+            } catch (JsonProcessingException e) {
+                log.error("Could not serialize porr-mirror configuration data for {}",
+                        allottedResource.getAllottedResourceId(), e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+            }
+            allottedResource.setAllottedResourceStatus(contrailItem.getAllottedResourceStatus());
+            configContrailRouteAllottedResourcesRepository.save(allottedResource);
+
+        }
+
+        if (dataExists) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+    }
 
     @Override
     public ResponseEntity<GenericResourceApiPreloadModelInformation> configGENERICRESOURCEAPIpreloadInformationGet()
@@ -450,10 +753,9 @@ public class ConfigApiController implements ConfigApi {
                         HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
         }
-        
+
         return new ResponseEntity<>(netTopoInfo, HttpStatus.OK);
     }
-
 
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIpreloadInformationPost(
@@ -705,7 +1007,6 @@ public class ConfigApiController implements ConfigApi {
             String preloadId, String preloadType, @Valid GenericResourceApiPreloaddataPreloadData preloadData)
             throws RestApplicationException, RestProtocolException {
 
-
         List<ConfigPreloadData> preloadDataItems = configPreloadDataRepository.findByPreloadIdAndPreloadType(preloadId,
                 preloadType);
         if ((preloadDataItems == null) || (preloadDataItems.isEmpty())) {
@@ -815,7 +1116,6 @@ public class ConfigApiController implements ConfigApi {
                         HttpStatus.INTERNAL_SERVER_ERROR.value());
             }
 
-            
             if (serviceItemSvcData != null) {
                 serviceItem.setServiceData(serviceItemSvcData);
             }
@@ -827,9 +1127,10 @@ public class ConfigApiController implements ConfigApi {
     }
 
     @Override
-    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPost(@Valid GenericResourceApiServiceModelInfrastructure modelInfrastructure)
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesPost(
+            @Valid GenericResourceApiServiceModelInfrastructure modelInfrastructure)
             throws RestApplicationException, RestProtocolException {
-        
+
         ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
 
         for (GenericResourceApiServicemodelinfrastructureService serviceItem : modelInfrastructure.getService()) {
@@ -918,7 +1219,7 @@ public class ConfigApiController implements ConfigApi {
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdDelete(
             String serviceInstanceId) {
-        serviceDataHelper.deleteService(serviceInstanceId);  
+        serviceDataHelper.deleteService(serviceInstanceId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -1225,6 +1526,1890 @@ public class ConfigApiController implements ConfigApi {
     }
 
     /**
+     * Delete network instance group data from the Config table specified Service
+     * Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to delete from
+     * @param networkInstanceGroupId the network instance group ID to delete
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdDelete(
+            String serviceInstanceId, String networkInstanceGroupId) throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+        GenericResourceApiNetworkInstanceGroup newNetInstanceGroup = new GenericResourceApiNetworkInstanceGroup();
+
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+        if (curList != null) {
+            for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+                if (!networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                    newNetInstanceGroup.addNetworkInstanceGroupItem(curItem);
+                }
+            }
+        }
+        svcData.setNetworkInstanceGroups(newNetInstanceGroup);
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(svcData));
+        } catch (JsonProcessingException e) {
+
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        configServicesRepository.save(service);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Get network instance group data from the Config table specified Service
+     * Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to get
+     * @param networkInstanceGroupId the network instance group ID to get
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdGet(
+            String serviceInstanceId, String networkInstanceGroupId) throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+
+        if (curNetInstanceGroup == null) {
+            throw new RestProtocolException("data-missing", "No network-instance-group found",
+                    HttpStatus.NOT_FOUND.value());
+        }
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+
+        if (curList == null) {
+            throw new RestProtocolException("data-missing", "Empty network-instance-group ",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+            if (networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                return new ResponseEntity<>(curItem, HttpStatus.OK);
+            }
+        }
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+
+    }
+
+    /**
+     * Delete network instance group network data from the Config table specified
+     * Service Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/networks/network/{network-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to delete from
+     * @param networkInstanceGroupId the network instance group ID to delete
+     * @param networkId              the network ID to delete
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkIdDelete(
+            String serviceInstanceId, String networkInstanceGroupId, String networkId) throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+        if (curList != null) {
+            for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+                if (networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks curNetworks = curItem
+                            .getNetworks();
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks newNetworks = new GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks();
+                    List<GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork> curNetList = curNetworks
+                            .getNetwork();
+                    for (GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork curNetListItem : curNetList) {
+                        if (!networkId.equals(curNetListItem.getNetworkId())) {
+                            newNetworks.addNetworkItem(curNetListItem);
+                        }
+                    }
+                    curItem.setNetworks(newNetworks);
+                }
+            }
+
+        }
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(svcData));
+        } catch (JsonProcessingException e) {
+
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        configServicesRepository.save(service);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Get network instance group network data from the Config table specified
+     * Service Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/networks/network/{network-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to get
+     * @param networkInstanceGroupId the network instance group ID to get
+     * @param networkId              the network ID to get
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkIdGet(
+            String serviceInstanceId, String networkInstanceGroupId, String networkId) throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+        if (curList != null) {
+            for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+                if (networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks curNetworks = curItem
+                            .getNetworks();
+                    List<GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork> curNetList = curNetworks
+                            .getNetwork();
+                    for (GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork curNetListItem : curNetList) {
+                        if (networkId.equals(curNetListItem.getNetworkId())) {
+                            return new ResponseEntity<>(curNetListItem, HttpStatus.OK);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    /**
+     * Post network to network instance group network data from the Config table
+     * specified Service Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/networks/network/{network-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to update
+     * @param networkInstanceGroupId the network instance group ID to update
+     * @param networkId              the network ID to update
+     * @param network                the network to add
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkIdPost(
+            String serviceInstanceId, String networkInstanceGroupId, String networkId,
+            @Valid GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork network)
+            throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+        if (curList != null) {
+            for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+                if (networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks curNetworks = curItem
+                            .getNetworks();
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks newNetworks = new GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks();
+                    List<GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork> curNetList = curNetworks
+                            .getNetwork();
+                    for (GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork curNetListItem : curNetList) {
+                        if (!networkId.equals(curNetListItem.getNetworkId())) {
+                            newNetworks.addNetworkItem(curNetListItem);
+                        } else {
+                            log.error(
+                                    "network already exists for svcInstanceId, networkInstanceGroupId, networkId {}, {}, {}",
+                                    serviceInstanceId, networkInstanceGroupId, networkId);
+                            throw new RestProtocolException("data-exists", "Data already exists for "
+                                    + serviceInstanceId + "/" + networkInstanceGroupId + "/" + networkId,
+                                    HttpStatus.CONFLICT.value());
+                        }
+                    }
+                    newNetworks.addNetworkItem(network);
+                    curItem.setNetworks(newNetworks);
+                }
+            }
+        }
+
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(svcData));
+        } catch (JsonProcessingException e) {
+
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        configServicesRepository.save(service);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * Put network to network instance group network data from the Config table
+     * specified Service Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/networks/network/{network-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to update
+     * @param networkInstanceGroupId the network instance group ID to update
+     * @param networkId              the network ID to update
+     * @param network                the network to add
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkIdPut(
+            String serviceInstanceId, String networkInstanceGroupId, String networkId,
+            @Valid GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork network)
+            throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        boolean networkExists = false;
+
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+        if (curList != null) {
+            for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+                if (networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks curNetworks = curItem
+                            .getNetworks();
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks newNetworks = new GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks();
+                    List<GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork> curNetList = curNetworks
+                            .getNetwork();
+                    for (GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork curNetListItem : curNetList) {
+                        if (!networkId.equals(curNetListItem.getNetworkId())) {
+                            newNetworks.addNetworkItem(curNetListItem);
+                        } else {
+                            networkExists = true;
+                            newNetworks.addNetworkItem(network);
+                        }
+                    }
+                    if (!networkExists) {
+                        newNetworks.addNetworkItem(network);
+                    }
+                    curItem.setNetworks(newNetworks);
+                }
+            }
+        }
+
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(svcData));
+        } catch (JsonProcessingException e) {
+
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        configServicesRepository.save(service);
+
+        if (networkExists) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+    }
+
+    /**
+     * Delete vpn binding from network instance group network data from the Config
+     * table specified Service Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/networks/network/{network-id}/vpn-bindings/vpn-binding/{vpn-binding-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to delete from
+     * @param networkInstanceGroupId the network instance group ID to delete
+     * @param networkId              the network ID to delete
+     * @param vpnBindingId           the vpn binding ID to delete
+     * @return HttpStatus.OK (200) on successful DELETE
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkIdVpnBindingsVpnBindingIdDelete(
+            String serviceInstanceId, String networkInstanceGroupId, String networkId, String vpnBindingId)
+            throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+        if (curList != null) {
+            for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+                if (networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks curNetworks = curItem
+                            .getNetworks();
+                    List<GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork> curNetList = curNetworks
+                            .getNetwork();
+                    for (GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork curNetListItem : curNetList) {
+                        if (networkId.equals(curNetListItem.getNetworkId())) {
+                            List<GenericResourceApiVpnbindingsVpnBindings> curVpnBindings = curNetListItem
+                                    .getVpnBindings();
+                            ArrayList<GenericResourceApiVpnbindingsVpnBindings> newVpnBindings = new ArrayList<>(
+                                    curVpnBindings.size() - 1);
+                            for (GenericResourceApiVpnbindingsVpnBindings curBinding : curVpnBindings) {
+                                if (!vpnBindingId.equals(curBinding.getVpnBindingId())) {
+                                    newVpnBindings.add(curBinding);
+                                }
+                            }
+                            curNetListItem.setVpnBindings(newVpnBindings);
+                        }
+                    }
+                }
+            }
+
+        }
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(svcData));
+        } catch (JsonProcessingException e) {
+
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        configServicesRepository.save(service);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Get vpn binding from network instance group network data from the Config
+     * table specified Service Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/networks/network/{network-id}/vpn-bindings/vpn-binding/{vpn-binding-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to get
+     * @param networkInstanceGroupId the network instance group ID to get
+     * @param networkId              the network ID to get
+     * @param vpnBindingId           the vpn binding ID to get
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiVpnbindingsVpnBindings> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkIdVpnBindingsVpnBindingIdGet(
+            String serviceInstanceId, String networkInstanceGroupId, String networkId, String vpnBindingId)
+            throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+        if (curList != null) {
+            for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+                if (networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks curNetworks = curItem
+                            .getNetworks();
+                    List<GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork> curNetList = curNetworks
+                            .getNetwork();
+                    for (GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork curNetListItem : curNetList) {
+                        if (networkId.equals(curNetListItem.getNetworkId())) {
+                            List<GenericResourceApiVpnbindingsVpnBindings> curVpnBindings = curNetListItem
+                                    .getVpnBindings();
+                            for (GenericResourceApiVpnbindingsVpnBindings curBinding : curVpnBindings) {
+                                if (vpnBindingId.equals(curBinding.getVpnBindingId())) {
+                                    return new ResponseEntity<>(curBinding, HttpStatus.OK);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    /**
+     * Post vpn binding from network instance group network data from the Config
+     * table specified Service Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/networks/network/{network-id}/vpn-bindings/vpn-binding/{vpn-binding-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to update
+     * @param networkInstanceGroupId the network instance group ID to update
+     * @param networkId              the network ID to update
+     * @param vpnBindingId           the vpn binding ID to post
+     * @param vpnBinding             the vpn binding body to post
+     * @return HttpStatus.CREATED (201) on successful POST
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkIdVpnBindingsVpnBindingIdPost(
+            String serviceInstanceId, String networkInstanceGroupId, String networkId, String vpnBindingId,
+            @Valid GenericResourceApiVpnbindingsVpnBindings vpnBinding) throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+        if (curList != null) {
+            for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+                if (networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks curNetworks = curItem
+                            .getNetworks();
+                    List<GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork> curNetList = curNetworks
+                            .getNetwork();
+                    for (GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork curNetListItem : curNetList) {
+                        if (networkId.equals(curNetListItem.getNetworkId())) {
+                            List<GenericResourceApiVpnbindingsVpnBindings> curVpnBindings = curNetListItem
+                                    .getVpnBindings();
+                            ArrayList<GenericResourceApiVpnbindingsVpnBindings> newVpnBindings = new ArrayList<>(
+                                    curVpnBindings.size() - 1);
+                            for (GenericResourceApiVpnbindingsVpnBindings curBinding : curVpnBindings) {
+                                if (!vpnBindingId.equals(curBinding.getVpnBindingId())) {
+                                    newVpnBindings.add(curBinding);
+                                } else {
+                                    log.error(
+                                            "vpn-binding already exists for svcInstanceId, networkInstanceGroupId, networkId, vpnBindingId {}, {}, {}, {}",
+                                            serviceInstanceId, networkInstanceGroupId, networkId, vpnBindingId);
+                                    throw new RestProtocolException("data-exists",
+                                            "Data already exists for " + serviceInstanceId + "/"
+                                                    + networkInstanceGroupId + "/" + networkId + "/" + vpnBindingId,
+                                            HttpStatus.CONFLICT.value());
+                                }
+                            }
+                            newVpnBindings.add(vpnBinding);
+                            curNetListItem.setVpnBindings(newVpnBindings);
+                        }
+                    }
+                }
+            }
+
+        }
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(svcData));
+        } catch (JsonProcessingException e) {
+
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        configServicesRepository.save(service);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * Put vpn binding from network instance group network data from the Config
+     * table specified Service Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/network-instance-group/network-instance-group/{network-instance-group-id}/networks/network/{network-id}/vpn-bindings/vpn-binding/{vpn-binding-id}/
+     * 
+     * @param serviceInstanceId      the Service Instance ID to update
+     * @param networkInstanceGroupId the network instance group ID to update
+     * @param networkId              the network ID to update
+     * @param vpnBindingId           the vpn binding ID to post
+     * @param vpnBinding             the vpn binding body to post
+     * @return HttpStatus.CREATED (201) on successful POST
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkIdVpnBindingsVpnBindingIdPut(
+            String serviceInstanceId, String networkInstanceGroupId, String networkId, String vpnBindingId,
+            @Valid GenericResourceApiVpnbindingsVpnBindings vpnBinding) throws RestException {
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        boolean vpnBindingExists = false;
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        ConfigServices service = services.get(0);
+
+        if (service.getSvcData() == null) {
+            throw new RestProtocolException("data-missing", "No service-data found", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServiceData svcData = null;
+        try {
+            svcData = objectMapper.readValue(service.getSvcData(), GenericResourceApiServicedataServiceData.class);
+        } catch (JsonProcessingException e) {
+            log.error("Could not deserialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+        GenericResourceApiNetworkInstanceGroup curNetInstanceGroup = svcData.getNetworkInstanceGroups();
+
+        List<GenericResourceApiNetworkinstancegroupNetworkInstanceGroup> curList = curNetInstanceGroup
+                .getNetworkInstanceGroup();
+        if (curList != null) {
+            for (GenericResourceApiNetworkinstancegroupNetworkInstanceGroup curItem : curList) {
+                if (networkInstanceGroupId.equals(curItem.getNetworkInstanceGroupId())) {
+                    GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworks curNetworks = curItem
+                            .getNetworks();
+                    List<GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork> curNetList = curNetworks
+                            .getNetwork();
+                    for (GenericResourceApiNetworkinstancegroupNetworkinstancegroupNetworksNetwork curNetListItem : curNetList) {
+                        if (networkId.equals(curNetListItem.getNetworkId())) {
+                            List<GenericResourceApiVpnbindingsVpnBindings> curVpnBindings = curNetListItem
+                                    .getVpnBindings();
+                            ArrayList<GenericResourceApiVpnbindingsVpnBindings> newVpnBindings = new ArrayList<>(
+                                    curVpnBindings.size() - 1);
+                            for (GenericResourceApiVpnbindingsVpnBindings curBinding : curVpnBindings) {
+                                if (!vpnBindingId.equals(curBinding.getVpnBindingId())) {
+                                    newVpnBindings.add(curBinding);
+                                } else {
+                                    vpnBindingExists = true;
+                                    newVpnBindings.add(vpnBinding);
+                                }
+                            }
+                            if (!vpnBindingExists) {
+                                newVpnBindings.add(vpnBinding);
+                            }
+                            curNetListItem.setVpnBindings(newVpnBindings);
+                        }
+                    }
+                }
+            }
+
+        }
+        try {
+            service.setSvcData(objectMapper.writeValueAsString(svcData));
+        } catch (JsonProcessingException e) {
+
+            log.error("Could not serialize service data for svc instance id {}", serviceInstanceId, e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        configServicesRepository.save(service);
+
+        if (vpnBindingExists) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+    }
+
+    /**
+     * Get network data from the Config table specified Service Instance.
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/
+     * 
+     * @param serviceInstanceId the Service Instance ID to perform the get on
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId} does not
+     *         exist.
+     */
+
+    @Override
+    public ResponseEntity<GenericResourceApiServicedataServicedataNetworks> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksGet(
+            String serviceInstanceId) throws RestException {
+        log.info("GET | Network Data for svcInstanceId ({})", serviceInstanceId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworks networks = null;
+        try {
+            networks = serviceDataHelper.getNetworks(serviceInstanceId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        return new ResponseEntity<>(networks, HttpStatus.OK);
+    }
+
+    /**
+     * Delete network data from the Config table specified Service Instance and network
+     * id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/
+     * 
+     * @param serviceInstanceId the Service Instance ID to perform the get on
+     * @param networkId         the network ID to perform the delete on
+     * @return HttpStatus.NO_CONTENT (204) on successful DELETE
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId}
+     *         does not exist.
+     */
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdDelete(
+        String serviceInstanceId, String networkId) throws RestException {
+        log.info("DELETE | Network Data for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                        HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network != null) {
+            serviceDataHelper.deleteNetwork(serviceInstanceId, networkId);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
+    /**
+     * Get network data from the Config table specified Service Instance and network
+     * id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/
+     * 
+     * @param serviceInstanceId the Service Instance ID to perform the get on
+     * @param networkId         the network ID to perform the get on
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+
+    @Override
+    public ResponseEntity<GenericResourceApiServicedataServicedataNetworksNetwork> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdGet(
+            String serviceInstanceId, String networkId) throws RestException {
+        log.info("GET | Network Data for serviceInstanceId, networkId ({})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        return new ResponseEntity<>(network, HttpStatus.OK);
+    }
+     /**
+     * Post network data to the Config table specified Service Instance and network
+     * id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/
+     * 
+     * @param serviceInstanceId the Service Instance ID to perform the get on
+     * @param networkId         the network ID to perform the get on
+     * @return HttpStatus.CREATED (201) on successful POST if new network
+     *         <p>
+     *         HttpStatus.CONFLICT (409) if network already existed
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdPost(
+            String serviceInstanceId, String networkId,
+            @Valid GenericResourceApiServicedataServicedataNetworksNetwork network)
+            throws RestException {
+        log.info("POST | Network Data for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
+
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+
+        if (serviceDataHelper.networkExists(serviceInstanceId, networkId)) {
+
+            log.error("network already exists for svcInstanceId, networkId {}, {}", serviceInstanceId, networkId);
+            throw new RestProtocolException("data-exists", "Data already exists for " + serviceInstanceId+","+networkId,
+                    HttpStatus.CONFLICT.value());
+        }
+
+        try {
+            serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * Put network data to the Config table specified Service Instance and network
+     * id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/
+     * 
+     * @param serviceInstanceId the Service Instance ID to perform the get on
+     * @param networkId         the network ID to perform the get on
+     * @return HttpStatus.CREATED (201) on successful PUT if new network
+     *         <p>
+     *         HttpStatus.NO_CONTENT(204) on successful PUT if network already existed
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdPut(
+            String serviceInstanceId, String networkId,
+            @Valid GenericResourceApiServicedataServicedataNetworksNetwork network) throws RestException {
+        log.info("PUT | Network Data for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
+
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+
+        boolean networkAlreadyExisted = serviceDataHelper.networkExists(serviceInstanceId, networkId);
+
+        try {
+            serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (networkAlreadyExisted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+
+    }
+
+    /**
+     * Delete network oper status data from the Config table specified Service
+     * Instance and network id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/network-data/network-level-oper-status/
+     * 
+     * @param serviceInstanceId the Service Instance ID to update
+     * @param networkId         the network ID to update
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkLevelOperStatusDelete(
+            String serviceInstanceId, String networkId) throws RestException {
+        log.info("DELETE | Network level oper status Data for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        if (network.getNetworkData() != null) {
+            network.getNetworkData().setNetworkLevelOperStatus(null);
+            try {
+                serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+            } catch (JsonProcessingException e) {
+                log.error("Could not parse service data", e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Get network oper status data from the Config table specified Service Instance
+     * and network id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/network-data/network-level-oper-status/
+     * 
+     * @param serviceInstanceId the Service Instance ID to perform the get on
+     * @param networkId         the network ID to perform the get on
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiOperStatusData> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkLevelOperStatusGet(
+            String serviceInstanceId, String networkId) throws RestException {
+        log.info("GET | Network level oper status Data for serviceInstanceId, networkId ({})", serviceInstanceId,
+                networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworksNetworkNetworkData networkData = network.getNetworkData();
+        if (networkData == null) {
+            log.info("No network-data  found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        return new ResponseEntity<>(networkData.getNetworkLevelOperStatus(), HttpStatus.OK);
+    }
+
+    /**
+     * Post network oper status data to the Config table specified Service Instance
+     * and network id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/network-data/network-level-oper-status/
+     * 
+     * @param serviceInstanceId the Service Instance ID to post to
+     * @param networkId         the network ID to post to
+     * @param operStatus        the oper status to set
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkLevelOperStatusPost(
+            String serviceInstanceId, String networkId, @Valid GenericResourceApiOperStatusData operStatusData)
+            throws RestException {
+        log.info("POST | Network level oper status Data for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworksNetworkNetworkData networkData = network.getNetworkData();
+        if (networkData == null) {
+            networkData = new GenericResourceApiServicedataServicedataNetworksNetworkNetworkData();
+        }
+
+        networkData.setNetworkLevelOperStatus(operStatusData);
+        network.setNetworkData(networkData);
+        try {
+            serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * Put network oper status data from the Config table specified Service Instance
+     * and network id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/network-data/network-level-oper-status/
+     * 
+     * @param serviceInstanceId the Service Instance ID to put to
+     * @param networkId         the network ID to put to
+     * @param operStatus        the oper status to set
+     * @return HttpStatus.OK (200) on successful PUT
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkLevelOperStatusPut(
+            String serviceInstanceId, String networkId, @Valid GenericResourceApiOperStatusData operStatusData)
+            throws RestException {
+        log.info("PUT | Network level oper status Data for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworksNetworkNetworkData networkData = network.getNetworkData();
+        if (networkData == null) {
+            networkData = new GenericResourceApiServicedataServicedataNetworksNetworkNetworkData();
+        }
+
+        networkData.setNetworkLevelOperStatus(operStatusData);
+        network.setNetworkData(networkData);
+        try {
+            serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * Delete network oper status data from the Config table specified Service
+     * Instance and network id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/network-data/network-level-oper-status/
+     * 
+     * @param serviceInstanceId the Service Instance ID to delete
+     * @param networkId         the Service Instance ID to delete
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkProvidedAllottedResourcesDelete(
+            String serviceInstanceId, String networkId) throws RestException {
+        log.info("DELETE | Network provided allotted resource Data for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        if (network.getNetworkData() != null) {
+            network.getNetworkData().setNetworkProvidedAllottedResources(null);
+            try {
+                serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+            } catch (JsonProcessingException e) {
+                log.error("Could not parse service data", e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<GenericResourceApiServicedataServicedataNetworksNetworkNetworkdataNetworkProvidedAllottedResources> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkProvidedAllottedResourcesGet(
+            String serviceInstanceId, String networkId) throws RestException {
+        log.info("GET | Network provided allotted resources for serviceInstanceId, networkId ({})", serviceInstanceId,
+                networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        if ((services == null) || (services.isEmpty())) {
+            throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworksNetworkNetworkData networkData = network.getNetworkData();
+        if (networkData == null) {
+            log.info("No network-data  found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        return new ResponseEntity<>(networkData.getNetworkProvidedAllottedResources(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkProvidedAllottedResourcesPost(
+            String serviceInstanceId, String networkId,
+            @Valid GenericResourceApiServicedataServicedataNetworksNetworkNetworkdataNetworkProvidedAllottedResources netAllottedResources)
+            throws RestException {
+        log.info("POST | Network provided allotted resource Data for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworksNetworkNetworkData networkData = network.getNetworkData();
+        if (networkData == null) {
+            networkData = new GenericResourceApiServicedataServicedataNetworksNetworkNetworkData();
+        }
+
+        networkData.setNetworkProvidedAllottedResources(netAllottedResources);
+        network.setNetworkData(networkData);
+        try {
+            serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkProvidedAllottedResourcesPut(
+            String serviceInstanceId, String networkId,
+            @Valid GenericResourceApiServicedataServicedataNetworksNetworkNetworkdataNetworkProvidedAllottedResources netAllottedResources)
+            throws RestException {
+        log.info("POST | Network provided allotted resource Data for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        GenericResourceApiServicedataServicedataNetworksNetworkNetworkData networkData = network.getNetworkData();
+        if (networkData == null) {
+            networkData = new GenericResourceApiServicedataServicedataNetworksNetworkNetworkData();
+        }
+
+        networkData.setNetworkProvidedAllottedResources(netAllottedResources);
+        network.setNetworkData(networkData);
+        try {
+            serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * Delete network topology identifier structure from service data based on
+     * service Instance and network id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/network-data/network-topology/network-topology-identifier-structure/
+     * 
+     * @param serviceInstanceId the Service Instance ID to delete
+     * @param networkId         the network ID to delete
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkTopologyNetworkTopologyIdentifierStructureDelete(
+            String serviceInstanceId, String networkId) throws RestException {
+        log.info("DELETE | Network topology identifier structure for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        if (network.getNetworkData() != null) {
+            GenericResourceApiNetworktopologyNetworkTopology netTopology = network.getNetworkData()
+                    .getNetworkTopology();
+            if (netTopology == null) {
+
+                log.info("No network-topology found for {}", networkId);
+                throw new RestApplicationException("data-missing",
+                        "Request could not be completed because the relevant data model content does not exist",
+                        HttpStatus.NOT_FOUND.value());
+            }
+            netTopology.setNetworkTopologyIdentifierStructure(null);
+            try {
+                serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+            } catch (JsonProcessingException e) {
+                log.error("Could not parse service data", e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Get network topology identifier structure from service data based on service
+     * Instance and network id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/network-data/network-topology/network-topology-identifier-structure/
+     * 
+     * @param serviceInstanceId the Service Instance ID to update
+     * @param networkId         the network ID to update
+     * @return HttpStatus.OK (200) on successful GET
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<GenericResourceApiNetworktopologyidentifierstructureNetworkTopologyIdentifierStructure> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkTopologyNetworkTopologyIdentifierStructureGet(
+            String serviceInstanceId, String networkId) throws RestException {
+        log.info("GET | Network topology identifier structure for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        if (network.getNetworkData() != null) {
+            GenericResourceApiNetworktopologyNetworkTopology netTopology = network.getNetworkData()
+                    .getNetworkTopology();
+            if (netTopology == null) {
+
+                log.info("No network-topology found for {}", networkId);
+                throw new RestApplicationException("data-missing",
+                        "Request could not be completed because the relevant data model content does not exist",
+                        HttpStatus.NOT_FOUND.value());
+            }
+            return new ResponseEntity<>(netTopology.getNetworkTopologyIdentifierStructure(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    /**
+     * Post network topology identifier structure from service data based on service
+     * Instance and network id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/network-data/network-topology/network-topology-identifier-structure/
+     * 
+     * @param serviceInstanceId              the Service Instance ID to update
+     * @param networkId                      the network ID to update
+     * @param netTopologyIdentifierStructure the network topology identifier
+     *                                       structure to set
+     * @return HttpStatus.CREATED (201) on successful POST
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkTopologyNetworkTopologyIdentifierStructurePost(
+            String serviceInstanceId, String networkId,
+            @Valid GenericResourceApiNetworktopologyidentifierstructureNetworkTopologyIdentifierStructure netTopologyIdentifierStructure)
+            throws RestException {
+        log.info("POST | Network topology identifier structure for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        if (network.getNetworkData() != null) {
+            GenericResourceApiNetworktopologyNetworkTopology netTopology = network.getNetworkData()
+                    .getNetworkTopology();
+            if (netTopology == null) {
+
+                log.info("No network-topology found for {}", networkId);
+                throw new RestApplicationException("data-missing",
+                        "Request could not be completed because the relevant data model content does not exist",
+                        HttpStatus.NOT_FOUND.value());
+            }
+            netTopology.setNetworkTopologyIdentifierStructure(netTopologyIdentifierStructure);
+            try {
+                serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+            } catch (JsonProcessingException e) {
+                log.error("Could not parse service data", e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * Put network topology identifier structure from service data based on service
+     * Instance and network id
+     * <p>
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/networks/network/{network-id}/network-data/network-topology/network-topology-identifier-structure/
+     * 
+     * @param serviceInstanceId              the Service Instance ID to update
+     * @param networkId                      the network ID to update
+     * @param netTopologyIdentifierStructure the network topology identifier
+     *                                       structure to set
+     * @return HttpStatus.CREATED (201) on successful POST
+     *         <p>
+     *         HttpStatus.INTERNAL_SERVER_ERROR (500) if unmarshalling Service Data
+     *         from the database fails
+     *         <p>
+     *         HttpStatus.NOT_FOUND (404) if {@code serviceInstanceId, networkId}
+     *         does not exist.
+     */
+    @Override
+    public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataNetworksNetworkNetworkIdNetworkDataNetworkTopologyNetworkTopologyIdentifierStructurePut(
+            String serviceInstanceId, String networkId,
+            @Valid GenericResourceApiNetworktopologyidentifierstructureNetworkTopologyIdentifierStructure netTopologyIdentifierStructure)
+            throws RestException {
+        log.info("PUT | Network topology identifier structure for ({}, {})", serviceInstanceId, networkId);
+
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
+        ConfigServices data;
+        if ((services == null) || (services.isEmpty())) {
+            log.info("Could not find data for ({}).", serviceInstanceId);
+            // Or throw the data not found error?
+            throw new RestProtocolException("data-missing", "Service Instance ID not found.",
+                    HttpStatus.NOT_FOUND.value());
+        } else {
+            data = services.get(0);
+        }
+
+        if (!serviceDataHelper.hasServiceData(data)) {
+            log.info("Could not find Service Data for ({}).", serviceInstanceId);
+            throw new RestProtocolException("data-missing", "Service data not found.", HttpStatus.NOT_FOUND.value());
+        }
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        try {
+            network = serviceDataHelper.getNetwork(serviceInstanceId, networkId);
+        } catch (JsonProcessingException e) {
+            log.error("Could not parse service data", e);
+            throw new RestApplicationException("data-conversion",
+                    "Request could not be completed due to internal error", e,
+                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+
+        if (network == null) {
+            log.info("No information found for {}", networkId);
+            throw new RestApplicationException("data-missing",
+                    "Request could not be completed because the relevant data model content does not exist",
+                    HttpStatus.NOT_FOUND.value());
+        }
+
+        if (network.getNetworkData() != null) {
+            GenericResourceApiNetworktopologyNetworkTopology netTopology = network.getNetworkData()
+                    .getNetworkTopology();
+            if (netTopology == null) {
+
+                log.info("No network-topology found for {}", networkId);
+                throw new RestApplicationException("data-missing",
+                        "Request could not be completed because the relevant data model content does not exist",
+                        HttpStatus.NOT_FOUND.value());
+            }
+            netTopology.setNetworkTopologyIdentifierStructure(netTopologyIdentifierStructure);
+            try {
+                serviceDataHelper.saveNetwork(serviceInstanceId, network, null);
+            } catch (JsonProcessingException e) {
+                log.error("Could not parse service data", e);
+                throw new RestApplicationException("data-conversion",
+                        "Request could not be completed due to internal error", e,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value());
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
      * Deletes VNF data from the Config table specified Service Instance.
      * <p>
      * Maps to
@@ -1317,22 +3502,30 @@ public class ConfigApiController implements ConfigApi {
      * Instance. If it is a new Service Instance or a new VNF, creates all necessary
      * parent data containers, then performs the updates.
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/
-     * @param serviceInstanceId the Service Instance ID to perform the delete on
-     * @param vnfId the VNF ID of the VNF to delete
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/
+     * 
+     * @param serviceInstanceId                                        the Service
+     *                                                                 Instance ID
+     *                                                                 to perform
+     *                                                                 the delete on
+     * @param vnfId                                                    the VNF ID of
+     *                                                                 the VNF to
+     *                                                                 delete
      * @param genericResourceApiServicedataServicedataVnfsVnfBodyParam the playload
      * @return HttpStatus.CREATED (201) on successful create
-     * <p>
-     * HttpStatus.NO_CONTENT (204) on successful update
-     * <p>
-     * HttpStatus.BAD_REQUEST (400) if {@code vnfId} does not match what is specified in the
-     * {@code genericResourceApiServicedataServicedataVnfsVnfBodyParam} , or if updating the database fails.
+     *         <p>
+     *         HttpStatus.NO_CONTENT (204) on successful update
+     *         <p>
+     *         HttpStatus.BAD_REQUEST (400) if {@code vnfId} does not match what is
+     *         specified in the
+     *         {@code genericResourceApiServicedataServicedataVnfsVnfBodyParam} , or
+     *         if updating the database fails.
      * @throws RestException
      */
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdPut(
-            String serviceInstanceId, String vnfId,
-            GenericResourceApiServicedataServicedataVnfsVnf vnf)
+            String serviceInstanceId, String vnfId, GenericResourceApiServicedataServicedataVnfsVnf vnf)
             throws RestException {
         log.info("PUT | VNF Data for ({})", vnfId);
         if (!vnfId.equals(vnf.getVnfId())) {
@@ -1388,7 +3581,7 @@ public class ConfigApiController implements ConfigApi {
         }
 
         GenericResourceApiServicedataServicedataVnfsVnf vnf = null;
-        
+
         try {
             vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
         } catch (JsonProcessingException e) {
@@ -1417,11 +3610,9 @@ public class ConfigApiController implements ConfigApi {
      * Maps to
      * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-level-oper-status/
      * 
-     * @param serviceInstanceId                         the Service Instance ID to
-     *                                                  perform the delete on
-     * @param vnfId                                     the VNF ID of the VNF to
-     *                                                  delete
-     * @param genericResourceApiOperStatusDataBodyParam the payload
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId             the VNF ID of the VNF to delete
+     * @param operStatus        the payload
      * @return HttpStatus.CREATED (201) on successful create.
      *         <p>
      *         HttpStatus.NO_CONTENT (204) on successful update.
@@ -1431,8 +3622,7 @@ public class ConfigApiController implements ConfigApi {
      */
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfLevelOperStatusPut(
-            String serviceInstanceId, String vnfId,
-            GenericResourceApiOperStatusData genericResourceApiOperStatusDataBodyParam) throws RestException {
+            String serviceInstanceId, String vnfId, GenericResourceApiOperStatusData operStatus) throws RestException {
         log.info("PUT | VNF Level Oper Status ({})", vnfId);
         ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
 
@@ -1455,12 +3645,12 @@ public class ConfigApiController implements ConfigApi {
                 responseStatus = HttpStatus.CREATED;
                 vnf = new GenericResourceApiServicedataServicedataVnfsVnf();
                 vnf.setVnfId(vnfId);
-            } 
+            }
             GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfData = vnf.getVnfData();
             if (vnfData == null) {
                 vnfData = new GenericResourceApiServicedataServicedataVnfsVnfVnfData();
             }
-            vnfData.setVnfLevelOperStatus(genericResourceApiOperStatusDataBodyParam);
+            vnfData.setVnfLevelOperStatus(operStatus);
             vnf.setVnfData(vnfData);
             serviceDataHelper.saveVnf(serviceInstanceId, vnf, transaction);
             transaction.commit();
@@ -1479,25 +3669,9 @@ public class ConfigApiController implements ConfigApi {
      * Maps to
      * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/onap-model-information/
      * 
-     * @param serviceInstanceId                                                   the
-     *                                                                            Service
-     *                                                                            Instance
-     *                                                                            ID
-     *                                                                            to
-     *                                                                            perform
-     *                                                                            the
-     *                                                                            delete
-     *                                                                            on
-     * @param vnfId                                                               the
-     *                                                                            VNF
-     *                                                                            ID
-     *                                                                            of
-     *                                                                            the
-     *                                                                            VNF
-     *                                                                            to
-     *                                                                            delete
-     * @param genericResourceApiOnapmodelinformationOnapModelInformationBodyParam the
-     *                                                                            payload
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId             the VNF ID of the VNF to delete
+     * @param onapModelInfo     the payload
      * @return HttpStatus.CREATED (201) on successful create.
      *         <p>
      *         HttpStatus.NO_CONTENT (204) on successful update.
@@ -1508,8 +3682,7 @@ public class ConfigApiController implements ConfigApi {
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyOnapModelInformationPut(
             String serviceInstanceId, String vnfId,
-            GenericResourceApiOnapmodelinformationOnapModelInformation genericResourceApiOnapmodelinformationOnapModelInformationBodyParam)
-            throws RestException {
+            GenericResourceApiOnapmodelinformationOnapModelInformation onapModelInfo) throws RestException {
         log.info("PUT | VNF Topology Onap Model Information ({})", vnfId);
         ServiceDataTransaction transaction = serviceDataHelper.createTransaction();
 
@@ -1524,13 +3697,12 @@ public class ConfigApiController implements ConfigApi {
             data = services.get(0);
         }
 
-
         GenericResourceApiServicedataServicedataVnfsVnf vnf = null;
         HttpStatus responseStatus = HttpStatus.NO_CONTENT;
-        
+
         try {
             vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
-        } catch(JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
 
             log.error("Could not parse service data", e);
             throw new RestApplicationException("data-conversion",
@@ -1546,8 +3718,7 @@ public class ConfigApiController implements ConfigApi {
             vnf.getVnfData().setVnfTopology(new GenericResourceApiVnftopologyVnfTopology());
         }
 
-        vnf.getVnfData().getVnfTopology()
-                .setOnapModelInformation(genericResourceApiOnapmodelinformationOnapModelInformationBodyParam);
+        vnf.getVnfData().getVnfTopology().setOnapModelInformation(onapModelInfo);
 
         // Save the updated VNF (and service, if new)
         try {
@@ -1566,21 +3737,23 @@ public class ConfigApiController implements ConfigApi {
      * Service Instance. If it is a new Service Instance or a new VNF, creates all
      * necessary parent data containers, then performs the updates.
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/
+     * 
      * @param serviceInstanceId the Service Instance ID to perform the delete on
-     * @param vnfId the VNF ID of the VNF to delete
-     * @param genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam the * payload
+     * @param vnfId             the VNF ID of the VNF to delete
+     * @param vnfNetworks       the * payload
      * @return HttpStatus.CREATED (201) on successful create.
-     * <p>
-     * HttpStatus.NO_CONTENT (204) on successful update.
-     * <p>
-     * HttpStatus.BAD_REQUEST (400) if updating the database fails.
+     *         <p>
+     *         HttpStatus.NO_CONTENT (204) on successful update.
+     *         <p>
+     *         HttpStatus.BAD_REQUEST (400) if updating the database fails.
      * @throws RestException
      */
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyVnfResourceAssignmentsVnfNetworksPut(
             String serviceInstanceId, String vnfId,
-            GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam)
+            GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks vnfNetworks)
             throws RestException {
         log.info("PUT | VNF Topology VNF Resource Assignments VNF Networks ({})", vnfId);
 
@@ -1601,7 +3774,7 @@ public class ConfigApiController implements ConfigApi {
 
         try {
             vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
-        } catch(JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
 
             log.error("Could not parse service data", e);
             throw new RestApplicationException("data-conversion",
@@ -1625,11 +3798,12 @@ public class ConfigApiController implements ConfigApi {
             vnfTopology = new GenericResourceApiVnftopologyVnfTopology();
         }
 
-        GenericResourceApiVnfresourceassignmentsVnfResourceAssignments vnfResourceAssignments = vnfTopology.getVnfResourceAssignments();
+        GenericResourceApiVnfresourceassignmentsVnfResourceAssignments vnfResourceAssignments = vnfTopology
+                .getVnfResourceAssignments();
         if (vnfResourceAssignments == null) {
             vnfResourceAssignments = new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments();
         }
-        vnfResourceAssignments.setVnfNetworks(genericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworksBodyParam);
+        vnfResourceAssignments.setVnfNetworks(vnfNetworks);
         vnfTopology.setVnfResourceAssignments(vnfResourceAssignments);
         vnfData.setVnfTopology(vnfTopology);
         vnf.setVnfData(vnfData);
@@ -1654,11 +3828,9 @@ public class ConfigApiController implements ConfigApi {
      * Maps to
      * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vnf-topology/vnf-resource-assignments/vnf-networks/vnf-network/{network-role}/
      * 
-     * @param serviceInstanceId                         the Service Instance ID to
-     *                                                  perform the delete on
-     * @param vnfId                                     the VNF ID of the VNF to
-     *                                                  delete
-     * @param genericResourceApiVnfNetworkDataBodyParam the payload
+     * @param serviceInstanceId the Service Instance ID to perform the delete on
+     * @param vnfId             the VNF ID of the VNF to delete
+     * @param vnfNetwork        the payload
      * @return HttpStatus.CREATED (201) on successful create.
      *         <p>
      *         HttpStatus.NO_CONTENT (204) on successful update.
@@ -1668,10 +3840,10 @@ public class ConfigApiController implements ConfigApi {
      */
     @Override
     public ResponseEntity<Void> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVnfTopologyVnfResourceAssignmentsVnfNetworksVnfNetworkNetworkRolePut(
-            String serviceInstanceId, String vnfId, String networkRole,
-            GenericResourceApiVnfNetworkData genericResourceApiVnfNetworkDataBodyParam) throws RestException {
+            String serviceInstanceId, String vnfId, String networkRole, GenericResourceApiVnfNetworkData vnfNetwork)
+            throws RestException {
         log.info("PUT | VNF Network Network Role ({})", vnfId);
-        if (!networkRole.equals(genericResourceApiVnfNetworkDataBodyParam.getNetworkRole())) {
+        if (!networkRole.equals(vnfNetwork.getNetworkRole())) {
             throw new RestProtocolException("bad-attribute", "network-role mismatch", HttpStatus.BAD_REQUEST.value());
         }
 
@@ -1693,7 +3865,7 @@ public class ConfigApiController implements ConfigApi {
 
         try {
             vnf = serviceDataHelper.getVnf(serviceInstanceId, vnfId);
-        } catch(JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
 
             log.error("Could not parse service data", e);
             throw new RestApplicationException("data-conversion",
@@ -1717,27 +3889,29 @@ public class ConfigApiController implements ConfigApi {
             vnfTopology = new GenericResourceApiVnftopologyVnfTopology();
         }
 
-        GenericResourceApiVnfresourceassignmentsVnfResourceAssignments vnfResourceAssignments = vnfTopology.getVnfResourceAssignments();
+        GenericResourceApiVnfresourceassignmentsVnfResourceAssignments vnfResourceAssignments = vnfTopology
+                .getVnfResourceAssignments();
         if (vnfResourceAssignments == null) {
             vnfResourceAssignments = new GenericResourceApiVnfresourceassignmentsVnfResourceAssignments();
         }
 
-        GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks vnfNetworks = vnfResourceAssignments.getVnfNetworks();
+        GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks vnfNetworks = vnfResourceAssignments
+                .getVnfNetworks();
         if (vnfNetworks == null) {
             vnfNetworks = new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks();
             vnfNetworks.setVnfNetwork(new ArrayList<>());
         }
 
-
         if (vnfNetworks.getVnfNetwork().isEmpty()) {
-            vnfNetworks.addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
+            vnfNetworks.addVnfNetworkItem(vnfNetwork);
         } else {
             GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks vnfNetworksNew = new GenericResourceApiVnfresourceassignmentsVnfresourceassignmentsVnfNetworks();
             vnfNetworksNew.setVnfNetwork(new ArrayList<>());
             vnfNetworks.getVnfNetwork().stream()
-              .filter(targetNetwork -> !targetNetwork.getNetworkRole().equals(networkRole)).forEach(vnfNetworksNew::addVnfNetworkItem);
+                    .filter(targetNetwork -> !targetNetwork.getNetworkRole().equals(networkRole))
+                    .forEach(vnfNetworksNew::addVnfNetworkItem);
 
-            vnfNetworksNew.addVnfNetworkItem(genericResourceApiVnfNetworkDataBodyParam);
+            vnfNetworksNew.addVnfNetworkItem(vnfNetwork);
             vnfNetworks = vnfNetworksNew;
         }
 
@@ -1747,7 +3921,7 @@ public class ConfigApiController implements ConfigApi {
         vnf.setVnfData(vnfData);
         try {
             serviceDataHelper.saveVnf(serviceInstanceId, vnf, transaction);
-            transaction.commit();        
+            transaction.commit();
             return new ResponseEntity<>(responseStatus);
         } catch (JsonProcessingException e) {
             log.error("Error mapping object to JSON", e);
@@ -1755,7 +3929,6 @@ public class ConfigApiController implements ConfigApi {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-
 
     @Override
     public ResponseEntity<GenericResourceApiServicetopologyServiceTopology> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataServiceTopologyGet(
@@ -1771,7 +3944,7 @@ public class ConfigApiController implements ConfigApi {
         ConfigServices service = services.get(0);
 
         try {
-            if ( (service.getSvcData() == null) || service.getSvcData().isEmpty()) {
+            if ((service.getSvcData() == null) || service.getSvcData().isEmpty()) {
                 throw new RestProtocolException("data-missing", "No service-data entry found",
                         HttpStatus.NOT_FOUND.value());
             } else {
@@ -1793,25 +3966,26 @@ public class ConfigApiController implements ConfigApi {
     }
 
     /**
-     * Extracts VF MODULE data from CONFIG_GRA_SERVICES for a given, service-instance-id, vnf-id, and vf-module-id
+     * Extracts VF MODULE data from CONFIG_GRA_SERVICES for a given,
+     * service-instance-id, vnf-id, and vf-module-id
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vf-modules/vf-module/{vf-module-id}/
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vf-modules/vf-module/{vf-module-id}/
+     * 
      * @param serviceInstanceId the Service Instance ID to lookup data for
-     * @param vnfId the VNF ID of the VNF to return
-     * @param vfModuleId the vf-moudle ID of a specific VNF to return
+     * @param vnfId             the VNF ID of the VNF to return
+     * @param vfModuleId        the vf-moudle ID of a specific VNF to return
      * @return HttpStatus.OK (200) if the data is found.
      * @throws RestException if the data does not exist.
      */
     @Override
-    public ResponseEntity<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule>
-    configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVfModulesVfModuleVfModuleIdGet(
+    public ResponseEntity<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVfModulesVfModuleVfModuleIdGet(
             String serviceInstanceId, String vnfId, String vfModuleId) throws RestException {
 
         log.info("GET | Vf Module Data for ({})", vfModuleId);
 
-
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
-        if((services == null) || (services.isEmpty())) {
+        if ((services == null) || (services.isEmpty())) {
             throw new RestProtocolException("data-missing", "No service entry found", HttpStatus.NOT_FOUND.value());
         }
 
@@ -1825,7 +3999,7 @@ public class ConfigApiController implements ConfigApi {
                     HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
-        if(vfModule != null) {
+        if (vfModule != null) {
             return new ResponseEntity<>(vfModule, HttpStatus.OK);
         } else {
             log.info("No vf-module found for [{}]", vfModuleId);
@@ -1836,12 +4010,17 @@ public class ConfigApiController implements ConfigApi {
     }
 
     /**
-     * PUT VF MODULE data into CONFIG_GRA_SERVICES of a given, service-instance-id, vnf-id
+     * PUT VF MODULE data into CONFIG_GRA_SERVICES of a given, service-instance-id,
+     * vnf-id
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vf-modules/vf-module/{vf-module-id}/
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vf-modules/vf-module/{vf-module-id}/
+     * 
      * @param serviceInstanceId the Service Instance ID
-     * @param vnfId the VNF ID as the parent of the specified vf-module-id and child of the specified service-instance
-     * @param vfModuleId the vf-moudle ID as a child of the specified VNF
+     * @param vnfId             the VNF ID as the parent of the specified
+     *                          vf-module-id and child of the specified
+     *                          service-instance
+     * @param vfModuleId        the vf-module ID as a child of the specified VNF
      * @return HttpStatus.OK (200) if the data is found.
      * @throws RestException if the data does not exist.
      */
@@ -1852,19 +4031,18 @@ public class ConfigApiController implements ConfigApi {
             throws RestException {
         log.info("PUT | vf-module Data of ({}) for vnf ({}) in service({})", vfModuleId, vnfId, serviceInstanceId);
 
-        if(! vfModuleId.equals(genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam.getVfModuleId())) {
+        if (!vfModuleId.equals(
+                genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam.getVfModuleId())) {
             throw new RestProtocolException("bad-attribute", "vf-module-id mismatch", HttpStatus.BAD_REQUEST.value());
         }
-
 
         HttpStatus responseStatus = HttpStatus.NO_CONTENT;
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
 
-        if((services == null) || (services.isEmpty())) {
+        if ((services == null) || (services.isEmpty())) {
             log.error("service-instance-id ({}) not found in SDN.", serviceInstanceId);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } 
-
+        }
 
         GenericResourceApiServicedataServicedataVnfsVnf vnf;
         try {
@@ -1876,13 +4054,14 @@ public class ConfigApiController implements ConfigApi {
                     HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
-        if(vnf == null) {
+        if (vnf == null) {
             log.error("vnf-id ({}) not found in SDN.", vnfId);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         // See if this is the first vf module being added
-        List<ConfigVfModules> configVfModules = configVfModulesRepository.findBySvcInstanceIdAndVnfId(serviceInstanceId, vnfId);
+        List<ConfigVfModules> configVfModules = configVfModulesRepository.findBySvcInstanceIdAndVnfId(serviceInstanceId,
+                vnfId);
 
         if ((configVfModules == null) || configVfModules.isEmpty()) {
             responseStatus = HttpStatus.CREATED;
@@ -1890,9 +4069,10 @@ public class ConfigApiController implements ConfigApi {
 
         // Add vf module
         try {
-            serviceDataHelper.saveVfModule(serviceInstanceId, vnfId, genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam, null);
+            serviceDataHelper.saveVfModule(serviceInstanceId, vnfId,
+                    genericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModuleBodyParam, null);
             return new ResponseEntity<>(responseStatus);
-        } catch(JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             log.error("Error mapping object to JSON", e);
             // Should probably be a 500 INTERNAL_SERVICE_ERROR
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -1903,21 +4083,23 @@ public class ConfigApiController implements ConfigApi {
      * Extracts VF MODULE Topology data from the Config table specified Service
      * Instance and VNF ID.
      * <p>
-     * Maps to /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vf-modules/vf-module/{vf-module-id}/vf-module-data/vf-module-topology/
+     * Maps to
+     * /config/GENERIC-RESOURCE-API:services/service/{service-instance-id}/service-data/vnfs/vnf/{vnf-id}/vnf-data/vf-modules/vf-module/{vf-module-id}/vf-module-data/vf-module-topology/
+     * 
      * @param serviceInstanceId the Service Instance ID to lookup data for
-     * @param vnfId the VNF ID of the VNF to extract topology data from.
-     * @param vfModuleId the vf-module-idof the vf-module to extract topology data from.
+     * @param vnfId             the VNF ID of the VNF to extract topology data from.
+     * @param vfModuleId        the vf-module-idof the vf-module to extract topology
+     *                          data from.
      * @return HttpStatus.OK (200) if the data is found.
      * @throws RestException if the data does not exist.
      */
     @Override
-    public ResponseEntity<GenericResourceApiVfmoduletopologyVfModuleTopology>
-    configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVfModulesVfModuleVfModuleIdVfModuleDataVfModuleTopologyGet(
+    public ResponseEntity<GenericResourceApiVfmoduletopologyVfModuleTopology> configGENERICRESOURCEAPIservicesServiceServiceInstanceIdServiceDataVnfsVnfVnfIdVnfDataVfModulesVfModuleVfModuleIdVfModuleDataVfModuleTopologyGet(
             String serviceInstanceId, String vnfId, String vfModuleId) throws RestException {
         log.info("GET | vf-module-topology for ({})", vfModuleId);
 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
-        if((services == null) || (services.isEmpty())) {
+        if ((services == null) || (services.isEmpty())) {
             throw new RestApplicationException("data-missing",
                     "Request could not be completed because the relevant data model content does not exist",
                     HttpStatus.NOT_FOUND.value());
@@ -1932,8 +4114,7 @@ public class ConfigApiController implements ConfigApi {
                     "Request could not be completed due to internal error", e,
                     HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
-        if (vfModule != null
-                && vfModule.getVfModuleData() != null
+        if (vfModule != null && vfModule.getVfModuleData() != null
                 && vfModule.getVfModuleData().getVfModuleTopology() != null) {
             return new ResponseEntity<>(vfModule.getVfModuleData().getVfModuleTopology(), HttpStatus.OK);
         } else {
@@ -1950,20 +4131,15 @@ public class ConfigApiController implements ConfigApi {
 
         log.info("DELETE | vf-module Data for ({})", vfModuleId);
 
-
- 
         List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(serviceInstanceId);
 
-        if((services == null) || (services.isEmpty())) {
+        if ((services == null) || (services.isEmpty())) {
             log.error("service-instance-id ({}) not found in SDN.", serviceInstanceId);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } 
-
-
+        }
 
         serviceDataHelper.deleteVfModule(serviceInstanceId, vnfId, vfModuleId);
         return new ResponseEntity<>(HttpStatus.OK);
-        
+
     }
 }
-
