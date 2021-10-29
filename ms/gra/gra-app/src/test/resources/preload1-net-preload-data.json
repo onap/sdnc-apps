@@ -1,5 +1,5 @@
 {
-
+  "preload-data": {
     "preload-network-topology-information": {
       "host-routes": [
         {
@@ -74,5 +74,5 @@
         }
       ]
     }
+  }
 }
-

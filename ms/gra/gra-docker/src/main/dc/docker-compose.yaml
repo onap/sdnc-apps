@@ -12,15 +12,15 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-    logging:       
+    logging:
       driver:   "json-file"
-      options:  
+      options:
         max-size: "30m"
         max-file: "5"
-  
-      
+
+
   gra:
-    image: onap/sdnc-gra-image:latest
+    image: onap/sdnc-gra:latest
     depends_on:
       - db
     container_name: gra_controller
@@ -28,10 +28,10 @@ services:
       - "8181:8080"
       - "8443:8443"
     volumes:
-      - ../resources/application.properties:/opt/onap/sdnc/config/application.properties 
-      - ../resources/cadi-example.properties:/opt/onap/sdnc/config/cadi.properties 
-      - ../resources/cadi-log.properties:/opt/onap/sdnc/config/cadi-log.properties 
-      - ../resources/cadi.keyfile:/opt/onap/sdnc/config/cadi.keyfile
+      - ../resources/application.properties:/opt/sdnc/gra/config/application.properties
+     # Uncomment line below to authenticate with AAF
+     # - ../resources/cadi-example.properties:/opt/sdnc/gra/config/cadi.properties
+      - ../resources/cadi-log.properties:/opt/sdnc/gra/config/cadi-log.properties
     links:
       - db:dbhost
     environment:
@@ -40,16 +40,21 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - SDNC_CONFIG_DIR=/opt/onap/sdnc/config
+      - ODL_USER=${ODL_USER}
+      - AAF_MECHID_CRED=${ODL_PASSWORD}
+      - ODL_URI=http://localhost:8080
+      - SDNC_CONFIG_DIR=/opt/sdnc/gra/config
       - LOG_LEVEL=DEBUG
       - TRUSTSTORE_PASSWORD=changeit
       - CACERT_PASSWORD=changeit
-      - SDNC_CERT_DIR=/opt/onap/sdnc/config
+      - SDNC_CERT_DIR=/opt/sdnc/gra/config
       - JAVA_SECURITY_DIR=/usr/lib/jvm/default-jvm/jre/lib/security
       - TRUSTSTORE=truststoreONAPall.jks
-    logging:       
+      - SDNNFT_HOST=${SDNNFT_HOST:-localhost}
+      - LOG_PATH=/opt/sdnc/gra/logs
+    logging:
       driver:   "json-file"
-      options:  
+      options:
         max-size: "30m"
         max-file: "5"
     extra_hosts:
@@ -67,7 +72,7 @@ services:
     ports:
       - "3200:3100"
     volumes:
-      - ${HOME}/gerrit/sdnc/oam/platform-logic:/opt/onap/ccsdk/platform-logic
+      - ${HOME}/st_sdncp/platform-logic:/opt/onap/ccsdk/platform-logic
     links:
       - db:dbhost
       - db:sdnctldb01
@@ -78,8 +83,8 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-    logging:       
+    logging:
       driver:   "json-file"
-      options:  
+      options:
         max-size: "30m"
         max-file: "5"

@@ -503,9 +503,9 @@ Accept: application/json
         "global-customer-id": "{{$guid}}",
         "onap-model-information": {
           "model-customization-uuid": "12341234",
-          "model-invariant-uuid": "12341234",
+          "model-invariant-uuid": "b468c6c0-b3c2-462b-8712-1a7b487bc564",
           "model-name": "vBNG_0202",
-          "model-uuid": "00e50cbd-ef0f-4b28-821e-f2b583752dd3",
+          "model-uuid": "fd3d2a5e-0837-4776-abc1-d2bd923000e0",
           "model-version": "1920"
         },
         "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
@@ -858,7 +858,8 @@ Accept: application/json
         },
         "sdnc-request-header" : {
             "svc-request-id" : "svc-{{$guid}}",
-            "svc-action" : "assign"
+            "svc-action" : "assign",
+            "svc-notification-url" : "http://dev.null"
         },
         "service-information" : {
             "onap-model-information": {
@@ -1309,6 +1310,15 @@ Content-Type: application/json
 Accept: application/json
 
 { input: {}}
+
+### vlbcheck
+POST {{hostname}}/restconf/operations/SLI-API:vlbcheck/
+Authorization: Basic {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{ input: {}}
+
 
 ### get preload information (top)
 GET {{hostname}}/restconf/config/GENERIC-RESOURCE-API:preload-information/

@@ -1,4 +1,5 @@
 {
+  "service-status": {
   "final-indicator": "Y",
   "rpc-action": "activate",
   "rpc-name": "vf-module-topology-operation",
@@ -7,4 +8,5 @@
   "response-message": "",
   "action": "CreateVfModuleInstance",
   "request-status": "synccomplete"
+  }
 }

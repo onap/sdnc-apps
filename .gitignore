@@ -14,3 +14,30 @@ ms/generic-resource-api/src/main/resources/GENERIC-RESOURCE-API*xml
 ms/generic-resource-api/src/main/resources/SUBNET-API*xml
 ms/generic-resource-api/src/main/resources/graph.versions
 .vscode
+org.eclipse.core.resources.prefs
+.externalToolBuilders
+maven-eclipse.xml
+workspace
+
+## Compilation Files ##
+*.class
+**/target
+target
+target-ide
+MANIFEST.MF
+
+## Misc Ignores (OS specific etc) ##
+bin/
+dist
+*~
+*.ipr
+*.iml
+*.iws
+classes
+out/
+.DS_STORE
+.metadata
+
+## Folders which contain auto generated source code ##
+yang-gen-config
+yang-gen-sal

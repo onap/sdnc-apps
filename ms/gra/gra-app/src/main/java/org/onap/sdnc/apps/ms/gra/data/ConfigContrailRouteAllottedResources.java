@@ -20,6 +20,8 @@ public class ConfigContrailRouteAllottedResources {
     // allottedResource status fields
     String allottedResourceStatusResponseCode;
 
+    @Length(max = 2000)
+    @Column(length = 2000)
     String allottedResourceStatusResponseMessage;
 
     String allottedResourceStatusFinalIndicator;

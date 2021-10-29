@@ -1,0 +1,45 @@
+{
+    "vnf-network": {
+        "network-role": ${vnf-network-data.network-role},
+        "network-name": ${vnf-network-data.network-name},
+        "neutron-id": ${vnf-network-data.neutron-id},
+        "network-id": ${vnf-network-data.network-id},
+        "contrail-network-fqdn": ${vnf-network-data.contrail-network-fqdn},
+		"subnets-data": {
+			"subnet-data": [
+${repeat:vnf-network-data.subnets-data.subnet-data_length:
+				{
+					"sdnc-subnet-id": ${vnf-network-data.subnets-data.subnet-data[${1}].sdnc-subnet-id},
+					"subnet-role": ${vnf-network-data.subnets-data.subnet-data[${1}].subnet-role},
+					"subnet-name": ${vnf-network-data.subnets-data.subnet-data[${1}].subnet-name},
+					"ip-version": ${vnf-network-data.subnets-data.subnet-data[${1}].ip-version},
+					"subnet-id": ${vnf-network-data.subnets-data.subnet-data[${1}].subnet-id},
+					"dhcp-enabled": ${vnf-network-data.subnets-data.subnet-data[${1}].dhcp-enabled},
+					"network-start-address": ${vnf-network-data.subnets-data.subnet-data[${1}].network-start-address},
+					"gateway-address": ${vnf-network-data.subnets-data.subnet-data[${1}].gateway-address},
+					"cidr-mask": ${vnf-network-data.subnets-data.subnet-data[${1}].cidr-mask}
+				},
+}
+			]
+		},
+		"is-trunked": ${vnf-network-data.is-trunked},
+        "segmentation-id": ${vnf-network-data.segmentation-id},
+		"related-networks": {
+			"related-network": [
+${repeat:vnf-network-data.related-networks.related-network_length:
+				{
+					"network-id": ${vnf-network-data.related-networks.related-network[${1}].network-id},
+					"network-role": ${vnf-network-data.related-networks.related-network[${1}].network-role},
+					"vlan-tags": {
+						"vlan-interface": ${vnf-network-data.related-networks.related-network[${1}].vlan-tags.vlan-interface},
+						"upper-tag-id": ${vnf-network-data.related-networks.related-network[${1}].vlan-tags.upper-tag-id},
+						"lower-tag-id": ${vnf-network-data.related-networks.related-network[${1}].vlan-tags.lower-tag-id},
+						"is-private": ${vnf-network-data.related-networks.related-network[${1}].vlan-tags.is-private}
+					}
+				},
+}
+			]
+		}
+    }
+}
+

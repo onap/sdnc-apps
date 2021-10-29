@@ -18,15 +18,26 @@
     <url>http://wiki.onap.org</url>
 
     <properties>
+        <image.build.properties.file>/image.build.properties</image.build.properties.file>
+        <chart.update.properties.file>/chart.update.properties</chart.update.properties.file>
         <base.image.name>onap/ccsdk-alpine-j11-image</base.image.name>
-        <image.name>onap/sdnc-gra-image</image.name>
+        <base.image.version>${ccsdk.docker.version}</base.image.version>
+        <platform.logic.group>org.onap.ccsdk.distribution</platform.logic.group>
+        <platform.logic.version>${ccsdk.distribution.version}</platform.logic.version>
+        <image.name>onap/sdnc-gra</image.name>
         <ccsdk.project.version>${project.version}</ccsdk.project.version>
         <ccsdk.build.timestamp>${maven.build.timestamp}</ccsdk.build.timestamp>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
         <sdnc.gra.jar>gra-app-${project.version}.jar</sdnc.gra.jar>
-        <onap.truststore>truststoreONAPall.jks</onap.truststore>
+        <sdnc.uid>1001</sdnc.uid>
+        <truststore.file>truststore.jks</truststore.file>
         <docker.push.phase>deploy</docker.push.phase>
+        <docker.push.retries>5</docker.push.retries>
         <docker.autoCreateCustomNetworks>true</docker.autoCreateCustomNetworks>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <db.image.name>mariadb</db.image.name>
+        <db.image.version>10.5</db.image.version>
     </properties>
 
     <dependencies>
@@ -34,6 +45,17 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>gra-app</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>applicationinsights-agent</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>${platform.logic.group}</groupId>
+            <artifactId>platform-logic-installer</artifactId>
+            <version>${platform.logic.version}</version>
+            <type>zip</type>
         </dependency>
     </dependencies>
 
@@ -48,11 +70,28 @@
                         <artifactId>gmaven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <phase>validate</phase>
+                                <phase>prepare-package</phase>
                                 <goals>
                                     <goal>execute</goal>
                                 </goals>
                                 <configuration>
+                                    <source>
+                                        println 'repository: ' + project.properties['image.name'];
+                                        println 'tag: ' + project.version + '-' + project.properties['build.number'];
+                                        String dir = project.parent.build.directory;
+                                        println dir;
+                                        File mkDir = new File(dir);
+                                        File chartUpdateFile = new File(dir.concat(project.properties['chart.update.properties.file']));
+                                        mkDir.mkdirs();
+                                        dir = dir.concat(project.properties['image.build.properties.file']);
+                                        println dir;
+                                        File propFile = new File(dir);
+                                        propFile.createNewFile();
+                                        chartUpdateFile.createNewFile();
+                                        propFile.append('repository: ' + project.properties['image.name'] + '\n');
+                                        propFile.append('tag: ' + project.version + '-' + project.properties['build.number'] + '\n');
+                                        chartUpdateFile.append(' --set global.gra.image.tag=' + project.version + '-' + project.properties['build.number']);
+                                    </source>
                                     <source>${basedir}/../../../TagVersion.groovy</source>
                                 </configuration>
                             </execution>
@@ -62,7 +101,6 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
                         <version>2.10</version>
-
                         <executions>
                             <execution>
                                 <id>copy-dependencies</id>
@@ -72,7 +110,7 @@
                                 <phase>process-resources</phase>
                                 <configuration>
                                     <excludeTransitive>true</excludeTransitive>
-                                    <outputDirectory>${project.build.directory}/docker-stage/opt/onap/sdnc/lib</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/docker-stage/opt/sdnc/gra/lib</outputDirectory>
                                     <overWriteReleases>false</overWriteReleases>
                                     <overWriteSnapshots>true</overWriteSnapshots>
                                     <overWriteIfNewer>true</overWriteIfNewer>
@@ -85,18 +123,11 @@
                                 <id>unpack dgs</id>
                                 <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>unpack</goal>
+                                    <goal>unpack-dependencies</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc</outputDirectory>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.onap.sdnc.oam</groupId>
-                                            <artifactId>platform-logic-installer</artifactId>
-                                            <version>${sdnc.oam.version}</version>
-                                            <type>zip</type>
-                                        </artifactItem>
-                                    </artifactItems>
+                                    <outputDirectory>${basedir}/target/docker-stage/opt/sdnc/gra</outputDirectory>
+                                    <includeArtifactIds>platform-logic-installer</includeArtifactIds>
                                 </configuration>
                             </execution>
                         </executions>
@@ -132,7 +163,7 @@
                                 </goals> <!-- here the phase you need -->
                                 <phase>generate-resources</phase>
                                 <configuration>
-                                    <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc/config</outputDirectory>
+                                    <outputDirectory>${basedir}/target/docker-stage/opt/sdnc/gra/config</outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>src/main/resources</directory>
@@ -153,7 +184,7 @@
                                 </goals> <!-- here the phase you need -->
                                 <phase>generate-resources</phase>
                                 <configuration>
-                                    <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc/config</outputDirectory>
+                                    <outputDirectory>${basedir}/target/docker-stage/opt/sdnc/gra/config</outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>src/main/resources</directory>
@@ -172,7 +203,7 @@
                                 </goals> <!-- here the phase you need -->
                                 <phase>generate-resources</phase>
                                 <configuration>
-                                    <outputDirectory>${basedir}/target/docker-stage/opt/onap/sdnc/bin</outputDirectory>
+                                    <outputDirectory>${basedir}/target/docker-stage/opt/sdnc/gra/bin</outputDirectory>
                                     <resources>
                                         <resource>
                                             <directory>src/main/resources</directory>
@@ -180,6 +211,32 @@
                                                 <include>*.sh</include>
                                             </includes>
                                             <filtering>true</filtering>
+                                        </resource>
+                                        <resource>
+                                            <directory>src/main/scripts</directory>
+                                            <includes>
+                                                <include>exportGraDaexim.sh</include>
+                                                <include>importGraDaexim.sh</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-restapi-templates</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals> <!-- here the phase you need -->
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <outputDirectory>${basedir}/target/docker-stage/opt/sdnc/gra/restapi/templates</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/main/templates</directory>
+                                            <includes>
+                                                <include>*.json</include>
+                                            </includes>
+                                            <filtering>false</filtering>
                                         </resource>
                                     </resources>
                                 </configuration>
@@ -207,7 +264,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.28.0</version>
+                        <version>0.34.0</version>
                         <inherited>false</inherited>
                         <configuration>
                             <images>
@@ -215,16 +272,22 @@
                                     <name>${image.name}</name>
                                     <build>
                                         <cleanup>try</cleanup>
-                                        <dockerFileDir>${basedir}/target/docker-stage</dockerFileDir>
+                                        <noCache>true</noCache>
+                                        <contextDir>${basedir}/target/docker-stage</contextDir>
                                         <dockerFile>Dockerfile</dockerFile>
                                         <tags>
                                             <tag>${project.docker.latestminortag.version}</tag>
                                             <tag>${project.docker.latestfulltag.version}</tag>
-                                            <tag>${project.docker.latesttagtimestamp.version}</tag>
                                         </tags>
                                     </build>
+                                    <external>
+                                        <type>properties</type>
+                                        <prefix>docker</prefix>
+                                        <mode>override</mode>
+                                    </external>
                                 </image>
                             </images>
+                            <verbose>true</verbose>
                         </configuration>
                         <executions>
                             <execution>
@@ -243,7 +306,7 @@
                                 <configuration>
                                     <images>
                                         <image>
-                                            <name>mariadb:10.5</name>
+                                            <name>${db.image.name}:${db.image.version}</name>
                                             <alias>gradb</alias>
                                             <run>
                                                 <env>
@@ -266,7 +329,7 @@
                                             </run>
                                         </image>
                                         <image>
-                                            <name>${image.name}:${project.docker.latesttagtimestamp.version}</name>
+                                            <name>${image.name}:${project.docker.latestfulltag.version}</name>
                                             <alias>gra-container</alias>
                                             <run>
                                                 <env>
@@ -276,7 +339,7 @@
                                                     <MYSQL_PASSWORD>${gratest.mysql.password}</MYSQL_PASSWORD>
                                                     <MYSQL_DATABASE>${gratest.mysql.database}</MYSQL_DATABASE>
                                                     <LOG_LEVEL>INFO</LOG_LEVEL>
-                                                    <SDNC_CONFIG_DIR>/opt/onap/sdnc/config</SDNC_CONFIG_DIR>
+                                                    <SDNC_CONFIG_DIR>/opt/sdnc/gra/config</SDNC_CONFIG_DIR>
                                                 </env>
                                                 <dependsOn>
                                                     <container>gradb</container>

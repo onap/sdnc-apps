@@ -1,0 +1,11 @@
+{
+	"oper-status": {
+		"order-status": ${network-level-oper-status.order-status},
+		"last-rpc-action": ${network-level-oper-status.last-rpc-action},
+		"last-action": ${network-level-oper-status.last-action},
+		"last-svc-request-id": ${network-level-oper-status.last-svc-request-id},
+		"last-order-status": ${network-level-oper-status.last-order-status},
+		"create-timestamp": ${network-level-oper-status.create-timestamp},
+		"modify-timestamp": ${network-level-oper-status.modify-timestamp}
+	}
+}

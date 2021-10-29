@@ -1,0 +1,107 @@
+---
+swagger: "2.0"
+info:
+  description: "Defines API interface for SDNC sanity tests. "
+  version: "2108.0.1"
+  title: "SANITYTEST-API"
+consumes:
+- "application/json"
+- "application/xml"
+produces:
+- "application/json"
+- "application/xml"
+paths:
+  /operations/SANITYTEST-API:service-configuration-operation/:
+    post:
+      tags:
+      - "SANITYTEST-API"
+      parameters:
+      - in: "body"
+        name: "sanitytest.api.Input.body-param"
+        required: false
+        schema:
+          properties:
+            input:
+              $ref: "#/definitions/sanitytest.api.serviceconfigurationoperation.Input"
+      responses:
+        400:
+          description: "Internal error"
+        200:
+          description: "Correct response"
+          schema:
+            $ref: "#/definitions/sanitytest.api.ServiceConfigurationOperation"
+        201:
+          description: "No response"
+definitions:
+  sanitytest.api.TestNameEnumeration:
+    type: "string"
+    enum:
+      - "EIPAMAdaptor"
+      - "AAI"
+      - "POLICY"
+  sanitytest.api.ResultEnumeration:
+    type: "string"
+    enum:
+      - "Success"
+      - "Failure"
+  sanitytest.api.serviceconfigurationoperation.Input:
+    type: "object"
+    properties:
+      request-information:
+        $ref: "#/definitions/sanitytest.api.RequestInformation"
+  sanitytest.api.RequestInformation:
+    type: "object"
+    properties:
+      test-list:
+        type: "array"
+        items:
+          $ref: "#/definitions/sanitytest.api.TestListItem"
+  sanitytest.api.TestListItem:
+    type: "object"
+    properties:
+      test-number:
+        type: "integer"
+        format: "int16"
+      test-name:
+        $ref: "#/definitions/sanitytest.api.TestNameEnumeration"
+      test-data:
+        type: "array"
+        items:
+          $ref: "#/definitions/sanitytest.api.TestDataItem"
+  sanitytest.api.TestDataItem:
+    type: "object"
+    properties:
+      data-name:
+        type: "string"
+      data-value:
+        type: "string"
+  sanitytest.api.ServiceConfigurationOperation:
+    type: "object"
+    properties:
+      output:
+        $ref: "#/definitions/sanitytest.api.ResponseFields"
+  sanitytest.api.ResponseFields:
+    type: "object"
+    properties:
+      response-information: 
+        type: "array"
+        items:
+          $ref: "#/definitions/sanitytest.api.ResponseField"
+  sanitytest.api.ResponseField:
+    type: "object"
+    properties:
+      response-test-number:
+        type: "integer"
+        format: "int16"
+      response-test-name:
+        $ref: "#/definitions/sanitytest.api.TestNameEnumeration"
+      start-time:
+        type: "string"
+      end-time:
+        type: "string"
+      elapsed-time:
+        type: "string"
+      result:
+        $ref: "#/definitions/sanitytest.api.ResultEnumeration"
+      error-message:
+        type: "string"

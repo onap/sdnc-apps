@@ -1,116 +1,118 @@
 {
-  "configuration-data": {
-    "configuration-oper-status": {
-      "last-action": "CreatePortMirrorConfigurationInstance",
-      "last-rpc-action": "activate",
-      "order-status": "Active"
-    },
-    "configuration-operation-information": {
-      "configuration-information": {
-        "configuration-id": "pm-config-2",
-        "configuration-sub-type": "vprobe",
-        "configuration-type": "PORT-MIRROR",
-        "onap-model-information": {
-          "model-customization-uuid": "770c991a-47fb-4225-8d72-4790847f8307",
-          "model-invariant-uuid": "a81abec0-222e-4fb2-b1c6-c4162359b2b3",
-          "model-name": "Port Mirroring Configuration",
-          "model-uuid": "18af239e-5397-4224-816f-d2850f3fab38",
-          "model-version": "23.0"
-        }
+  "port-mirror-configuration": {
+    "configuration-data": {
+      "configuration-oper-status": {
+        "last-action": "CreatePortMirrorConfigurationInstance",
+        "last-rpc-action": "activate",
+        "order-status": "Active"
       },
-      "port-mirror-configuration-request-input": {
-        "dest-port": {
-          "vnf-information": {
-            "vnf-id": "039c2d5d-4efb-4145-9890-a6b5373cdfa5"
-          }
-        },
-        "source-port": {
-          "vnf-information": {
-            "vnf-id": "c5c92f5d-ed4d-4fb5-9ee1-b3eb562b1c6d"
-          }
-        }
-      },
-      "request-information": {
-        "request-action": "CreatePortMirrorConfigurationInstance",
-        "request-id": "61fe8925-fb53-4968-b9de-74be4acd06cc",
-        "source": "MSO"
-      },
-      "sdnc-request-header": {
-        "svc-action": "activate",
-        "svc-notification-url": "https://mso-sdnc-s3.ecomp.idns.aic.cip.att.com:30254/adapters/rest/SDNCNotify",
-        "svc-request-id": "ba937e51-6baf-486c-9851-3c6a646c9256"
-      },
-      "service-information": {
-        "global-customer-id": "a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb",
-        "service-instance-id": "156abc88-35d1-475a-85a1-e0e0a226cbd5",
-        "subscription-service-type": "Mobility"
-      }
-    },
-    "port-mirror-configuration-topology": {
-      "configuration-identifiers": {
-        "configuration-id": "pm-config-2",
-        "configuration-name": "vMME02_VLC_Port_Mirroring_DYH2B_SCTPA",
-        "configuration-sub-type": "vprobe",
-        "configuration-type": "PORT-MIRROR",
-        "parent-service-instance-id": "156abc88-35d1-475a-85a1-e0e0a226cbd5"
-      },
-      "port-mirror-configuration-assignments": {
-        "cloud-owner": "att-aic",
-        "cloud-region-id": "dyh2b",
-        "dest-network-fqdn": "default-domain:GRP-27529-T-SIL-13B:GRP-27529-T-SIL-13B_vprobe_int_pkmirror1",
-        "dest-vnf-id": "039c2d5d-4efb-4145-9890-a6b5373cdfa5",
-        "dest-vnfc-instance-group-id": {
+      "configuration-operation-information": {
+        "configuration-information": {
           "configuration-id": "pm-config-2",
-          "instance-group-role": "pktmirror",
-          "service-instance-id": "156abc88-35d1-475a-85a1-e0e0a226cbd5"
+          "configuration-sub-type": "vprobe",
+          "configuration-type": "PORT-MIRROR",
+          "onap-model-information": {
+            "model-customization-uuid": "770c991a-47fb-4225-8d72-4790847f8307",
+            "model-invariant-uuid": "a81abec0-222e-4fb2-b1c6-c4162359b2b3",
+            "model-name": "Port Mirroring Configuration",
+            "model-uuid": "18af239e-5397-4224-816f-d2850f3fab38",
+            "model-version": "23.0"
+          }
         },
-        "owning-entity": "10c645f5-9924-4b89-bec0-b17cf49d3cad",
-        "probe-type": "vprobe",
-        "route-allotted-resource-id": "286d41ea-d644-46b2-98fc-643ea1b591d1",
-        "source-capacity": 100000,
-        "source-network-fqdn": "default-domain:GRP-27529-T-IST-13C:GRP-27529-T-SIL-13C_gn_SCTPA_IP_net_12",
-        "source-to-dest-maps": {
-          "source-to-dest-map": [
-            {
-              "dest-ip-addresses": {
-                "ip-addresses": {
-                  "ipv4-address": "107.114.102.4"
-                }
-              },
-              "dest-port-id": "b91beeda-fae3-4a99-9354-06c965db83f7",
-              "dest-port-name": "zdyh2bprbvlba_module04-vlbagent_eph_aff_0_int_pktmirror_port_0-m5ylyrybbmmb",
-              "dest-vserver-id": "9e2fc5ea-a88f-4955-bda8-10e75c173a8e",
-              "source-port-id": "7b6ee74c-cc2c-4290-95f2-2d89a3c4da74",
-              "source-port-name": "default-virtual-machine-interface-7b6ee74c-cc2c-4290-95f2-2d89a3c4da74",
-              "source-vserver-id": "2e3a8bb2-75ff-4e97-a888-961bfc624caa"
-            },
-            {
-              "dest-ip-addresses": {
-                "ip-addresses": {
-                  "ipv4-address": "107.114.102.3"
-                }
-              },
-              "dest-port-id": "7cf3fda3-3153-4655-ae47-36fcf4439073",
-              "dest-port-name": "zdyh2bprbvlba_base_5-vlbagentbase_eph_aff_0_int_pktmirror_port_0-vkvey3eyoqk2",
-              "dest-vserver-id": "165db140-c09f-411a-bfdc-b8e6c7dbbda4",
-              "source-port-id": "0fd4c63c-6fda-4564-af10-d3be157279ef",
-              "source-port-name": "default-virtual-machine-interface-0fd4c63c-6fda-4564-af10-d3be157279ef",
-              "source-vserver-id": "b5bf2e1f-9f90-445c-be00-2c882e82d1d7"
+        "port-mirror-configuration-request-input": {
+          "dest-port": {
+            "vnf-information": {
+              "vnf-id": "039c2d5d-4efb-4145-9890-a6b5373cdfa5"
             }
-          ]
+          },
+          "source-port": {
+            "vnf-information": {
+              "vnf-id": "c5c92f5d-ed4d-4fb5-9ee1-b3eb562b1c6d"
+            }
+          }
         },
-        "source-vnf-id": "c5c92f5d-ed4d-4fb5-9ee1-b3eb562b1c6d",
-        "source-vnfc-instance-group-id": {
+        "request-information": {
+          "request-action": "CreatePortMirrorConfigurationInstance",
+          "request-id": "61fe8925-fb53-4968-b9de-74be4acd06cc",
+          "source": "MSO"
+        },
+        "sdnc-request-header": {
+          "svc-action": "activate",
+          "svc-notification-url": "https://mso-sdnc-s3.ecomp.idns.aic.cip.att.com:30254/adapters/rest/SDNCNotify",
+          "svc-request-id": "ba937e51-6baf-486c-9851-3c6a646c9256"
+        },
+        "service-information": {
+          "global-customer-id": "a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb",
+          "service-instance-id": "156abc88-35d1-475a-85a1-e0e0a226cbd5",
+          "subscription-service-type": "Mobility"
+        }
+      },
+      "port-mirror-configuration-topology": {
+        "configuration-identifiers": {
           "configuration-id": "pm-config-2",
-          "instance-group-role": "GRP-27529-T-SIL-13C_gn_SCTPA_IP",
-          "service-instance-id": "156abc88-35d1-475a-85a1-e0e0a226cbd5"
+          "configuration-name": "vMME02_VLC_Port_Mirroring_DYH2B_SCTPA",
+          "configuration-sub-type": "vprobe",
+          "configuration-type": "PORT-MIRROR",
+          "parent-service-instance-id": "156abc88-35d1-475a-85a1-e0e0a226cbd5"
         },
-        "tenant": "GRP-27529-T-IST-13C",
-        "tenant-context": "Test",
-        "tenant-id": "077445458306425499337c98bafc8c47",
-        "vnics-group-id": "97"
+        "port-mirror-configuration-assignments": {
+          "cloud-owner": "att-aic",
+          "cloud-region-id": "dyh2b",
+          "dest-network-fqdn": "default-domain:GRP-27529-T-SIL-13B:GRP-27529-T-SIL-13B_vprobe_int_pkmirror1",
+          "dest-vnf-id": "039c2d5d-4efb-4145-9890-a6b5373cdfa5",
+          "dest-vnfc-instance-group-id": {
+            "configuration-id": "pm-config-2",
+            "instance-group-role": "pktmirror",
+            "service-instance-id": "156abc88-35d1-475a-85a1-e0e0a226cbd5"
+          },
+          "owning-entity": "10c645f5-9924-4b89-bec0-b17cf49d3cad",
+          "probe-type": "vprobe",
+          "route-allotted-resource-id": "286d41ea-d644-46b2-98fc-643ea1b591d1",
+          "source-capacity": 100000,
+          "source-network-fqdn": "default-domain:GRP-27529-T-IST-13C:GRP-27529-T-SIL-13C_gn_SCTPA_IP_net_12",
+          "source-to-dest-maps": {
+            "source-to-dest-map": [
+              {
+                "dest-ip-addresses": {
+                  "ip-addresses": {
+                    "ipv4-address": "107.114.102.4"
+                  }
+                },
+                "dest-port-id": "b91beeda-fae3-4a99-9354-06c965db83f7",
+                "dest-port-name": "zdyh2bprbvlba_module04-vlbagent_eph_aff_0_int_pktmirror_port_0-m5ylyrybbmmb",
+                "dest-vserver-id": "9e2fc5ea-a88f-4955-bda8-10e75c173a8e",
+                "source-port-id": "7b6ee74c-cc2c-4290-95f2-2d89a3c4da74",
+                "source-port-name": "default-virtual-machine-interface-7b6ee74c-cc2c-4290-95f2-2d89a3c4da74",
+                "source-vserver-id": "2e3a8bb2-75ff-4e97-a888-961bfc624caa"
+              },
+              {
+                "dest-ip-addresses": {
+                  "ip-addresses": {
+                    "ipv4-address": "107.114.102.3"
+                  }
+                },
+                "dest-port-id": "7cf3fda3-3153-4655-ae47-36fcf4439073",
+                "dest-port-name": "zdyh2bprbvlba_base_5-vlbagentbase_eph_aff_0_int_pktmirror_port_0-vkvey3eyoqk2",
+                "dest-vserver-id": "165db140-c09f-411a-bfdc-b8e6c7dbbda4",
+                "source-port-id": "0fd4c63c-6fda-4564-af10-d3be157279ef",
+                "source-port-name": "default-virtual-machine-interface-0fd4c63c-6fda-4564-af10-d3be157279ef",
+                "source-vserver-id": "b5bf2e1f-9f90-445c-be00-2c882e82d1d7"
+              }
+            ]
+          },
+          "source-vnf-id": "c5c92f5d-ed4d-4fb5-9ee1-b3eb562b1c6d",
+          "source-vnfc-instance-group-id": {
+            "configuration-id": "pm-config-2",
+            "instance-group-role": "GRP-27529-T-SIL-13C_gn_SCTPA_IP",
+            "service-instance-id": "156abc88-35d1-475a-85a1-e0e0a226cbd5"
+          },
+          "tenant": "GRP-27529-T-IST-13C",
+          "tenant-context": "Test",
+          "tenant-id": "077445458306425499337c98bafc8c47",
+          "vnics-group-id": "97"
+        }
       }
-    }
-  },
-  "configuration-id": "pm-config-2"
+    },
+    "configuration-id": "pm-config-2"
+  }
 }

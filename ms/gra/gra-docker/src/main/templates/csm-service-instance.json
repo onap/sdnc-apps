@@ -1,0 +1,15 @@
+{
+	"service": {
+		"service-instance-id": ${tmp.service-instance-id},
+		"service-data": {
+			"service-information": {
+				"global-customer-id": ${output-global-customer-id}
+			},
+			"service-topology": {
+				"service-topology-identifier": {
+					"service-type": ${output-service-type}
+				}
+			}
+		}
+	}
+}

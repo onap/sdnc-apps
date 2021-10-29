@@ -6,8 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.onap.sdnc.apps.ms.gra.data.ConfigNetworks;
 import org.onap.sdnc.apps.ms.gra.data.ConfigNetworksRepository;
@@ -40,6 +42,8 @@ public class ServiceDataHelper {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private ObjectMapper unwrappedObjectMapper = null;
+
     @Autowired
     private ConfigServicesRepository configServicesRepository;
     
@@ -54,6 +58,15 @@ public class ServiceDataHelper {
 
     public ServiceDataHelper() {
 
+    }
+
+    private ObjectMapper getUnwrappedObjectMapper() {
+        if (unwrappedObjectMapper == null) {
+            unwrappedObjectMapper = objectMapper.copy();
+            unwrappedObjectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+            unwrappedObjectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, false);
+        }
+       return unwrappedObjectMapper;
     }
 
     public class ServiceDataTransaction {
@@ -168,7 +181,7 @@ public class ServiceDataHelper {
             vfModule.setVfModuleId(configVfModule.getVfModuleId());
             String vfModuleDataAsString = configVfModule.getVfModuleData();
             if (vfModuleDataAsString != null) {
-                vfModule.setVfModuleData(objectMapper.readValue(vfModuleDataAsString,
+                vfModule.setVfModuleData(getUnwrappedObjectMapper().readValue(vfModuleDataAsString,
                         GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfmoduleVfModuleData.class));
             }
 
@@ -186,7 +199,7 @@ public class ServiceDataHelper {
                 vfModule.setVfModuleId(configVfModule.getVfModuleId());
                 String vfModuleDataAsString = configVfModule.getVfModuleData();
                 if (vfModuleDataAsString != null) {
-                    vfModule.setVfModuleData(objectMapper.readValue(vfModuleDataAsString, GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfmoduleVfModuleData.class));
+                    vfModule.setVfModuleData(getUnwrappedObjectMapper().readValue(vfModuleDataAsString, GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfmoduleVfModuleData.class));
                 }
                 vfModules.addVfModuleItem(vfModule);
             }
@@ -204,7 +217,7 @@ public class ServiceDataHelper {
             GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfDataAsObject = null;
             String vnfDataAsString = configVnf.getVnfData();
             if (vnfDataAsString != null) {
-                vnfDataAsObject = objectMapper.readValue(vnfDataAsString, GenericResourceApiServicedataServicedataVnfsVnfVnfData.class);
+                vnfDataAsObject = getUnwrappedObjectMapper().readValue(vnfDataAsString, GenericResourceApiServicedataServicedataVnfsVnfVnfData.class);
             }
 
             GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules vfModules = getVfModules(svcInstanceId, vnfId);
@@ -232,7 +245,7 @@ public class ServiceDataHelper {
                 GenericResourceApiServicedataServicedataVnfsVnfVnfData vnfDataAsObject = null;
                 String vnfDataAsString = configVnf.getVnfData();
                 if (vnfDataAsString != null) {
-                    vnfDataAsObject = objectMapper.readValue(vnfDataAsString,
+                    vnfDataAsObject = getUnwrappedObjectMapper().readValue(vnfDataAsString,
                             GenericResourceApiServicedataServicedataVnfsVnfVnfData.class);
                 }
 
@@ -250,6 +263,32 @@ public class ServiceDataHelper {
         return (vnfs);
     }
 
+    public GenericResourceApiServicedataServicedataNetworksNetwork getNetwork(String svcInstanceId, String networkId) throws JsonProcessingException {
+        GenericResourceApiServicedataServicedataNetworksNetwork network = null;
+        List<ConfigNetworks> configNetworks = configNetworksRepository.findBySvcInstanceId(svcInstanceId);
+        if ((configNetworks != null) && !configNetworks.isEmpty()) {
+            network = new GenericResourceApiServicedataServicedataNetworksNetwork();
+            ConfigNetworks configNetwork = configNetworks.get(0);
+            network.setNetworkId(configNetwork.getNetworkId());
+            String networkDataAsString = configNetwork.getNetworkData();
+            if (networkDataAsString != null) {
+                network.setNetworkData(getUnwrappedObjectMapper().readValue(networkDataAsString, GenericResourceApiServicedataServicedataNetworksNetworkNetworkData.class));
+            }
+        }
+
+        return(network);
+    }
+
+    public boolean networkExists(String svcInstanceId, String networkId) {
+        List<ConfigNetworks> configNetworks = configNetworksRepository.findBySvcInstanceId(svcInstanceId);
+        if ((configNetworks != null) && !configNetworks.isEmpty()) {
+            return(true);
+        } else {
+            return(false);
+        }
+
+    }
+
     public GenericResourceApiServicedataServicedataNetworks getNetworks(String svcInstanceId) throws JsonProcessingException {
         GenericResourceApiServicedataServicedataNetworks networks = null;
         List<ConfigNetworks> configNetworks = configNetworksRepository.findBySvcInstanceId(svcInstanceId);
@@ -261,7 +300,7 @@ public class ServiceDataHelper {
                 network.setNetworkId(configNetwork.getNetworkId());
                 String networkDataAsString = configNetwork.getNetworkData();
                 if (networkDataAsString != null) {
-                    network.setNetworkData(objectMapper.readValue(networkDataAsString, GenericResourceApiServicedataServicedataNetworksNetworkNetworkData.class));
+                    network.setNetworkData(getUnwrappedObjectMapper().readValue(networkDataAsString, GenericResourceApiServicedataServicedataNetworksNetworkNetworkData.class));
                 }
                 networks.addNetworkItem(network);
             }
@@ -275,7 +314,7 @@ public class ServiceDataHelper {
         if (svcData == null) {
             return(null);
         } else {
-            return(objectMapper.writeValueAsString(getServiceData(svcInstanceId)));
+            return(getUnwrappedObjectMapper().writeValueAsString(getServiceData(svcInstanceId)));
         }
     }
 
@@ -299,7 +338,7 @@ public class ServiceDataHelper {
         String svcDataAsString = configService.getSvcData();
 
         if ((svcDataAsString != null) && !svcDataAsString.isEmpty()) {
-            svcData = objectMapper.readValue(svcDataAsString, GenericResourceApiServicedataServiceData.class);
+            svcData = getUnwrappedObjectMapper().readValue(svcDataAsString, GenericResourceApiServicedataServiceData.class);
         } else {
             svcData = new GenericResourceApiServicedataServiceData();
         }
@@ -332,7 +371,7 @@ public class ServiceDataHelper {
             configVfModule = new ConfigVfModules(svcInstanceId, vnfId, vfModule.getVfModuleId());
         }
         if (vfModule.getVfModuleData() != null) {
-            configVfModule.setVfModuleData(objectMapper.writeValueAsString(vfModule.getVfModuleData()));
+            configVfModule.setVfModuleData(getUnwrappedObjectMapper().writeValueAsString(vfModule.getVfModuleData()));
         }
         if (transaction != null) {
             transaction.save(configVfModule);
@@ -359,7 +398,10 @@ public class ServiceDataHelper {
 
 
         // Save vf modules
-        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules vfModules = vnfData.getVfModules();
+        GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfModules vfModules = null;
+        if (vnfData!= null) {
+            vfModules = vnfData.getVfModules();
+        }
         if (vfModules != null) {
             List<GenericResourceApiServicedataServicedataVnfsVnfVnfdataVfmodulesVfModule> vfModuleList = vfModules.getVfModule();
             if ((vfModuleList != null) && !vfModuleList.isEmpty()) {
@@ -391,7 +433,11 @@ public class ServiceDataHelper {
         } else {
             configVnf = new ConfigVnfs(svcInstanceId, vnf.getVnfId());
         }
-        configVnf.setVnfData(objectMapper.writeValueAsString(vnfData));
+        if (vnfData == null) {
+            configVnf.setVnfData(null);
+        } else {
+            configVnf.setVnfData(getUnwrappedObjectMapper().writeValueAsString(vnfData));
+        }
 
         if (transaction != null) {
             transaction.save(configVnf);
@@ -410,7 +456,7 @@ public class ServiceDataHelper {
         } else {
             configNetwork = new ConfigNetworks(svcInstanceId, network.getNetworkId());
         }
-        configNetwork.setNetworkData(objectMapper.writeValueAsString(network.getNetworkData()));
+        configNetwork.setNetworkData(getUnwrappedObjectMapper().writeValueAsString(network.getNetworkData()));
         if (transaction != null) {
             transaction.save(configNetwork);
         } else {
@@ -428,7 +474,7 @@ public class ServiceDataHelper {
             configService.setSvcData(null);
             configServicesRepository.save(configService);
         } else {
-            saveService(configService, objectMapper.readValue(svcDataAsString, GenericResourceApiServicedataServiceData.class), transaction);
+            saveService(configService, getUnwrappedObjectMapper().readValue(svcDataAsString, GenericResourceApiServicedataServiceData.class), transaction);
         }
     }
 
@@ -509,7 +555,7 @@ public class ServiceDataHelper {
             }
             svcData.setVnfs(null);
 
-            configService.setSvcData(objectMapper.writeValueAsString(svcData));
+            configService.setSvcData(getUnwrappedObjectMapper().writeValueAsString(svcData));
         }
         if (transaction != null) {
             transaction.save(configService);

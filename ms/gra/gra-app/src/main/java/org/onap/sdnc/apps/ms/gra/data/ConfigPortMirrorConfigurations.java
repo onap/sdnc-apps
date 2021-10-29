@@ -20,6 +20,8 @@ public class ConfigPortMirrorConfigurations {
     // portMirrorConfiguration status fields
     String portMirrorConfigurationStatusResponseCode;
 
+    @Length(max = 2000)
+    @Column(length = 2000)
     String portMirrorConfigurationStatusResponseMessage;
 
     String portMirrorConfigurationStatusFinalIndicator;

@@ -1,79 +1,81 @@
 {
-  "vf-module-data": {
-    "vf-module-level-oper-status": {
-      "order-status": "PendingCreate",
-      "last-rpc-action": "assign"
-    },
-    "request-information": {
-      "request-action": "CreateVfModuleInstance",
-      "source": "simulator",
-      "request-id": "c594915b-cd49-4276-8e6b-536caa5f5285"
-    },
-    "sdnc-request-header": {
-      "svc-request-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
-      "svc-action": "assign"
-    },
-    "service-information": {
-      "onap-model-information": {
-        "model-name": "vcpesvc_vbng_0412a",
-        "model-version": "3.0",
-        "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
-        "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+  "vf-module": {
+    "vf-module-data": {
+      "vf-module-level-oper-status": {
+        "order-status": "PendingCreate",
+        "last-rpc-action": "assign"
       },
-      "subscription-service-type": "VIRTUAL USP",
-      "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3cac",
-      "global-customer-id": "cust123",
-      "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
-    },
-    "vf-module-information": {
-      "onap-model-information": {
-        "model-name": "SmsfNc2578..smsf_base..module-0",
-        "model-version": "3",
-        "model-customization-uuid": "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
-        "model-uuid": "513cc9fc-fff5-4c46-9728-393437536c4d",
-        "model-invariant-uuid": "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
+      "request-information": {
+        "request-action": "CreateVfModuleInstance",
+        "source": "simulator",
+        "request-id": "c594915b-cd49-4276-8e6b-536caa5f5285"
       },
-      "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d",
-      "from-preload": true,
-      "vf-module-type": "SmsfNc2578..smsf_base..module-0"
-    },
-    "vf-module-request-input": {
-      "aic-cloud-region": "rdm61a",
-      "cloud-owner": "att-nc",
-      "tenant": "4714fe06cc24414c914c51ca0aa1bf84",
-      "vf-module-name": "vfmodule1",
-      "vf-module-input-parameters": {}
-    },
-    "vnf-information": {
-      "onap-model-information": {
-        "model-name": "vcpevsp_vgmux_0412 ",
-        "model-version": "1.0",
-        "model-customization-uuid": "5724fcc8-2ae2-45ce-8d44-795092b85dee",
-        "model-uuid": "ba3b8981-9a9c-4945-92aa-486234ec321f",
-        "model-invariant-uuid": "b3dc6465-942c-42af-8464-2bf85b6e504b"
+      "sdnc-request-header": {
+        "svc-request-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+        "svc-action": "assign"
       },
-      "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
-      "vnf-name": "zrdm61asmsf01",
-      "vnf-type": "SMSF-NC2-578-SVC/SMSF-NC2-578"
-    },
-    "vf-module-topology": {
-      "onap-model-information": {
-        "model-name": "SmsfNc2578..smsf_base..module-0",
-        "model-version": "3",
-        "model-customization-uuid": "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
-        "model-uuid": "513cc9fc-fff5-4c46-9728-393437536c4d",
-        "model-invariant-uuid": "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
+      "service-information": {
+        "onap-model-information": {
+          "model-name": "vcpesvc_vbng_0412a",
+          "model-version": "3.0",
+          "model-uuid": "12eb33fa-b221-4d87-939c-d808b5799a7c",
+          "model-invariant-uuid": "ead151e2-e18a-44fc-b6ac-3ae3d819dcd6"
+        },
+        "subscription-service-type": "VIRTUAL USP",
+        "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3cac",
+        "global-customer-id": "cust123",
+        "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca"
       },
-      "aic-cloud-region": "rdm61a",
-      "tenant": "4714fe06cc24414c914c51ca0aa1bf84",
-      "vf-module-topology-identifier": {
-        "vf-module-name": "vfmodule1",
+      "vf-module-information": {
+        "onap-model-information": {
+          "model-name": "SmsfNc2578..smsf_base..module-0",
+          "model-version": "3",
+          "model-customization-uuid": "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
+          "model-uuid": "513cc9fc-fff5-4c46-9728-393437536c4d",
+          "model-invariant-uuid": "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
+        },
         "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d",
+        "from-preload": true,
         "vf-module-type": "SmsfNc2578..smsf_base..module-0"
       },
-      "vf-module-parameters": {},
-      "sdnc-generated-cloud-resources": true
-    }
-  },
-  "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d"
+      "vf-module-request-input": {
+        "aic-cloud-region": "rdm61a",
+        "cloud-owner": "att-nc",
+        "tenant": "4714fe06cc24414c914c51ca0aa1bf84",
+        "vf-module-name": "vfmodule1",
+        "vf-module-input-parameters": {}
+      },
+      "vnf-information": {
+        "onap-model-information": {
+          "model-name": "vcpevsp_vgmux_0412 ",
+          "model-version": "1.0",
+          "model-customization-uuid": "5724fcc8-2ae2-45ce-8d44-795092b85dee",
+          "model-uuid": "ba3b8981-9a9c-4945-92aa-486234ec321f",
+          "model-invariant-uuid": "b3dc6465-942c-42af-8464-2bf85b6e504b"
+        },
+        "vnf-id": "fae319cc-68d6-496f-be1e-a09e133c71d4",
+        "vnf-name": "zrdm61asmsf01",
+        "vnf-type": "SMSF-NC2-578-SVC/SMSF-NC2-578"
+      },
+      "vf-module-topology": {
+        "onap-model-information": {
+          "model-name": "SmsfNc2578..smsf_base..module-0",
+          "model-version": "3",
+          "model-customization-uuid": "59ffe5ba-cfaf-4e83-a2f3-159522dcebac",
+          "model-uuid": "513cc9fc-fff5-4c46-9728-393437536c4d",
+          "model-invariant-uuid": "7ca7567c-f42c-4ed8-bcde-f8971b92d90a"
+        },
+        "aic-cloud-region": "rdm61a",
+        "tenant": "4714fe06cc24414c914c51ca0aa1bf84",
+        "vf-module-topology-identifier": {
+          "vf-module-name": "vfmodule1",
+          "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d",
+          "vf-module-type": "SmsfNc2578..smsf_base..module-0"
+        },
+        "vf-module-parameters": {},
+        "sdnc-generated-cloud-resources": true
+      }
+    },
+    "vf-module-id": "45841173-3729-4a1d-a811-a3bde399e22d"
+  }
 }

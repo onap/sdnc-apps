@@ -21,6 +21,8 @@ public class ConfigServices {
     // Service status fields
     String serviceStatusResponseCode;
 
+    @Length(max = 2000)
+    @Column(length = 2000)
     String serviceStatusResponseMessage;
 
     String serviceStatusFinalIndicator;
