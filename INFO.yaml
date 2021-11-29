@@ -29,11 +29,6 @@ repositories:
     - 'sdnc/apps'
 committers:
     - <<: *onap_sdnc_ptl
-    - name: 'David Stilwell'
-      email: 'stilwelld@att.com'
-      company: 'ATT'
-      id: 'stilwelld'
-      timezone: 'America/New York'
     - name: 'Herbert Eiselt'
       email: 'herbert.eiselt@highstreet-technologies.com'
       company: 'Highstreet Technologies'
@@ -56,3 +51,6 @@ tsc:
         - type: 'Addition'
           name: 'Michael Durre'
           link: 'https://lists.onap.org/g/onap-tsc/message/6952'
+        - type: 'Deletion'
+          name: 'David Stilwell'
+          link: 'https://lists.onap.org/g/onap-tsc/message/8308'
