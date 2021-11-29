@@ -1,0 +1,15 @@
+{
+            "network":
+                {
+                    "network-id": "net124",
+                    "vpn-bindings": [
+                        {
+                            "vpn-binding-id": "vpnbind2",
+                            "route-target-role": "both",
+                            "vpn-name": "myvpn2",
+                            "global-route-target": "target2",
+                            "aic-zone": "RDM5"
+                        }
+                    ]
+                }
+}

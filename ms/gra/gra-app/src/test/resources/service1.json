@@ -46,6 +46,44 @@
           "svc-action": "assign",
           "svc-request-id": "6d06a832-69da-4369-9d99-049767a39400"
         },
+        "network-instance-groups": {
+          "network-instance-group": [
+            {
+              "network-instance-group-id": "netgrp123",
+              "networks" : {
+                "network" : [
+                  {
+                    "network-id": "net123",
+                    "vpn-bindings": [
+                      {
+                        "vpn-binding-id": "vpnbind1",
+                        "route-target-role": "both",
+                        "vpn-name" : "myvpn",
+                        "global-route-target": "target1",
+                        "aic-zone": "RDM5"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "subnet-key-value": "subnet1",
+              "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+              "subnet-assignment-policy": {
+                "subnet-use": "shared"
+              },
+              "subnets": [
+                {
+                  "start-address": "10.1.1.1",
+                  "ip-version": "4",
+                  "dhcp-enabled": "N",
+                  "subnet-name": "subnet1",
+                  "cidr-mask": "26"
+                }
+              ]
+            }
+          ]
+
+        },
         "vnfs": {
           "vnf": [
             {

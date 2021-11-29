@@ -2,6 +2,7 @@ package org.onap.sdnc.apps.ms.gra.controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
@@ -38,9 +39,12 @@ public class ConfigApiServicesControllerTest {
     private final static String TEST_SVC_INSTANCE_ID = "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca";
     private final static String TEST_VNF_ID = "fae319cc-68d6-496f-be1e-a09e133c71d4";
     private final static String TEST_VF_MODULE_ID = "45841173-3729-4a1d-a811-a3bde399e22d";
+    private final static String TEST_NETWORK_INSTANCE_GROUP = "netgrp123";
     private final static String CONFIG_SERVICES_URL = "/config/GENERIC-RESOURCE-API:services/";
     private final static String CONFIG_SERVICES_SERVICE_URL = "/config/GENERIC-RESOURCE-API:services/service/";
+    private final static String CONFIG_CR_ARS_URL = "/config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/";
     private final static String CONFIG_CR_ARS_CR_AR_URL = "/config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/contrail-route-allotted-resource/";
+    private final static String CONFIG_PM_CONFIGS_CONFIG_URL = "/config/GENERIC-RESOURCE-API:port-mirror-configurations/";
     private final static String CONFIG_PM_CONFIGS_PM_CONFIG_URL = "/config/GENERIC-RESOURCE-API:port-mirror-configurations/port-mirror-configuration/";
 
     @Autowired
@@ -432,6 +436,169 @@ public class ConfigApiServicesControllerTest {
     }
 
     @Test
+    public void configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdDelete() throws Exception {
+        // Clean up data
+        clearServicesData();
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+        assertEquals(0, configServicesRepository.count());
+
+        // Load data
+        loadServicesData("src/test/resources/service1.json");
+        assertEquals(1, configServicesRepository.count());
+
+        // Test with data
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
+        assertEquals(1, services.size());
+        assertNotNull(services.get(0).getSvcData());
+
+
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdGet() throws Exception {
+        // Clean up data
+        clearServicesData();
+
+        // Test with data
+        loadServicesData("src/test/resources/service1.json");
+        assert(configServicesRepository.count() > 0);
+
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        // Test with no data
+        clearServicesData();
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+ 
+    @Test
+    public void configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkidDelete() throws Exception {
+        // Clean up data
+        clearServicesData();
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net123/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+        assertEquals(0, configServicesRepository.count());
+
+        // Load data
+        loadServicesData("src/test/resources/service1.json");
+        assertEquals(1, configServicesRepository.count());
+
+        // Test with data
+        mvcResult = mvc.perform(MockMvcRequestBuilders.delete(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net123/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+        List<ConfigServices> services = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
+        assertEquals(1, services.size());
+        assertNotNull(services.get(0).getSvcData());
+
+
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkidGet() throws Exception {
+        // Clean up data
+        clearServicesData();
+
+        // Test with data
+        loadServicesData("src/test/resources/service1.json");
+        assert(configServicesRepository.count() > 0);
+
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net123/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        // Test with no data
+        clearServicesData();
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net123/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+ 
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkidPut() throws Exception {
+        // Clean up data
+        clearServicesData();
+
+        String content = readFileContent("src/test/resources/service1-netinstancegrp-network.json");
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net124/").contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+        assertEquals(0, configServicesRepository.count());
+
+        // Test with data, but not this network
+        loadServicesData("src/test/resources/service1.json");
+        assert(configServicesRepository.count() > 0);
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net124/").contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
+        assertEquals(1, updatedService.size());
+        assertNotEquals(null, updatedService.get(0).getSvcData());
+
+        // Test with existing data - should return 204
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net124/").contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+
+        // Clean up data
+        clearServicesData();
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceDataNetworkInstanceGroupsNetworkInstanceGroupNetworkInstanceGroupIdNetworksNetworkNetworkidPost() throws Exception {
+        // Clean up data
+        clearServicesData();
+
+        String content = readFileContent("src/test/resources/service1-netinstancegrp-network.json");
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net124/").contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+        assertEquals(0, configServicesRepository.count());
+
+        // Test with data, but not this network
+        loadServicesData("src/test/resources/service1.json");
+        assert(configServicesRepository.count() > 0);
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net124/").contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+        assertEquals(1, configServicesRepository.count());
+        List<ConfigServices> updatedService = configServicesRepository.findBySvcInstanceId(TEST_SVC_INSTANCE_ID);
+        assertEquals(1, updatedService.size());
+        assertNotEquals(null, updatedService.get(0).getSvcData());
+
+        // Test with existing data - should return 409
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_SERVICES_SERVICE_URL+TEST_SVC_INSTANCE_ID+"/service-data/network-instance-groups/network-instance-group/"+TEST_NETWORK_INSTANCE_GROUP+"/networks/network/net124/").contentType(MediaType.APPLICATION_JSON).content(content))
+                .andReturn();
+        assertEquals(409, mvcResult.getResponse().getStatus());
+
+        // Clean up data
+        clearServicesData();
+    }
+
+    @Test
     public void configGENERICRESOURCEAPIservicesGENERICRESOURCEAPIserviceServiceInstanceIdGENERICRESOURCEAPIserviceStatusDelete() throws Exception {
         // Clean up data
         clearServicesData();
@@ -747,6 +914,80 @@ public class ConfigApiServicesControllerTest {
     }
 
     @Test
+    public void configGENERICRESOURCEAPIportMirrorConfigurationsPut() throws Exception {
+        // Clean up data
+        configPortMirrorConfigurationsRepository.deleteAll();
+
+        String content = readFileContent("src/test/resources/port-mirror-configurations-1.json");
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PM_CONFIGS_CONFIG_URL)
+                .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+
+        // Test with existing port-mirror-configuration
+        // Load data
+        loadPortMirrorConfigurationData("src/test/resources/port-mirror-configuration-1.json");
+        assertEquals(1, configPortMirrorConfigurationsRepository.count());
+
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_PM_CONFIGS_CONFIG_URL)
+                .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configPortMirrorConfigurationsRepository.count());
+
+        // Clean up data
+        configPortMirrorConfigurationsRepository.deleteAll();
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIportMirrorConfigurationsPost() throws Exception {
+        // Clean up data
+        configPortMirrorConfigurationsRepository.deleteAll();
+
+        String content = readFileContent("src/test/resources/port-mirror-configurations-1.json");
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PM_CONFIGS_CONFIG_URL)
+                .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+
+        // Test with existing port-mirror-configuration
+        // Load data
+        loadPortMirrorConfigurationData("src/test/resources/port-mirror-configuration-1.json");
+        assertEquals(1, configPortMirrorConfigurationsRepository.count());
+
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_PM_CONFIGS_CONFIG_URL)
+                .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
+        assertEquals(409, mvcResult.getResponse().getStatus());
+        assertEquals(1, configPortMirrorConfigurationsRepository.count());
+
+        // Clean up data
+        configPortMirrorConfigurationsRepository.deleteAll();
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIportMirrorConfigurationsGet() throws Exception {
+        // Clean up data
+        configPortMirrorConfigurationsRepository.deleteAll();
+
+        // Test with data
+        loadPortMirrorConfigurationData("src/test/resources/port-mirror-configuration-1.json");
+        assert(configPortMirrorConfigurationsRepository.count() > 0);
+
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_PM_CONFIGS_CONFIG_URL)
+                .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+
+        // Test with no data
+        configPortMirrorConfigurationsRepository.deleteAll();
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_PM_CONFIGS_CONFIG_URL)
+                .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
+
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
     public void configGENERICRESOURCEAPIportMirrorConfigurationsPortMirrorConfigurationConfigurationIdPut() throws Exception {
         // Clean up data
         configPortMirrorConfigurationsRepository.deleteAll();
@@ -845,6 +1086,82 @@ public class ConfigApiServicesControllerTest {
         configPortMirrorConfigurationsRepository.deleteAll();
         mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_PM_CONFIGS_PM_CONFIG_URL+"pm-config-1/configuration-data/port-mirror-configuration-topology/")
                 .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIcontrailRouteAllottedResourcesPut() throws Exception {
+        // Clean up data
+        configContrailRouteAllottedResourcesRepository.deleteAll();
+
+        String content = readFileContent("src/test/resources/contrail-route-allotted-resources-1.json");
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_CR_ARS_URL)
+                .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+
+        // Test with existing allotted-resource
+        // Load data
+        configContrailRouteAllottedResourcesRepository.deleteAll();
+        loadContrailRouteAllottedResourceData("src/test/resources/contrail-route-allotted-resource-1.json");
+        assertEquals(1, configContrailRouteAllottedResourcesRepository.count());
+
+        mvcResult = mvc.perform(MockMvcRequestBuilders.put(CONFIG_CR_ARS_URL)
+                .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
+        assertEquals(204, mvcResult.getResponse().getStatus());
+        assertEquals(1, configContrailRouteAllottedResourcesRepository.count());
+
+        // Clean up data
+        configContrailRouteAllottedResourcesRepository.deleteAll();
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIcontrailRouteAllottedResourcesPost() throws Exception {
+        // Clean up data
+        configContrailRouteAllottedResourcesRepository.deleteAll();
+
+        String content = readFileContent("src/test/resources/contrail-route-allotted-resources-1.json");
+
+        // Test with no data
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_CR_ARS_URL)
+                .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
+        assertEquals(201, mvcResult.getResponse().getStatus());
+
+        // Test with existing allotted-resource
+        // Load data
+        configContrailRouteAllottedResourcesRepository.deleteAll();
+        loadContrailRouteAllottedResourceData("src/test/resources/contrail-route-allotted-resource-1.json");
+        assertEquals(1, configContrailRouteAllottedResourcesRepository.count());
+
+        mvcResult = mvc.perform(MockMvcRequestBuilders.post(CONFIG_CR_ARS_URL)
+                .contentType(MediaType.APPLICATION_JSON).content(content)).andReturn();
+        assertEquals(409, mvcResult.getResponse().getStatus());
+        assertEquals(1, configContrailRouteAllottedResourcesRepository.count());
+
+        // Clean up data
+        configContrailRouteAllottedResourcesRepository.deleteAll();
+    }
+
+    @Test
+    public void configGENERICRESOURCEAPIcontrailRouteAllottedResourcesGet() throws Exception {
+        // Clean up data
+        configContrailRouteAllottedResourcesRepository.deleteAll();
+
+        // Test with data
+        loadContrailRouteAllottedResourceData("src/test/resources/contrail-route-allotted-resource-1.json");
+        assert(configContrailRouteAllottedResourcesRepository.count() > 0);
+
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_CR_ARS_URL)
+                .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+
+        // Test with no data
+        configContrailRouteAllottedResourcesRepository.deleteAll();
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_CR_ARS_URL)
+                .contentType(MediaType.APPLICATION_JSON).content("")).andReturn();
+
         assertEquals(404, mvcResult.getResponse().getStatus());
     }
 
