@@ -46,6 +46,114 @@
           "svc-action": "assign",
           "svc-request-id": "6d06a832-69da-4369-9d99-049767a39400"
         },
+        "network-instance-groups": {
+          "network-instance-group": [
+            {
+              "network-instance-group-id": "netgrp123",
+              "networks" : {
+                "network" : [
+                  {
+                    "network-id": "net123",
+                    "vpn-bindings": [
+                      {
+                        "vpn-binding-id": "vpnbind1",
+                        "route-target-role": "both",
+                        "vpn-name" : "myvpn",
+                        "global-route-target": "target1",
+                        "aic-zone": "RDM5"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "subnet-key-value": "subnet1",
+              "service-instance-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+              "subnet-assignment-policy": {
+                "subnet-use": "shared"
+              },
+              "subnets": [
+                {
+                  "start-address": "10.1.1.1",
+                  "ip-version": "4",
+                  "dhcp-enabled": "N",
+                  "subnet-name": "subnet1",
+                  "cidr-mask": "26"
+                }
+              ]
+            }
+          ]
+
+        },
+        "networks": {
+            "network": [
+                {
+                    "network-id": "net123",
+                    "network-data": {
+                        "network-topology": {
+                            "tenant": "tenant1",
+                            "network-topology-identifier-structure": {
+                                "network-technology": "soupcan",
+                                "network-type": "CAMPBELLS_TOMATO",
+                                "network-name": "warhol",
+                                "network-role": "dummy"
+                             },
+                             "aic-cloud-region": "region1"
+                         },
+                         "service-information": {
+                             "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+                             "onap-model-information": {
+                                 "model-invariant-uuid": "abcdef12345",
+                                 "model-uuid": "abcdef12345"
+                             }
+                         },
+                         "network-level-oper-status": {
+                             "order-status": "Created"
+                         },
+                         "network-request-input": {
+                             "tenant": "tenant1",
+                             "network-name": "warhol",
+                             "aic-cloud-region": "region1"
+                         },
+                         "network-information": {
+                             "network-type": "CAMPBELLS_TOMATO",
+                             "network-id": "net123",
+                             "from-preload": true
+                         },
+                         "network-provided-allotted-resources": {
+                             "network-provided-ar-id": [
+                                 "ar123"
+                             ]
+                          }
+                    }
+                },
+                {
+                    "network-id": "net125",
+                    "network-data": {
+                        "network-topology": {
+                            "tenant": "tenant1",
+                             "aic-cloud-region": "region1"
+                         },
+                         "service-information": {
+                             "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+                             "onap-model-information": {
+                                 "model-invariant-uuid": "abcdef12345",
+                                 "model-uuid": "abcdef12345"
+                             }
+                         },
+                         "network-request-input": {
+                             "tenant": "tenant1",
+                             "network-name": "popart",
+                             "aic-cloud-region": "region1"
+                         },
+                         "network-information": {
+                             "network-type": "CAMPBELLS_TOMATO",
+                             "network-id": "net125",
+                             "from-preload": true
+                         }
+                    }
+                }
+            ]
+        },
         "vnfs": {
           "vnf": [
             {

@@ -1,0 +1,8 @@
+{
+    "network-topology-identifier-structure": {
+        "network-technology": "soupcan",
+        "network-type": "CAMPBELLS_TOMATO",
+        "network-name": "popart",
+        "network-role": "dummy"
+    }
+}

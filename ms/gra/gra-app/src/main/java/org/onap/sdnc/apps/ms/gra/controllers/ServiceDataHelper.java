@@ -280,7 +280,7 @@ public class ServiceDataHelper {
     }
 
     public boolean networkExists(String svcInstanceId, String networkId) {
-        List<ConfigNetworks> configNetworks = configNetworksRepository.findBySvcInstanceId(svcInstanceId);
+        List<ConfigNetworks> configNetworks = configNetworksRepository.findBySvcInstanceIdAndNetworkId(svcInstanceId, networkId);
         if ((configNetworks != null) && !configNetworks.isEmpty()) {
             return(true);
         } else {

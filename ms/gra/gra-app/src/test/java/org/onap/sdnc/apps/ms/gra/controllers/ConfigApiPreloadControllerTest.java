@@ -182,6 +182,27 @@ public class ConfigApiPreloadControllerTest {
     }
 
     @Test
+    public void configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypePreloadDataPreloadNetworkTopologyInformationGet() throws Exception {
+        // Clean up data
+        configPreloadDataRepository.deleteAll();
+
+        // Test with data
+        loadData(CONFIG_PRELOAD_URL, "src/test/resources/preload1-net-model-info.json");
+        assert(configPreloadDataRepository.count() > 0);
+
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/preload-network-topology-information/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+
+        // Test with no data
+        configPreloadDataRepository.deleteAll();
+        mvcResult = mvc.perform(MockMvcRequestBuilders.get(CONFIG_PRELOAD_LIST_URL+"preload1/network/preload-data/preload-network-topology-information/").contentType(MediaType.APPLICATION_JSON).content(""))
+                .andReturn();
+        assertEquals(404, mvcResult.getResponse().getStatus());
+    }
+
+
+    @Test
     public void configGENERICRESOURCEAPIpreloadInformationGENERICRESOURCEAPIpreloadListPreloadIdPreloadTypePostNoData() throws Exception {
         // Clean up data
         configPreloadDataRepository.deleteAll();

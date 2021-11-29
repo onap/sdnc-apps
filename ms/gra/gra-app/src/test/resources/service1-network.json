@@ -1,0 +1,37 @@
+{
+    "network": {
+        "network-id": "net124",
+        "network-data": {
+            "network-topology": {
+                "tenant": "tenant2",
+                "network-topology-identifier-structure": {
+                    "network-technology": "soupcan",
+                    "network-type": "CAMPBELLS_TOMATO",
+                    "network-name": "andy",
+                    "network-role": "dummy"
+                },
+                "aic-cloud-region": "region1"
+            },
+            "service-information": {
+                "service-id": "5c4f2d89-57a3-47e9-b49b-d3c63eb0b3ca",
+                "onap-model-information": {
+                    "model-invariant-uuid": "abcdef12345",
+                    "model-uuid": "abcdef12345"
+                }
+            },
+            "network-level-oper-status": {
+                "order-status": "Created"
+            },
+            "network-request-input": {
+                "tenant": "tenant2",
+                "network-name": "andy",
+                "aic-cloud-region": "region1"
+            },
+            "network-information": {
+                "network-type": "CAMPBELLS_TOMATO",
+                "network-id": "net124",
+                "from-preload": true
+            }
+        }
+    }
+}

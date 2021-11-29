@@ -1,0 +1,10 @@
+{
+                    "vpn-bindings":
+                        {
+                            "vpn-binding-id": "vpnbind3",
+                            "route-target-role": "both",
+                            "vpn-name": "myvpn3",
+                            "global-route-target": "target3",
+                            "aic-zone": "RDM5"
+                        }
+}
