@@ -1,32 +1,51 @@
 #!/bin/bash
 
-# Copies data from NFT Azure GRA node and stores in MDSAL in NFT EOM
+# Copies data from GRA microservice and stores in MDSAL in ODL
 
 TMPNAME=gra-mdsal-$$
 
 if [ $# -eq 2 ]
 then
     fetchFile=false
-    NFT_AZURE_EXPORT_FILE=$1
-    NFT_EOM_URL=$2
+    GRA_EXPORT_FILE=$1
+    MDSAL_URL=$2
 elif [ $# -eq 3 ]
 then
     fetchFile=true
-    NFT_AZURE_EXPORT_FILE=$TMPNAME.tar.gz
-    NFT_AZURE_NAMESPACE=$1
-    NFT_AZURE_GRA_POD=$2
-    NFT_EOM_URL=$3
+    GRA_EXPORT_FILE=$TMPNAME.tar.gz
+    GRA_NAMESPACE=$1
+    GRA_GRA_POD=$2
+    MDSAL_URL=$3
 else
     echo "Usage: $0 {export-file-name | nft-namespace gra-pod-name} eom-url"
     exit 1
 fi
 
 
-# Credentials configuration
-NFT_AZURE_USER=${NFT_AZURE_USER:-m27434@dev.sdncp.att.com}
-NFT_AZURE_PASSWORD=${NFT_AZURE_PASSWORD:-sdncp20190501}
-NFT_EOM_USER=${NFT_EOM_USER:-admin}
-NFT_EOM_PASSWORD=${NFT_EOM_PASSWORD:-admin}
+# Check credentials configuration
+if [ -z "$GRA_USER" ]
+then
+    echo "Error: GRA_USER must be set/exported"
+    exit 1
+fi
+
+if [ -z "$GRA_PASSWORD" ]
+then
+    echo "Error: GRA_PASSWORD must be set/exported"
+    exit 1
+fi
+
+if [ -z "$MDSAL_USER" ]
+then
+    echo "Error: MDSAL_USER must be set/exported"
+    exit 1
+fi
+
+if [ -z "$MDSAL_PASSWORD" ]
+then
+    echo "Error: MDSAL_PASSWORD must be set/exported"
+    exit 1
+fi
 
 set -e
 
@@ -36,17 +55,17 @@ mkdir /tmp/$TMPNAME
 if [ "$fetchFile" = "true" ]
 then
     # Export data on Azure
-    kubectl -n $NFT_AZURE_NAMESPACE exec -ti $NFT_AZURE_GRA_POD -c gra -- env ODL_USER=$NFT_AZURE_USER AAF_MECHID_CRED=$NFT_AZURE_PASSWORD /opt/sdnc/gra/bin/exportGraDaexim.sh /tmp/$NFT_AZURE_EXPORT_FILE
+    kubectl -n $GRA_NAMESPACE exec -ti $GRA_GRA_POD -c gra -- env ODL_USER=$GRA_USER AAF_MECHID_CRED=$GRA_PASSWORD /opt/sdnc/gra/bin/exportGraDaexim.sh /tmp/$GRA_EXPORT_FILE
 
 
     # Put exported data to NFT EOM
-    kubectl -n $NFT_AZURE_NAMESPACE cp $NFT_AZURE_GRA_POD:/tmp/$NFT_AZURE_EXPORT_FILE /tmp/$TMPNAME/$NFT_AZURE_EXPORT_FILE
+    kubectl -n $GRA_NAMESPACE cp $GRA_GRA_POD:/tmp/$GRA_EXPORT_FILE /tmp/$TMPNAME/$GRA_EXPORT_FILE
 else
-    cp $NFT_AZURE_EXPORT_FILE /tmp/$TMPNAME
+    cp $GRA_EXPORT_FILE /tmp/$TMPNAME
 fi
 
 cd /tmp/$TMPNAME
-tar xzf $NFT_AZURE_EXPORT_FILE
+tar xzf $GRA_EXPORT_FILE
 
 # Massage files and create daexim input
 echo "{" > lsc_backup_config_$TMPNAME.json
@@ -86,19 +105,19 @@ echo "Exported data files are in /tmp/$TMPNAME"
 if [ -f services_config_upd.json ]
 then
     echo "Importing service data ..."
-    curl -k -v -u${NFT_EOM_USER}:${NFT_EOM_PASSWORD} -H "Content-Type: application/json" -X PUT -d@services_config_upd.json ${NFT_EOM_URL}/restconf/config/GENERIC-RESOURCE-API:services/
+    curl -k -v -u${MDSAL_USER}:${MDSAL_PASSWORD} -H "Content-Type: application/json" -X PUT -d@services_config_upd.json ${MDSAL_URL}/restconf/config/GENERIC-RESOURCE-API:services/
 fi
 
 if [ -f contrail_config.json ]
 then
     echo "Importing contrail data ..."
-    curl -k -v -u${NFT_EOM_USER}:${NFT_EOM_PASSWORD} -H "Content-Type: application/json" -X PUT -d@contrail_config.json ${NFT_EOM_URL}/restconf/config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/
+    curl -k -v -u${MDSAL_USER}:${MDSAL_PASSWORD} -H "Content-Type: application/json" -X PUT -d@contrail_config.json ${MDSAL_URL}/restconf/config/GENERIC-RESOURCE-API:contrail-route-allotted-resources/
 fi
 
 if [ -f portmirror_config.json ]
 then
     echo "Importing port mirror data ..."
-    curl -k -v -u${NFT_EOM_USER}:${NFT_EOM_PASSWORD} -H "Content-Type: application/json" -X PUT -d@portmirror_config.json ${NFT_EOM_URL}/restconf/config/GENERIC-RESOURCE-API:port-mirror-configurations/
+    curl -k -v -u${MDSAL_USER}:${MDSAL_PASSWORD} -H "Content-Type: application/json" -X PUT -d@portmirror_config.json ${MDSAL_URL}/restconf/config/GENERIC-RESOURCE-API:port-mirror-configurations/
 fi
 
 

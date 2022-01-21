@@ -1,7 +1,5 @@
 #!/bin/bash
 
-ODL_USER=${ODL_USER:-m27434@dev.sdncp.att.com}
-ODL_PASSWORD=${AAF_MECHID_CRED:-admin}
 ODL_URI=${ODL_URI:-https://localhost:8443}
 
 export TMPDIR=/tmp/daexim-$$
@@ -12,6 +10,17 @@ then
     exit 1
 fi
 
+if [ -z "$ODL_USER" ]
+then
+  echo "Error: ODL_USER must be set/exported"
+  exit 1
+fi
+
+if [ -z "$ODL_PASSWORD" ]
+then
+  echo "Error: ODL_PASSWORD must be set/exported"
+  exit 1
+fi
 
 set -e
 

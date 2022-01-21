@@ -22,8 +22,17 @@ else
     exit 1
 fi
 
-ODL_USER=${ODL_USER:-admin}
-ODL_PASSWORD=${ODL_PASSWORD:-admin}
+if [ -z "$ODL_USER" ]
+then
+    echo "Error: ODL_USER must be set/exported"
+    exit 1
+fi
+
+if [ -z "$ODL_PASSWORD" ]
+then
+    echo "Error: ODL_PASSWORD must be set/exported"
+    exit 1
+fi
 
 
 export TMPDIR=/tmp/daexim-$$
