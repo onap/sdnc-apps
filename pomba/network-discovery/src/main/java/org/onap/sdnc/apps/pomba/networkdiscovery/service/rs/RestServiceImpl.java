@@ -25,7 +25,7 @@ import static org.onap.sdnc.apps.pomba.networkdiscovery.ApplicationException.Err
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;

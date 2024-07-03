@@ -28,8 +28,8 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.TimeZone;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -101,8 +101,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
-import liquibase.pro.license.keymgr.e;
-import liquibase.pro.packaged.E;
 
 @Controller
 @ComponentScan(basePackages = { "org.onap.sdnc.apps.ms.gra.*", "org.onap.ccsdk.apps.services" })
