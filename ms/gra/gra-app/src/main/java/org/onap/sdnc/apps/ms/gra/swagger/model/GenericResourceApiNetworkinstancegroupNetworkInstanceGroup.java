@@ -19,8 +19,8 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiOnapmodelinform
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiSubnets;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiSubnetsSubnets;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiNetworkinstancegroupNetworkInstanceGroup

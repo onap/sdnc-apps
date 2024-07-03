@@ -22,8 +22,8 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnfinformationV
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnfrequestinputVnfRequestInput;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVnftopologyVnfTopology;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiServicedataServicedataVnfsVnfVnfData

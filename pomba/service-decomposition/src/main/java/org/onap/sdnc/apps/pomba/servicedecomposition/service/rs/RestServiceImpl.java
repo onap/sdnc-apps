@@ -21,7 +21,7 @@ package org.onap.sdnc.apps.pomba.servicedecomposition.service.rs;
 import static org.onap.sdnc.apps.pomba.servicedecomposition.exception.DiscoveryException.Error.*;
 import java.util.UUID;
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
