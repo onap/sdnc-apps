@@ -20,7 +20,7 @@
     <properties>
         <image.build.properties.file>/image.build.properties</image.build.properties.file>
         <chart.update.properties.file>/chart.update.properties</chart.update.properties.file>
-        <base.image.name>onap/ccsdk-alpine-j11-image</base.image.name>
+        <base.image.name>onap/ccsdk-alpine-j17-image</base.image.name>
         <base.image.version>${ccsdk.docker.version}</base.image.version>
         <platform.logic.group>org.onap.ccsdk.distribution</platform.logic.group>
         <platform.logic.version>${ccsdk.distribution.version}</platform.logic.version>
@@ -66,8 +66,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.groovy.maven</groupId>
-                        <artifactId>gmaven-plugin</artifactId>
+                        <groupId>org.codehaus.gmaven</groupId>
+                        <artifactId>groovy-maven-plugin</artifactId>
+                        <version>2.1.1</version>
                         <executions>
                             <execution>
                                 <phase>prepare-package</phase>
@@ -241,6 +242,26 @@
                                     </resources>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>copy-certificates</id>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals><!-- here the phase you need -->
+                                <phase>validate</phase>
+                                <configuration>
+                                    <outputDirectory>${basedir}/target/docker-stage</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/main/resources</directory>
+                                            <includes>
+                                                <include>*.pem</include>
+                                                <include>*.md</include>
+                                            </includes>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
@@ -264,7 +285,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.34.0</version>
+                        <version>0.44.0</version>
                         <inherited>false</inherited>
                         <configuration>
                             <images>

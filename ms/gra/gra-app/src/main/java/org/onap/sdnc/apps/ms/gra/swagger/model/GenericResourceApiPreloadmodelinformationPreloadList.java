@@ -9,8 +9,8 @@ import io.swagger.annotations.ApiModelProperty;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadData;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloaddataPreloadData;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiPreloadmodelinformationPreloadList

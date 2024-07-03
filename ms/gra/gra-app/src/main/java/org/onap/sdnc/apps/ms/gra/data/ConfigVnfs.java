@@ -2,7 +2,7 @@ package org.onap.sdnc.apps.ms.gra.data;
 
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity(name="CONFIG_GRA_VNFS")
 @Table(name="CONFIG_GRA_VNFS")

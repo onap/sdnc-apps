@@ -61,7 +61,7 @@ env | sort
 # Wait for database
 #
 echo "Waiting for database"
-until mysqladmin ping -h ${MYSQL_DB_HOST} --silent; do
+until mysqladmin ping -h ${MYSQL_DB_HOST} --user ${MYSQL_USER} --password ${MYSQL_PASSWORD} --silent; do
   printf "."
   sleep 1
 done

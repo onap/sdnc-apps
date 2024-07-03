@@ -2,6 +2,7 @@
 ## START OF STAGE0 ##
 FROM @base.image.name@:@base.image.version@ AS stage0
 
+
 ENV LOG_PATH /var/log/onap/sdnc
 ENV SDNC_CONFIG_DIR /opt/sdnc/gra/config
 ENV TRUSTSTORE @truststore.file@
@@ -14,6 +15,11 @@ COPY opt /opt
 # Install  certificates
 RUN keytool -importkeystore -srckeystore ${SDNC_CONFIG_DIR}/${TRUSTSTORE} -srcstorepass changeit -destkeystore ${JAVA_SECURITY_DIR}/cacerts -deststorepass changeit -noprompt
 
+# Copy any certs
+COPY *.md *.pem /etc/ssl/certs/
+
+# Install certs
+RUN update-ca-certificates
 ## END OF STAGE0 ##
 
 
@@ -32,12 +38,11 @@ ENV LOG_PATH /var/log/onap/sdnc
 
 USER root
 
+
+RUN echo "http_proxy = $http_proxy" && echo "https_proxy = $https_proxy" && echo "no_proxy = $no_proxy" &&  echo "HTTP_PROXY = $HTTP_PROXY" &&  echo "HTTPS_PROXY = $HTTPS_PROXY" && echo "NO_PROXY = $NO_PROXY"
+
 # Install sudo,  IP utilities and openjdk 11
-RUN export http_proxy=http://sub.proxy.att.com:8080 \
- && export https_proxy=http://sub.proxy.att.com:8080 \
- && apk update && apk --no-cache add bash curl mysql-client sudo iputils openssl \
- && unset http_proxy \
- && unset https_proxy
+RUN apk update && apk --no-cache add bash curl mysql-client sudo iputils openssl 
 
 # Enable wheel group
 RUN sed -e 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/g' -i /etc/sudoers

@@ -14,8 +14,8 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiOnapModelInform
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiOnapmodelinformationOnapModelInformation;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiParam;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiContrailroutetopologyContrailRouteTopology
