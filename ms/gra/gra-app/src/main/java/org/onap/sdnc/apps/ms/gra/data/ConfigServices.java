@@ -5,7 +5,7 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRequestStatusEn
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceStatus;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicestatusServiceStatus;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity(name="CONFIG_GRA_SERVICES")
 @Table(name="CONFIG_GRA_SERVICES")

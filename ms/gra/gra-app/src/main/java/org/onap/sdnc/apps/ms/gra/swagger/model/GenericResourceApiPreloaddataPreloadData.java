@@ -13,8 +13,8 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadnetworkt
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadoperstatusPreloadOperStatus;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiPreloadvfmoduletopologyinformationPreloadVfModuleTopologyInformation;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiPreloaddataPreloadData

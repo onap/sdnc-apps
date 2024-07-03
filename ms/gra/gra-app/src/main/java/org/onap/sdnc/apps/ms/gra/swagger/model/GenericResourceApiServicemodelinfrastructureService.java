@@ -11,8 +11,8 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceStatus;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicedataServiceData;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicestatusServiceStatus;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiServicemodelinfrastructureService

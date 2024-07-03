@@ -10,8 +10,8 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiAllottedResourc
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiAllottedresourcestatusAllottedResourceStatus;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiContrailrouteallottedresourcesContrailrouteallottedresourceAllottedResourceData;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiContrailrouteallottedresourcesContrailRouteAllottedResource

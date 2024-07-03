@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiConfigurationstatusConfigurationStatus;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRequestStatusEnumeration;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity(name="CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS")
 @Table(name="CONFIG_GRA_PORT_MIRROR_CONFIGURATIONS")
