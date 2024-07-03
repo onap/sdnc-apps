@@ -16,8 +16,8 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceassignme
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServiceparametersServiceParameters;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicetopologyidentifierServiceTopologyIdentifier;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiServicetopologyServiceTopology

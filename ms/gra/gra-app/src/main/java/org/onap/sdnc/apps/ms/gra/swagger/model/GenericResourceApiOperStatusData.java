@@ -2,7 +2,7 @@ package org.onap.sdnc.apps.ms.gra.swagger.model;
 
 import java.util.Objects;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;

@@ -22,7 +22,7 @@
 ###
 
 export SDNC_HOME=${SDNC_HOME:-/opt/sdnc/gra}
-export SVCLOGIC_DIR=${SVCLOGIC_DIR:-/opt/sdnc/gra/service-logic/graphs}
+export SVCLOGIC_DIR=${SVCLOGIC_DIR:-/opt/sdnc/gra/svclogic/graphs}
 export LOG_PATH=${LOG_PATH:-/var/log/sdnc}
 export SDNC_CONFIG_DIR=${SDNC_CONFIG_DIR:-/opt/sdnc/gra/config}
 export SVCLOGIC_PROPERTIES=${SVCLOGIC_PROPERTIES:-${SDNC_CONFIG_DIR}/svclogic.properties}

@@ -8,8 +8,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRelatedNetwork;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiNetworktopologyidentifierstructureNetworkTopologyIdentifierStructure
