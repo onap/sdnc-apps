@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRequestStatusEnumeration;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiServicestatusServiceStatus;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity(name="OPERATIONAL_GRA_SERVICES")
 @Table(name="OPERATIONAL_GRA_SERVICES")

@@ -4,7 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiAllottedresourcestatusAllottedResourceStatus;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiRequestStatusEnumeration;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity(name="OPERATIONAL_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES")
 @Table(name="OPERATIONAL_GRA_CONTRAIL_ROUTE_ALLOTTED_RESOURCES")

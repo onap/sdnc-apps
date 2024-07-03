@@ -24,7 +24,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 @Transactional
 public interface OperationalServicesRepository extends CrudRepository<OperationalServices, Long> {

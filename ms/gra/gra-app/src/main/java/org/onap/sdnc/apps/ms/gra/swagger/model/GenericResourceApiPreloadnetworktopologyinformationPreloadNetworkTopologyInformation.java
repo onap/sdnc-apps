@@ -22,8 +22,8 @@ import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiSubnetsSubnets;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVpnBindings;
 import org.onap.sdnc.apps.ms.gra.swagger.model.GenericResourceApiVpnbindingsVpnBindings;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 /**
  * GenericResourceApiPreloadnetworktopologyinformationPreloadNetworkTopologyInformation
