@@ -16,6 +16,24 @@
       "message": "Problem is in ccsdk class:org.onap.ccsdk.apps.filters.AuditLogFilter seems not to  implements jakarta.servlet.Filter",
       "revId": "824c7c86d54c7ccfc17091517fdc05957a19dc0f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "292c120e_345fa430",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4931
+      },
+      "writtenOn": "2024-07-04T12:22:17Z",
+      "side": 1,
+      "message": "Uncheck resolved",
+      "parentUuid": "a4266d65_134412fb",
+      "revId": "824c7c86d54c7ccfc17091517fdc05957a19dc0f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
