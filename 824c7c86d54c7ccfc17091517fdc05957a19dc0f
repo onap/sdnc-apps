@@ -68,6 +68,23 @@
       "message": "org.onap.ccsdk.apps.filters.AuditLogFilter extends AuditLogServletFilter\n\nProblem: AuditLogServletFilter is a java 1.8 class implements javax.servlet.Filter",
       "revId": "824c7c86d54c7ccfc17091517fdc05957a19dc0f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "8dd64020_e9337bed",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4931
+      },
+      "writtenOn": "2024-07-10T13:13:05Z",
+      "side": 1,
+      "message": "The fix is in not merged https://gerrit.onap.org/r/c/ccsdk/apps/+/138264",
+      "revId": "824c7c86d54c7ccfc17091517fdc05957a19dc0f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
