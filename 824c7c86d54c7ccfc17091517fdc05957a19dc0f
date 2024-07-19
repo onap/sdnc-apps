@@ -102,6 +102,42 @@
       "message": "recheck",
       "revId": "824c7c86d54c7ccfc17091517fdc05957a19dc0f",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "338d8657_93a6b1fc",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5625
+      },
+      "writtenOn": "2024-07-19T03:43:29Z",
+      "side": 1,
+      "message": "switch to jakarta seems to be done. jenkins is passing",
+      "parentUuid": "7bad3776_3a79790a",
+      "revId": "824c7c86d54c7ccfc17091517fdc05957a19dc0f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c11825e2_8a742218",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5625
+      },
+      "writtenOn": "2024-07-19T03:43:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "292c120e_345fa430",
+      "revId": "824c7c86d54c7ccfc17091517fdc05957a19dc0f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
