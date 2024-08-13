@@ -1,0 +1,8 @@
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Code-Review+2: Herbert Eiselt <herbert.eiselt@highstreet-technologies.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Submitted-by: Herbert Eiselt <herbert.eiselt@highstreet-technologies.com>
+Submitted-at: Tue, 13 Aug 2024 06:20:44 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/sdnc/apps/+/138677
+Project: sdnc/apps
+Branch: refs/heads/newdelhi
