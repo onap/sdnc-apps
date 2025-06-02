@@ -102,12 +102,12 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-common</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${ccsdk.sli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sli-provider-base</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${ccsdk.sli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.logging-analytics</groupId>
@@ -121,37 +121,37 @@
         <dependency>
             <groupId>org.onap.ccsdk.sli.core</groupId>
             <artifactId>sliPluginUtils-provider</artifactId>
-            <version>${ccsdk.sli.core.version}</version>
+            <version>${ccsdk.sli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.adaptors</groupId>
             <artifactId>mdsal-resource-provider</artifactId>
-            <version>${ccsdk.sli.adaptors.version}</version>
+            <version>${ccsdk.sli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.adaptors.messagerouter</groupId>
             <artifactId>publisher.provider</artifactId>
-            <version>${ccsdk.sli.adaptors.version}</version>
+            <version>${ccsdk.sli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.adaptors</groupId>
             <artifactId>netbox-client-provider</artifactId>
-            <version>${ccsdk.sli.adaptors.version}</version>
+            <version>${ccsdk.sli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.adaptors</groupId>
             <artifactId>sql-resource-provider</artifactId>
-            <version>${ccsdk.sli.adaptors.version}</version>
+            <version>${ccsdk.sli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.plugins</groupId>
             <artifactId>restapi-call-node-provider</artifactId>
-            <version>${ccsdk.sli.plugins.version}</version>
+            <version>${ccsdk.sli.version}</version>
         </dependency>
         <dependency>
             <groupId>org.onap.ccsdk.sli.plugins</groupId>
             <artifactId>properties-node-provider</artifactId>
-            <version>${ccsdk.sli.plugins.version}</version>
+            <version>${ccsdk.sli.version}</version>
         </dependency>
 
         <!-- this jersey jar is needed for rest api call node to function properly -->
