@@ -16,6 +16,23 @@
       "message": "Problem is here: [ERROR] Failed to execute goal org.apache.maven.plugins:maven-dependency-plugin:3.0.2:unpack (unpack dgs) on project sanity-test-app: Unable to find/resolve artifact. Failed to read artifact descriptor for org.onap.sdnc.oam:platform-logic-installer:zip:3.1.0-SNAPSHOT: The following artifacts could not be resolved: org.onap.ccsdk.parent:odlparent-lite:pom:3.1.0-SNAPSHOT (absent): Could not find artifact org.onap.ccsdk.parent:odlparent-lite:pom:3.1.0-SNAPSHOT in snapshots\n\n- odlparent-lite is in the meantime a 3.1.0 release version.\n- actual snapshot is 3.1.2-SNAPSHOT",
       "revId": "db6eff26e2a0d45bcac5ec8f443566cec3a1893e",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "998e1578_cf3a23d3",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 87
+      },
+      "writtenOn": "2025-06-09T13:13:14Z",
+      "side": 1,
+      "message": "recheck",
+      "revId": "db6eff26e2a0d45bcac5ec8f443566cec3a1893e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a"
     }
   ]
 }
