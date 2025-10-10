@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Transactional
-public interface ConfigVnfsRepository extends CrudRepository<ConfigVnfs, Long> {
+public interface ConfigVnfsRepository extends CrudRepository<ConfigVnfs, VnfsKey> {
 
     List<ConfigVnfs> findBySvcInstanceId(String svcInstanceId);
     List<ConfigVnfs> findBySvcInstanceIdAndVnfId(String svcInstanceId, String vnfId);

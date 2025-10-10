@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Transactional
-public interface ConfigNetworksRepository extends CrudRepository<ConfigNetworks, Long> {
+public interface ConfigNetworksRepository extends CrudRepository<ConfigNetworks, NetworksKey> {
 
     List<ConfigNetworks> findBySvcInstanceId(String svcInstanceId);
     List<ConfigNetworks> findBySvcInstanceIdAndNetworkId(String svcInstanceId, String networkId);

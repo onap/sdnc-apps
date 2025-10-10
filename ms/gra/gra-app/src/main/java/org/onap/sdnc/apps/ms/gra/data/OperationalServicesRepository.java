@@ -27,7 +27,7 @@ import java.util.List;
 import jakarta.transaction.Transactional;
 
 @Transactional
-public interface OperationalServicesRepository extends CrudRepository<OperationalServices, Long> {
+public interface OperationalServicesRepository extends CrudRepository<OperationalServices, String> {
 
     List<OperationalServices> findBySvcInstanceId(String svcInstanceId);
     long deleteBySvcInstanceId(String svcInstanceId);

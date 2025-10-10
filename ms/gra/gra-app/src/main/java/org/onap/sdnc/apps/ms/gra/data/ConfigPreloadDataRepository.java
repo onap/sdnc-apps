@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Transactional
-public interface ConfigPreloadDataRepository extends CrudRepository<ConfigPreloadData, Long> {
+public interface ConfigPreloadDataRepository extends CrudRepository<ConfigPreloadData, PreloadDataKey> {
 
     List<ConfigPreloadData> findByPreloadIdAndPreloadType(String preloadId, String preloadType);
     long deleteByPreloadIdAndPreloadType(String preloadId, String preloadType);

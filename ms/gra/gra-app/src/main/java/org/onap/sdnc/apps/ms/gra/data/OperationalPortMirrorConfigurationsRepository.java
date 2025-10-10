@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Transactional
-public interface OperationalPortMirrorConfigurationsRepository extends CrudRepository<OperationalPortMirrorConfigurations, Long> {
+public interface OperationalPortMirrorConfigurationsRepository extends CrudRepository<OperationalPortMirrorConfigurations, String> {
 
     List<OperationalPortMirrorConfigurations> findByConfigurationId(String configurationId);
     long deleteByConfigurationId(String configurationId);

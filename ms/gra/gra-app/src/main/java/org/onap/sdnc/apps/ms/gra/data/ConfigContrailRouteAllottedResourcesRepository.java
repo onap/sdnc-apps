@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Transactional
-public interface ConfigContrailRouteAllottedResourcesRepository extends CrudRepository<ConfigContrailRouteAllottedResources, Long> {
+public interface ConfigContrailRouteAllottedResourcesRepository extends CrudRepository<ConfigContrailRouteAllottedResources, String> {
 
     List<ConfigContrailRouteAllottedResources> findByAllottedResourceId(String allottedResourceId);
     long deleteByAllottedResourceId(String allottedResourceId);

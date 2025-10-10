@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Transactional
-public interface ConfigVfModulesRepository extends CrudRepository<ConfigVfModules, Long> {
+public interface ConfigVfModulesRepository extends CrudRepository<ConfigVfModules, VfModulesKey> {
 
     List<ConfigVfModules> findBySvcInstanceId(String svcInstanceId);
     List<ConfigVfModules> findBySvcInstanceIdAndVnfId(String svcInstanceId, String vnfId);

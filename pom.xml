@@ -19,11 +19,11 @@
 
     <properties>
         <aaf.cadi.version>2.1.21</aaf.cadi.version>
-        <ccsdk.apps.version>2.1.0-SNAPSHOT</ccsdk.apps.version>
-        <ccsdk.docker.version>2.1.0-STAGING-latest</ccsdk.docker.version>
-        <ccsdk.distribution.version>2.1.0-SNAPSHOT</ccsdk.distribution.version>
-        <sdnc.northbound.version>3.1.0-SNAPSHOT</sdnc.northbound.version>
-        <sdnc.oam.version>3.1.0-SNAPSHOT</sdnc.oam.version>
+        <ccsdk.apps.version>2.1.0</ccsdk.apps.version>
+        <ccsdk.docker.version>2.1.0</ccsdk.docker.version>
+        <ccsdk.distribution.version>2.1.0</ccsdk.distribution.version>
+        <sdnc.northbound.version>3.1.0</sdnc.northbound.version>
+        <sdnc.oam.version>3.1.0</sdnc.oam.version>
     </properties>
 
     <modules>

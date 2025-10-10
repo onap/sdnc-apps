@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Transactional
-public interface ConfigServicesRepository extends CrudRepository<ConfigServices, Long> {
+public interface ConfigServicesRepository extends CrudRepository<ConfigServices, String> {
 
     List<ConfigServices> findBySvcInstanceId(String svcInstanceId);
     long deleteBySvcInstanceId(String svcInstanceId);
