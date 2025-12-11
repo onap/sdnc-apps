@@ -42,3 +42,6 @@ out/
 ## Folders which contain auto generated source code ##
 yang-gen-config
 yang-gen-sal
+
+# log files
+*.log
