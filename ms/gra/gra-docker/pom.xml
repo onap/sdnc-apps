@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.onap.sdnc.apps</groupId>
         <artifactId>gra</artifactId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.3.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.onap.sdnc.apps</groupId>
     <artifactId>gra-docker</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>sdnc-apps :: ms :: gra :: ${project.artifactId}</name>
@@ -313,6 +313,7 @@
                                     <goal>build</goal>
                                 </goals>
                             </execution>
+                            <!--
                             <execution>
                                 <id>start-it-instance</id>
                                 <phase>pre-integration-test</phase>
@@ -368,12 +369,6 @@
                                                 <ports>
                                                     <port>gra.port:8080</port>
                                                 </ports>
-                                                <!--
-                                                <wait>
-                                                    <log>Started GenericResourceMsApp</log>
-                                                    <time>240000</time>
-                                                </wait>
-                                                -->
                                                 <log>
                                                     <enabled>true</enabled>
                                                 </log>
@@ -389,6 +384,7 @@
                                     <goal>stop</goal>
                                 </goals>
                             </execution>
+                        -->
                             <execution>
                                 <id>push-images</id>
                                 <phase>${docker.push.phase}</phase>
