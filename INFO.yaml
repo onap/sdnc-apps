@@ -39,6 +39,11 @@ committers:
       company: 'Highstreet Technologies'
       id: 'metaljackL'
       timezone: 'Germany/Berlin'
+    - name: 'Saul Gill'
+      email: 'saul.gill@est.tech'
+      company: 'Ericsson Software Technology'
+      id: 'saul.gill'
+      timezone: 'Europe/Dublin'
 tsc:
     approval: 'https://lists.onap.org/pipermail/onap-tsc'
     changes:
@@ -54,3 +59,5 @@ tsc:
         - type: 'Deletion'
           name: 'David Stilwell'
           link: 'https://lists.onap.org/g/onap-tsc/message/8308'
+        - type: 'Addition'
+          name: 'Saul Gill'
