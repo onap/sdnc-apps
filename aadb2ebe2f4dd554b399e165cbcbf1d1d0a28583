@@ -1,0 +1,9 @@
+Verified+1: ONAP Bypass GHA <releng+onap.bypass.gha@linuxfoundation.org>
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+2: Michael Durre <michael.duerre@highstreet-technologies.com>
+Submitted-by: Michael Durre <michael.duerre@highstreet-technologies.com>
+Submitted-at: Wed, 01 Apr 2026 07:10:12 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/sdnc/apps/+/142808
+Project: sdnc/apps
+Branch: refs/heads/master
