@@ -53,7 +53,10 @@ RUN export http_proxy=$http_proxy
 RUN export https_proxy=$https_proxy
 RUN echo "http_proxy = $http_proxy" && echo "https_proxy = $https_proxy" && echo "no_proxy = $no_proxy"
 
-RUN apk update && apk --no-cache add bash curl mysql-client sudo iputils openssl 
+RUN apk update && apk --no-cache add bash curl mysql-client sudo iputils openssl
+
+# MariaDB clients >= 11.4 refuse servers without TLS unless server certificate verification is off
+RUN printf '[client]\nssl-verify-server-cert=0\n' > /etc/my.cnf.d/gra-client.cnf
 
 # Enable wheel group
 RUN sed -e 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/g' -i /etc/sudoers
