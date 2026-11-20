@@ -20,8 +20,8 @@
     <properties>
         <image.build.properties.file>/image.build.properties</image.build.properties.file>
         <chart.update.properties.file>/chart.update.properties</chart.update.properties.file>
-        <base.image.name>onap/ccsdk-alpine-j17-image</base.image.name>
-        <base.image.version>${ccsdk.docker.version}</base.image.version>
+        <base.image.name>docker.io/library/eclipse-temurin</base.image.name>
+        <base.image.version>21-jre-alpine</base.image.version>
         <platform.logic.group>org.onap.ccsdk.distribution</platform.logic.group>
         <platform.logic.version>${ccsdk.distribution.version}</platform.logic.version>
         <image.name>onap/sdnc-gra</image.name>
